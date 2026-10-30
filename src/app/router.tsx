@@ -1,9 +1,9 @@
 import { createBrowserRouter, Navigate } from 'react-router'
-import MainLayout from '../components/layout/main-layout'
-import { ROUTES } from '../constants/routes'
+import MainLayout from '../shared/components/layout/main-layout'
+import { ROUTES } from '../shared/constants/routes'
 import LoginPage from '../features/auth/pages/login-page'
 import ChatPage from '../features/chat/pages/chat-page'
-import NotFoundPage from '../pages/not-found-page'
+import NotFoundPage from '../features/auth/pages/not-found-page'
 
 export const router = createBrowserRouter([
   {

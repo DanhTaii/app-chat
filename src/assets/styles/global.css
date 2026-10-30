@@ -1,5 +1,4 @@
 :root {
-  // MÃ MÀU
   --c-primary: #00645e;
   --c-primary-hover: #06645e;
   --c-on-primary: #ffffff;
@@ -13,8 +12,6 @@
   --c-text-secondary: #485966;
   --c-text-muted: #5b6971;
   --c-shadow: rgba(0, 0, 0, 0.2);
-
-  // CỠ CHỮ
   --font-size-xs: 12px;
   --font-size-sm: 14px;
   --font-size-base: 16px;
@@ -23,8 +20,6 @@
   --font-size-2xl: 24px;
   --font-size-3xl: 30px;
   --font-size-4xl: 36px;
-
-  // ĐỘ ĐẬM CHỮ
   --font-weight-thin: 100;
   --font-weight-extra-light: 200;
   --font-weight-light: 300;
@@ -34,14 +29,15 @@
   --font-weight-bold: 700;
   --font-weight-extra-bold: 800;
   --font-weight-black: 900;
-
-  @media (max-width: 1024px) {
+}
+@media (max-width: 1200px) {
+  :root {
     font-size: var(--font-size-base);
   }
 }
 
 * {
-  font-family: Arial, 'sans-serif';
+  font-family: Arial, "sans-serif";
   box-sizing: border-box;
 }
 
@@ -53,3 +49,5 @@ body {
   width: 1200px;
   margin: 0 auto;
 }
+
+/*# sourceMappingURL=global.css.map */

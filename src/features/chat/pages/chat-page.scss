@@ -1,3 +1,5 @@
+@use "../../../assets/styles/breakpoints" as bp;
+
 .chat-page {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -5,8 +7,12 @@
   min-height: 480px;
   background: var(--c-bg);
 
-  @media (max-width: 768px) {
+  @include bp.down(tablet) {
     grid-template-columns: 1fr;
     grid-template-rows: 240px 1fr;
+  }
+
+  @include bp.down(mobile) {
+    grid-template-rows: 180px 1fr;
   }
 }
