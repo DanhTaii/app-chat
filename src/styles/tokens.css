@@ -1,0 +1,18 @@
+/* Token màu / kích thước dùng chung, lấy từ thiết kế Stitch "Modern Conversational Minimalism".
+   Đặt tiền tố --c- / --r- để không trùng biến của index.css. */
+:root {
+  --c-primary: #00645e;
+  --c-primary-hover: #06645e;
+  --c-on-primary: #ffffff;
+  --c-bg: #f8faf9;
+  --c-surface: #ffffff;
+  --c-surface-subtle: #f0f5f2;
+  --c-accent-soft: #e7f4f0;
+  --c-outgoing: #dff3eb;
+  --c-border: #dce5e1;
+  --c-text: #1d2933;
+  --c-text-secondary: #485966;
+  --c-text-muted: #5b6971;
+  --r-md: 8px;
+  --r-lg: 12px;
+}
