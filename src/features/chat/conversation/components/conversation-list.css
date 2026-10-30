@@ -1,0 +1,107 @@
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: var(--c-surface);
+  border-right: 1px solid var(--c-border);
+  color: var(--c-text);
+  text-align: left;
+
+  h2 {
+    margin: 0;
+    font-size: 21px;
+    line-height: 28px;
+    color: var(--c-text);
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.conversation-list__search {
+  height: 40px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 14px;
+  color: var(--c-text);
+  background: var(--c-surface-subtle);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+}
+
+.conversation-list__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-md);
+  cursor: pointer;
+
+  &:hover,
+  &[aria-current='true'] {
+    background: var(--c-accent-soft);
+  }
+}
+
+.conversation-list__search:focus-visible,
+.conversation-list__item:focus-visible {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 2px;
+}
+
+.conversation-list__avatar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  color: var(--c-primary);
+  background: var(--c-accent-soft);
+  border-radius: 50%;
+}
+
+.conversation-list__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.conversation-list__name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.conversation-list__last {
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.conversation-list__time {
+  flex: none;
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
