@@ -1,7 +1,6 @@
-import '../../../styles/tokens.css'
 import ConversationList from '../conversation/components/conversation-list'
 import MessageWindow from '../message/components/message-window'
-import './chat-page.css'
+import './chat-page.scss'
 
 // chỉ ghép Conversation và Message
 function ChatPage() {

@@ -1,0 +1,45 @@
+
+@mixin flex-layout($justify: null, $align: center, $direction: row,$gap: 0) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  gap: $gap;
+
+  @if $justify != null {
+    justify-content: $justify;
+  }
+}
+
+@mixin button-state($bg-color: white, $text-color: black, $hover: var(--c-primary)) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  cursor: pointer;
+  //transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $hover;
+    color: white;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  //// Trang đang được chọn
+  //&.active {
+  //  background-color: $primary;
+  //  color: white;
+  //}
+  //
+  //// Menu đang mở
+  //&.open {
+  //  background-color: $bg-open;
+  //  color: black;
+  //}
+}

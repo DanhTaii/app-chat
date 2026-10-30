@@ -4,9 +4,12 @@
   height: calc(100svh - 48px);
   min-height: 480px;
   background: var(--c-bg);
-
-  @media (max-width: 768px) {
+}
+@media (max-width: 768px) {
+  .chat-page {
     grid-template-columns: 1fr;
     grid-template-rows: 240px 1fr;
   }
 }
+
+/*# sourceMappingURL=chat-page.css.map */
