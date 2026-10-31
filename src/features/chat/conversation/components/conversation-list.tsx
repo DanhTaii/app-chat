@@ -17,6 +17,16 @@ function ConversationList() {
         aria-label="Tìm cuộc trò chuyện"
         placeholder="Tìm cuộc trò chuyện..."
       />
+      <div className="conversation-list__filters" role="group" aria-label="Lọc hội thoại">
+          <button type="button" className="conversation-list__chip conversation-list__chip-active" aria-pressed="true">Tất cả
+              <span className="conversation-list__dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" className="conversation-list__chip" aria-pressed="false">Chưa đọc
+              <span className="conversation-list__count">3</span>
+          </button>
+          <button type="button" className="conversation-list__chip" aria-pressed="false">Nhóm
+          </button>
+      </div>
       <ul>
         {SAMPLE_CONVERSATIONS.map((c, index) => (
           <li key={c.id}>
