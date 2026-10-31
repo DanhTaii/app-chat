@@ -1,0 +1,53 @@
+:root {
+  --c-primary: #00645e;
+  --c-primary-hover: #06645e;
+  --c-on-primary: #ffffff;
+  --c-bg: #f8faf9;
+  --c-surface: #ffffff;
+  --c-surface-subtle: #f0f5f2;
+  --c-accent-soft: #e7f4f0;
+  --c-outgoing: #dff3eb;
+  --c-border: #dce5e1;
+  --c-text: #1d2933;
+  --c-text-secondary: #485966;
+  --c-text-muted: #5b6971;
+  --c-shadow: rgba(0, 0, 0, 0.2);
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  --font-weight-thin: 100;
+  --font-weight-extra-light: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  --font-weight-black: 900;
+}
+@media (max-width: 1200px) {
+  :root {
+    font-size: var(--font-size-base);
+  }
+}
+
+* {
+  font-family: Arial, "sans-serif";
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+}
+
+#root {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+/*# sourceMappingURL=global.css.map */

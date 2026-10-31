@@ -1,4 +1,4 @@
-import './message-window.css'
+import './message-window.scss'
 
 // Dữ liệu mẫu chỉ để dựng khung, sẽ thay bằng dữ liệu từ API
 const SAMPLE_MESSAGES = [

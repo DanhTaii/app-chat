@@ -1,0 +1,116 @@
+.message-window {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  text-align: left;
+}
+
+.message-window__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+
+  h2 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 24px;
+    color: var(--c-text);
+  }
+}
+
+.message-window__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  color: var(--c-primary);
+  background: var(--c-accent-soft);
+  border-radius: 50%;
+}
+
+.message-window__thread {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.message-window__bubble {
+  max-width: 70%;
+  padding: 8px 14px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--font-size-lg);
+  align-self: flex-start;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  time {
+    font-size: 12px;
+    color: var(--c-text-muted);
+  }
+}
+
+.message-window__bubble--mine {
+  background: var(--c-outgoing);
+  border-color: transparent;
+  align-self: flex-end;
+}
+
+.message-window__composer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+
+  textarea {
+    flex: 1;
+    min-height: 44px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 14px;
+    color: var(--c-text);
+    resize: none;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--font-size-xl);
+  }
+
+  button {
+    min-width: 72px;
+    height: 44px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--c-on-primary);
+    background: var(--c-primary);
+    border: 0;
+    border-radius: var(--font-size-xl);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--c-primary-hover);
+    }
+  }
+
+  textarea:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+}

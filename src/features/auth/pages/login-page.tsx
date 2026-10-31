@@ -1,4 +1,3 @@
-import '../../../styles/tokens.css'
 import './login-page.css'
 
 // Wireframe trang đăng nhập

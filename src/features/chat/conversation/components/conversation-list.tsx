@@ -1,4 +1,4 @@
-import './conversation-list.css'
+import './conversation-list.scss'
 
 const SAMPLE_CONVERSATIONS = [
   { id: 1, name: 'Minh Anh', lastMessage: 'Chiều nay mình trao đổi phần giao diện nhé?', time: '10:42' },
