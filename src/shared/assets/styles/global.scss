@@ -35,6 +35,11 @@
   --font-weight-extra-bold: 800;
   --font-weight-black: 900;
 
+  // BO GÓC
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-utl: 999px;
+
   @media (max-width: 1200px) {
     font-size: var(--font-size-base);
   }
@@ -47,6 +52,7 @@
 
 body {
   margin: 0 auto;
+  background: var(--c-bg);
 }
 
 #root {
