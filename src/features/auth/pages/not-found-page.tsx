@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { ROUTES } from '../../../shared/constants/routes'
+import { ROUTES } from '../../../app/router/routes'
 
 function NotFoundPage() {
   return (

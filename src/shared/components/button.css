@@ -1,0 +1,51 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  color: var(--c-on-primary);
+  background: var(--c-primary);
+}
+
+.btn-primary:hover {
+  background: var(--c-primary-hover);
+}
+
+.btn-secondary {
+  color: var(--c-text);
+  background: var(--c-surface-subtle);
+  border-color: var(--c-border);
+}
+
+.btn-outline {
+  color: var(--c-primary);
+  background: transparent;
+  border-color: var(--c-primary);
+}
+
+.btn-link {
+  padding: 2px;
+  color: var(--c-primary);
+  background: transparent;
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=button.css.map */

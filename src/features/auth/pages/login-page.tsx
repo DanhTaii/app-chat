@@ -1,6 +1,6 @@
 import "./login-page.scss";
-import Button from "../../../shared/components/ui/Button";
-import Input from "../../../shared/components/ui/Input";
+import Button from "../../../shared/components/button";
+import Input from "../../../shared/components/Input";
 
 // Wireframe trang đăng nhập
 function LoginPage() {

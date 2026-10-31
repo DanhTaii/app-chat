@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router";
-import MainLayout from "../shared/components/layout/main-layout";
-import { ROUTES } from "../shared/constants/routes";
-import LoginPage from "../features/auth/pages/login-page";
-import ChatPage from "../features/chat/pages/chat-page";
-import NotFoundPage from "../features/auth/pages/not-found-page";
-import ComponentsPage from "../features/auth/pages/components-page";
+import MainLayout from "../layouts/main-layout";
+import { ROUTES } from "./routes";
+import LoginPage from "../../features/auth/pages/login-page";
+import ChatPage from "../../features/chat/pages/chat-page";
+import NotFoundPage from "../../features/auth/pages/not-found-page";
+import ComponentsPage from "../../features/auth/pages/components-page";
 
 export const router = createBrowserRouter([
   {
