@@ -43,39 +43,25 @@
 
   input[type='text'],
   input[type='password'] {
-    height: 44px;
-    margin-bottom: 10px;
-    padding: 0 12px;
-    box-sizing: border-box;
-    font: inherit;
-    font-size: 14px;
+    width: 100%;
+    min-height: 39px;
+    padding: 8px 12px;
     color: var(--c-text);
     background: var(--c-surface);
     border: 1px solid var(--c-border);
-    border-radius: var(--font-size-xl);
-  }
-
-  input:focus-visible,
-  button:focus-visible {
-    outline: 2px solid var(--c-primary);
-    outline-offset: 2px;
-  }
-
-  button {
-    height: 44px;
-    margin-top: 12px;
+    border-radius: 6px;
     font: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--c-on-primary);
-    background: var(--c-primary);
-    border: 0;
-    border-radius: var(--font-size-xl);
-    cursor: pointer;
+  }
 
-    &:hover {
-      background: var(--c-primary-hover);
-    }
+  input[type='text']::placeholder,
+  input[type='password']::placeholder {
+    color: var(--c-text-muted);
+  }
+
+  input[type='text']:focus,
+  input[type='password']:focus {
+    border-color: var(--c-primary);
+    outline: 2px solid var(--c-accent-soft);
   }
 }
 

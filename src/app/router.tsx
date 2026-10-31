@@ -1,9 +1,10 @@
-import { createBrowserRouter, Navigate } from 'react-router'
-import MainLayout from '../shared/components/layout/main-layout'
-import { ROUTES } from '../shared/constants/routes'
-import LoginPage from '../features/auth/pages/login-page'
-import ChatPage from '../features/chat/pages/chat-page'
-import NotFoundPage from '../features/auth/pages/not-found-page'
+import { createBrowserRouter, Navigate } from "react-router";
+import MainLayout from "../shared/components/layout/main-layout";
+import { ROUTES } from "../shared/constants/routes";
+import LoginPage from "../features/auth/pages/login-page";
+import ChatPage from "../features/chat/pages/chat-page";
+import NotFoundPage from "../features/auth/pages/not-found-page";
+import ComponentsPage from "../features/auth/pages/components-page";
 
 export const router = createBrowserRouter([
   {
@@ -12,7 +13,8 @@ export const router = createBrowserRouter([
       { path: ROUTES.ROOT, element: <Navigate to={ROUTES.LOGIN} replace /> },
       { path: ROUTES.LOGIN, element: <LoginPage /> },
       { path: ROUTES.CHAT, element: <ChatPage /> },
-      { path: '*', element: <NotFoundPage /> },
+      { path: ROUTES.COMPONENTS, element: <ComponentsPage /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
-])
+]);
