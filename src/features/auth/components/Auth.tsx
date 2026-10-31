@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { loginSuccess, logout } from "../slices/authSlice";
 
 function Auth() {

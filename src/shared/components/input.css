@@ -1,0 +1,26 @@
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 39px;
+  padding: 8px 12px;
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.form-control::placeholder {
+  color: var(--c-text-muted);
+}
+
+.form-control:focus {
+  border-color: var(--c-primary);
+  outline: 2px solid var(--c-accent-soft);
+}
+
+.form-check-input {
+  accent-color: var(--c-primary);
+}
+
+/*# sourceMappingURL=input.css.map */
