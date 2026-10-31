@@ -1,5 +1,6 @@
 import "./login-page.scss";
 import Button from "../../../shared/components/ui/Button";
+import Input from "../../../shared/components/ui/Input";
 
 // Wireframe trang đăng nhập
 function LoginPage() {
@@ -13,7 +14,7 @@ function LoginPage() {
 
         <form className="login-form" onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="identifier">Email hoặc tên người dùng</label>
-          <input
+          <Input
             id="identifier"
             name="identifier"
             type="text"
@@ -22,7 +23,7 @@ function LoginPage() {
           />
 
           <label htmlFor="password">Mật khẩu</label>
-          <input
+          <Input
             id="password"
             name="password"
             type="password"
@@ -31,7 +32,7 @@ function LoginPage() {
           />
 
           <label className="login-form__remember">
-            <input type="checkbox" name="remember" />
+            <Input type="checkbox" name="remember" />
             Ghi nhớ đăng nhập
           </label>
 
