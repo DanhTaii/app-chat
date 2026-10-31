@@ -1,17 +1,19 @@
-import { Link, Outlet } from 'react-router'
-import { ROUTES } from '../../constants/routes'
+import { Link, Outlet } from "react-router";
+import { ROUTES } from "../../constants/routes";
 
 function MainLayout() {
   return (
     <>
       <nav>
-        <Link to={ROUTES.LOGIN}>Login</Link> | <Link to={ROUTES.CHAT}>Chat</Link>
+        <Link to={ROUTES.LOGIN}>Login</Link> |{" "}
+        <Link to={ROUTES.CHAT}>Chat</Link> |{" "}
+        <Link to={ROUTES.COMPONENTS}>Components</Link>
       </nav>
       <main>
         <Outlet />
       </main>
     </>
-  )
+  );
 }
 
-export default MainLayout
+export default MainLayout;
