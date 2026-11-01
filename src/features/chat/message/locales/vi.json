@@ -1,0 +1,10 @@
+{
+  "message": {
+    "button": {
+      "send": "Gửi"
+    },
+    "placeholder": {
+      "enter-message": "Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng)"
+    }
+  }
+}

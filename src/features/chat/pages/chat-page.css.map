@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["chat-page.scss","../../../assets/styles/_breakpoints.scss"],"names":[],"mappings":"AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;ACOA;EDbF;IASI;IACA;;;ACGF;EDbF;IAcI","file":"chat-page.css"}
+{"version":3,"sourceRoot":"","sources":["chat-page.scss","../../../shared/assets/styles/_breakpoints.scss"],"names":[],"mappings":"AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;ACOA;EDbF;IASI;IACA;;;ACGF;EDbF;IAcI","file":"chat-page.css"}

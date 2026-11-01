@@ -1,4 +1,5 @@
 import './conversation-list.scss'
+import {useTranslation} from "react-i18next";
 
 const SAMPLE_CONVERSATIONS = [
   { id: 1, name: 'Minh Anh', lastMessage: 'Chiều nay mình trao đổi phần giao diện nhé?', time: '10:42' },
@@ -8,23 +9,28 @@ const SAMPLE_CONVERSATIONS = [
 
 // Wireframe danh sách hội thoại: khung tìm kiếm + danh sách tĩnh
 function ConversationList() {
-  return (
+    const { t } = useTranslation("conversation")
+
+    return (
     <aside className="conversation-list" aria-label="Danh sách hội thoại">
-      <h2>Tin nhắn</h2>
+      <h2>{t("conversation.title.messages")}</h2>
       <input
         type="search"
         className="conversation-list__search"
         aria-label="Tìm cuộc trò chuyện"
-        placeholder="Tìm cuộc trò chuyện..."
+        placeholder={t("conversation.search.placeholder")}
       />
       <div className="conversation-list__filters" role="group" aria-label="Lọc hội thoại">
-          <button type="button" className="conversation-list__chip conversation-list__chip-active" aria-pressed="true">Tất cả
+          <button type="button" className="conversation-list__chip conversation-list__chip-active" aria-pressed="true">
+              {t("conversation.filter.all")}
               <span className="conversation-list__dot" aria-hidden="true"></span>
           </button>
-          <button type="button" className="conversation-list__chip" aria-pressed="false">Chưa đọc
+          <button type="button" className="conversation-list__chip" aria-pressed="false">
+              {t("conversation.filter.unread")}
               <span className="conversation-list__count">3</span>
           </button>
-          <button type="button" className="conversation-list__chip" aria-pressed="false">Nhóm
+          <button type="button" className="conversation-list__chip" aria-pressed="false">
+              {t("conversation.filter.groups")}
           </button>
       </div>
       <ul>
