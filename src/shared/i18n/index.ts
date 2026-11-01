@@ -1,15 +1,18 @@
-import i18next from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import translationEN from './en/translation.json'
-import translationVI from './vi/translation.json'
+import i18n from 'i18next';
+import {initReactI18next} from 'react-i18next'
 
-const resources = {
-    en: { translation: translationEN },
-    vi: { translation: translationVI }
-};
+import {authLocales} from '@/features/auth';
+import {chatLocales} from '@/features/chat';
+import viCommon from '@/shared/i18n/vi.json';
+import enCommon from '@/shared/i18n/en.json';
 
-i18next.use(initReactI18next).init({
-    lng: 'en', // if you're using a language detector, do not define the lng option
+const resource = {
+    vi: {common: viCommon, auth: authLocales.vi, chat: chatLocales.vi},
+    en: {common: enCommon, auth: authLocales.en, chat: chatLocales.en},
+}
+
+i18n.use(initReactI18next).init({
+    resources: resource,
+    lng: 'vi',
     debug: true,
-    resources
-})
+});
