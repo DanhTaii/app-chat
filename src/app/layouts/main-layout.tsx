@@ -1,4 +1,4 @@
-import {Link, Outlet} from "react-router";
+import {Link, Outlet} from "react-router-dom";
 import {ROUTES} from "../router/routes";
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
