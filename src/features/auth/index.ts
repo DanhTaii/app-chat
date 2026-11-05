@@ -1,0 +1,1 @@
+export { authLocales } from './locales';

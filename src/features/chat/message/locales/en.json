@@ -1,0 +1,10 @@
+{
+  "message": {
+    "button": {
+      "send": "Send"
+    },
+    "placeholder": {
+      "enter-message": "Enter message . . . (Press Enter to send, Shift+Enter for a new line)"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "auth": {
+    "title": {
+      "login": "Đăng nhập",
+      "password": "Mật khẩu"
+    },
+    "description": {
+      "login": "Vui lòng nhập thông tin tài khoản của bạn."
+    },
+    "label": {
+      "identifier": "Email hoặc tên người dùng",
+      "password": "Mật khẩu",
+      "remember": "Ghi nhớ đăng nhập"
+    },
+    "placeholder": {
+      "identifier": "name@example.edu.vn",
+      "password": "Nhập mật khẩu"
+    }
+  }
+}

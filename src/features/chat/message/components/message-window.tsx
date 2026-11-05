@@ -1,4 +1,5 @@
 import './message-window.scss'
+import {useTranslation} from "react-i18next";
 
 function MessageWindow() {
   return (

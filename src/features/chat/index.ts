@@ -1,0 +1,1 @@
+export { chatLocales } from './locales';

@@ -1,0 +1,18 @@
+{
+  "conversation": {
+    "title": {
+      "messages": "Messages"
+    },
+    "search": {
+      "placeholder": "Search conversations . . ."
+    },
+    "filter": {
+      "all": "All",
+      "unread": "Unread",
+      "groups": "Groups"
+    },
+    "time": {
+      "yesterday": "Yesterday"
+    }
+  }
+}
