@@ -1,19 +1,8 @@
-@use "../../../shared/assets/styles/breakpoints" as bp;
-
 .chat-page {
   display: grid;
   grid-template-columns: 320px 1fr;
-  height: calc(100svh - 48px);
-  min-height: 480px;
+  height: calc(100vh - 48px);
   background: var(--c-bg);
   border: 1px solid var(--c-border);
-
-  @include bp.down(tablet) {
-    grid-template-columns: 1fr;
-    grid-template-rows: 240px 1fr;
-  }
-
-  @include bp.down(mobile) {
-    grid-template-rows: 180px 1fr;
-  }
+  box-sizing: border-box;
 }
