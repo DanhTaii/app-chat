@@ -5,10 +5,10 @@ import './chat-page.scss'
 // chỉ ghép Conversation và Message
 function ChatPage() {
   return (
-    <div className="chat-page">
-      <ConversationList />
-      <MessageWindow />
-    </div>
+      <div className="chat-page">
+          <ConversationList />
+          <MessageWindow />
+      </div>
   )
 }
 
