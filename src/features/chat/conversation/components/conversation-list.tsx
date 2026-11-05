@@ -1,5 +1,4 @@
 import './conversation-list.scss'
-import {useTranslation} from "react-i18next";
 
 // Wireframe danh sách hội thoại: khung tìm kiếm + danh sách tĩnh
 function ConversationList() {

@@ -12,6 +12,12 @@ function MainLayout() {
         i18n.changeLanguage(currentLanguage === "en" ? "vi" : "en")
     }
 
+    async function createSocket() {
+        // @ts-ignore
+        const {default: chatSocket} = await import("/src/shared/services/socket/socketService.ts");
+        chatSocket.connect();
+    }
+
     return (
         <>
             <nav>
@@ -19,10 +25,11 @@ function MainLayout() {
                 <Link to={ROUTES.CHAT}>Chat</Link> |{" "}
                 <Link to={ROUTES.COMPONENTS}>Components</Link>
                 <button className="btn btn-primary "
-                    onClick={toggleTranslateLanguage}
+                        onClick={toggleTranslateLanguage}
                 >
                     Change language EN - VI
                 </button>
+                <button onClick={createSocket}>Socket Testing</button>
             </nav>
             <main>
                 <Outlet/>
