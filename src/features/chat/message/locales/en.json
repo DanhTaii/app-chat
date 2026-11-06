@@ -5,6 +5,14 @@
     },
     "placeholder": {
       "enter-message": "Enter message . . . (Press Enter to send, Shift+Enter for a new line)"
+    },
+    "separator": {
+      "time": {
+        "today": "Today"
+      }
+    },
+    "status": {
+      "active": "Active"
     }
   }
 }

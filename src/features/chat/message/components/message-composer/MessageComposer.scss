@@ -1,0 +1,52 @@
+@use "sass:map";
+@use "../../../../../shared/assets/styles/mixins" as mixins;
+
+.message-footer {
+  background-color: var(--c-surface);
+  height: 120px;
+  width: 100%;
+
+  .footer-toolbar {
+    padding: 10px;
+    border-bottom: 1px solid var(--c-shadow);
+
+    @include mixins.flex-layout(
+            $justify: space-between
+    );
+
+    .footer-toolbar__list-container {
+      .footer-toolbar__list {
+        @include mixins.flex-layout(
+                $justify: center,
+                $gap: 20px
+        );
+      }
+
+      .footer-toolbar__item {
+        font-size: var(--font-size-2xl);
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+  }
+
+  .footer-composer__container {
+    @include mixins.flex-layout;
+    padding: 10px;
+
+    .message-input {
+      height: 100% !important;
+      margin-right: 10px;
+      border: none;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+}

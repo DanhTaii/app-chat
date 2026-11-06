@@ -5,7 +5,7 @@ import {useState} from "react";
 
 function MainLayout() {
     const {i18n} = useTranslation()
-    const [currentLanguage, setCurrentLanguage] = useState('en');
+    const [currentLanguage, setCurrentLanguage] = useState('vi');
 
     const toggleTranslateLanguage = () => {
         setCurrentLanguage(currentLanguage === "en" ? "vi" : "en")

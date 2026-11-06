@@ -5,6 +5,14 @@
     },
     "placeholder": {
       "enter-message": "Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng)"
+    },
+    "separator": {
+      "time": {
+        "today": "Hôm nay"
+      }
+    },
+    "status": {
+      "active": "Đang hoạt động"
     }
   }
 }
