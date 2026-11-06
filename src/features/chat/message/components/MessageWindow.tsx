@@ -1,4 +1,6 @@
 import './MessageWindow.scss'
+import Button from "../../../../shared/components/Button";
+import Input from "../../../../shared/components/Input";
 
 function MessageWindow() {
     return (
@@ -47,7 +49,7 @@ function MessageWindow() {
                     <ul className={"receiver-msg__list-content"}>
                         <li className={"receiver-msg__name"}>
                             <div className={"receiver-msg__name"}>
-                               Minh Anh
+                                Minh Anh
                             </div>
                         </li>
                         <li>
@@ -69,7 +71,8 @@ function MessageWindow() {
                     <ul className={"sender-msg__list-content"}>
                         <li>
                             <div className={"sender-msg__content"}>
-                                Đúng rồi nhóm 3 người tụi mình chia nhau: cậy làm chat, bảo làm Auth, còn mình phụ trách media
+                                Đúng rồi nhóm 3 người tụi mình chia nhau: cậy làm chat, bảo làm Auth, còn mình phụ trách
+                                media
                             </div>
                         </li>
                         <li>
@@ -79,6 +82,45 @@ function MessageWindow() {
                             <div className={"msg-time"}>12:00</div>
                         </li>
                     </ul>
+                </div>
+            </div>
+
+            <div className={"footer"}>
+                <div className={"footer-container"}>
+                    <div className={"footer-toolbar"}>
+                        <div className={"footer-toolbar__list-container"}>
+                            <ul className={"footer-toolbar__list"}>
+                                <li className={"footer-toolbar__item"}>
+                                    <i className="fa-solid fa-paperclip"></i>
+                                </li>
+                                <li className={"footer-toolbar__item"}>
+                                    <i className="fa-regular fa-face-laugh"></i>
+                                </li>
+                                <li className={"footer-toolbar__item"}>
+                                    <i className="fa-regular fa-image"></i>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <i className="fa-solid fa-ellipsis"></i>
+                        </div>
+
+                    </div>
+                    <div className={"footer-composer"}>
+                        <form className={"footer-composer__container"}>
+                            <Input
+                                placeholder="Nhập tin nhắn..."
+                                aria-label="Nhập tin nhắn"
+                                className="message-input"
+                            />
+
+                            <Button type="button" className="btn">
+                                Gửi
+                                <i className="fa-solid fa-paper-plane"></i>
+                            </Button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>
