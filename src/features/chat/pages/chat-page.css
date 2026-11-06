@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 .chat-page.info-open {
-  grid-template-columns: 320px minmax(0, 1fr) 320px;
+  grid-template-columns: 320px minmax(0, 1fr) 380px;
 }
 
 /*# sourceMappingURL=chat-page.css.map */
