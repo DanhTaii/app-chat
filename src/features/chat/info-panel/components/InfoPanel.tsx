@@ -1,12 +1,15 @@
 import './InfoPanel.scss'
 import Button from "../../../../shared/components/Button";
+import {useTranslation} from "react-i18next";
 
 
 export default function InfoPanel() {
+    const {t} = useTranslation("infoPanel");
+
     return (
         <aside className="info-panel">
             <div className={"title-container"}>
-                <h3>Thông tin hội thoại</h3>
+                <h3>{t("info-panel.title.conversation-info")}</h3>
             </div>
 
             <hr/>
@@ -24,7 +27,7 @@ export default function InfoPanel() {
             <hr/>
 
             <div className={"resource__image"}>
-                <div className={"title"}>Ảnh / Video</div>
+                <div className={"title"}>{t("info-panel.title.image-video")}</div>
                 <div className={"resource__image-list-vertical"}>
                     <div className={"resource__image-list-horizontal"}>
                         <img src="/src/shared/assets/avatar.webp"/>
@@ -40,14 +43,16 @@ export default function InfoPanel() {
                     </div>
                 </div>
                 <Button type="button" className="btn">
-                    Xem tất cả
+                    {t("info-panel.button.watch-all")}
                 </Button>
             </div>
 
             <hr/>
 
             <div className={"resource__image"}>
-                <div className={"title"}>Tài liệu đính kèm</div>
+                <div className={"title"}>
+                    {t("info-panel.title.file")}
+                </div>
 
             </div>
 

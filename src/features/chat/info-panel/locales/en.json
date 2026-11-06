@@ -1,0 +1,12 @@
+{
+  "info-panel": {
+    "title": {
+      "conversation-info": "Conversation Info",
+      "image-video": "Image / Video",
+      "file": "File"
+    },
+    "button": {
+      "watch-all": "Watch all"
+    }
+  }
+}
