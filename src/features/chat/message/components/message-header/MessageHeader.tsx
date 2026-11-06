@@ -1,7 +1,8 @@
 import './MessageHeader.scss'
 import {useTranslation} from "react-i18next";
 
-export default function MessageHeader() {
+// @ts-ignore
+export default function MessageHeader({onToggleInfo}) {
     const {t} = useTranslation("message");
 
     return (
@@ -28,7 +29,7 @@ export default function MessageHeader() {
                     <div className={"separator"}></div>
 
                     <li>
-                        <div className={"info-icon__box"}>
+                        <div className={"info-icon__box"} onClick={onToggleInfo}>
                             <i className="fa-solid fa-info"></i>
                         </div>
                     </li>

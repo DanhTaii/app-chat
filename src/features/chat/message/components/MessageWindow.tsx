@@ -3,10 +3,11 @@ import MessageComposer from "@/features/chat/message/components/message-composer
 import MessageList from "@/features/chat/message/components/message-list/MessageList.tsx";
 import MessageHeader from "@/features/chat/message/components/message-header/MessageHeader.tsx";
 
-function MessageWindow() {
+// @ts-ignore
+function MessageWindow({onToggleInfo}) {
     return (
         <section className="message-window">
-            <MessageHeader/>
+            <MessageHeader onToggleInfo={onToggleInfo}/>
 
             <MessageList/>
 
