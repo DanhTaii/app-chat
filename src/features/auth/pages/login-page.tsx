@@ -1,14 +1,13 @@
 import "./login-page.scss";
-
-// import Button from "../../../shared/components/button";
-// import Input from "../../../shared/components/Input";
+import Auth from "../components/Auth";
 
 // Wireframe trang đăng nhập
 function LoginPage() {
   return (
-      <div className="login-page">
-        <h1>Trang Đăng Nhập</h1>
-      </div>
+    <div className="login-page">
+      {/* <h1>Trang Đăng Nhập</h1> */}
+      <Auth />
+    </div>
   );
 }
 
