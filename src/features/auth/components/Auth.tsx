@@ -1,26 +1,40 @@
-import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { loginSuccess, logout } from "../slices/authSlice";
+import { useState, type FormEvent } from "react";
 
 function Auth() {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user);
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
 
   return (
     <section>
-      <h2>Login demo</h2>
-      <p>Trạng thái: {isLoggedIn ? "Đăng nhập" : "Đăng xuất"}</p>
-      <p>Ai đây: {user ? user.name : "Chưa đăng nhập"}</p>
-
-      <button
-        type="button"
-        onClick={() => dispatch(loginSuccess({ id: 1, name: "Tên" }))}
-      >
-        Đăng nhập???
-      </button>
-      <button type="button" onClick={() => dispatch(logout())}>
-        Đăng xuất!!!
-      </button>
+      <h2>Đăng nhập</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Tên đăng nhập
+          <input
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            autoComplete="username"
+            required
+          />
+        </label>
+        <label>
+          Mật khẩu
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            required
+          />
+        </label>
+        <button type="submit" disabled>
+          Đăng nhập
+        </button>
+      </form>
     </section>
   );
 }
