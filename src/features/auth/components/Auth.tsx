@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from "react";
+import Button from "../../../shared/components/Button";
+import Input from "../../../shared/components/Input";
 
 function Auth() {
   const [username, setUsername] = useState("");
@@ -9,12 +11,13 @@ function Auth() {
   };
 
   return (
-    <section>
-      <h2>Đăng nhập</h2>
-      <form onSubmit={handleSubmit}>
+    <section className="login-card">
+      <h1>Đăng nhập</h1>
+      <form className="login-form" onSubmit={handleSubmit}>
         <label>
-          Tên đăng nhập
-          <input
+          Tên người dùng
+          <Input
+            type="text"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             autoComplete="username"
@@ -23,7 +26,7 @@ function Auth() {
         </label>
         <label>
           Mật khẩu
-          <input
+          <Input
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -31,9 +34,14 @@ function Auth() {
             required
           />
         </label>
-        <button type="submit" disabled>
+        <Button
+          variant="primary"
+          className="login-form__submit"
+          type="submit"
+          disabled
+        >
           Đăng nhập
-        </button>
+        </Button>
       </form>
     </section>
   );

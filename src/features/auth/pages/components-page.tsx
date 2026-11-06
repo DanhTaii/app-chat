@@ -1,4 +1,4 @@
-import Button from "../../../shared/components/button";
+import Button from "../../../shared/components/Button";
 import Input from "../../../shared/components/Input";
 import "./components-page.scss";
 
