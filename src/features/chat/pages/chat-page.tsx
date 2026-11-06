@@ -1,5 +1,5 @@
 import ConversationList from '../conversation/components/conversation-list'
-import MessageWindow from '../message/components/message-window'
+import MessageWindow from '../message/components/MessageWindow.tsx'
 import './chat-page.scss'
 
 // chỉ ghép Conversation và Message
