@@ -30,12 +30,12 @@
           width: 10px;
           height: 10px;
           border-radius: 50%;
-          background-color: #00645e;
+          background-color: var(--c-primary);
           margin-right: 10px;
         }
 
         .name-state {
-          color: #00645e;
+          color: var(--c-primary);
         }
 
       }

@@ -10,14 +10,13 @@
     width: fit-content;
     margin: 0 auto;
 
-    background-color: var(--c-bg);
+    background-color: var(--c-bgt);
     border-radius: 10px;
     padding: 5px 10px;
 
     i {
       margin-right: 10px;
     }
-
   }
 
   @mixin msg($color-bg, $color-text, $color-border) {
@@ -54,16 +53,14 @@
     .receiver-msg__list-content {
       li:not(.receiver-msg__name) {
         @include msg(
-                $color-bg: var(--c-bg),
-                $color-text: var(--c-text),
-                $color-border: var(--c-shadow)
+          $color-bg: var(--c-bg),
+          $color-text: var(--c-text),
+          $color-border: var(--c-shadow)
         );
       }
 
       .msg-time {
-        @include msg-time(
-                $color-text: var(--c-text-muted)
-        );
+        @include msg-time($color-text: var(--c-text-muted));
       }
     }
   }
@@ -73,23 +70,21 @@
 
     .sender-msg__list-content {
       @include mixins.flex-layout(
-              $justify: flex-end,
-              $direction: column,
-              $align: flex-end
+        $justify: flex-end,
+        $direction: column,
+        $align: flex-end
       );
 
       li {
         @include msg(
-                $color-bg: var(--color-bg-msg),
-                $color-text: var(--c-text),
-                $color-border: var(--c-primary)
+          $color-bg: var(--c-primary),
+          $color-text: var(--c-text),
+          $color-border: var(--c-primary)
         );
       }
 
       .msg-time {
-        @include msg-time(
-                $color-text: var(--c-text-muted)
-        );
+        @include msg-time($color-text: var(--c-text-muted));
       }
     }
   }

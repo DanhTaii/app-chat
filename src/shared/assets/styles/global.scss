@@ -1,13 +1,15 @@
 :root {
   // MÃ MÀU
-  --c-primary: #00645e;
+  --c-primary: #23ada3;
   --c-primary-hover: #06645e;
   --c-on-primary: #ffffff;
 
   --c-bg: #f8faf9;
+  --c-bgt: white;
+
   --c-surface: #ffffff;
   --c-surface-subtle: #f0f5f2;
-  --color-light-greeen: #F0F5F2;
+  --color-light-greeen: #f0f5f2;
 
   --c-accent-soft: #e7f4f0;
   --c-outgoing: #dff3eb;
@@ -19,7 +21,7 @@
   --c-shadow: rgba(0, 0, 0, 0.2);
 
   --color-bg-msg: #dff3eb;
-
+  color-scheme: light;
 
   // CỠ CHỮ
   --font-size-xs: 12px;
@@ -52,17 +54,65 @@
   }
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --c-primary: #5bc4b4;
+  --c-primary-hover: #78d5c7;
+  --c-on-primary: #10211f;
+
+  --c-bg: grey;
+  --c-bgt: rgba(255, 255, 255, 0.149);
+  --c-surface: #24231a;
+  --c-surface-subtle: rgb(39, 39, 39);
+  --color-light-greeen: #00ffb3;
+
+  --c-accent-soft: #263e38;
+  --c-outgoing: #244139;
+  --c-border: #34443e;
+
+  --c-text: #e5eeea;
+  --c-text-secondary: #c0d0c9;
+  --c-text-muted: rgba(255, 255, 255, 0.455);
+  --c-shadow: rgba(0, 0, 0, 0.4);
+
+  --color-bg-msg: #244139;
+}
+
 * {
-  font-family: Arial, 'sans-serif';
+  font-family: Arial, "sans-serif";
   box-sizing: border-box;
 }
 
 body {
   margin: 0 auto;
   background: var(--c-bg);
+  color: var(--c-text);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
 }
 
 #root {
   width: 100%;
   margin: 0 auto;
+}
+
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-inline-start: 8px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-utl);
+  background: var(--c-surface);
+  color: var(--c-text);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 2px;
 }
