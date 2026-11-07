@@ -35,6 +35,7 @@ function MainLayout() {
     <>
       <nav>
         <Link to={ROUTES.LOGIN}>Login</Link> |{" "}
+        <Link to={ROUTES.REGISTER}>Register</Link> |{" "}
         <Link to={ROUTES.CHAT}>Chat</Link> |{" "}
         <Link to={ROUTES.COMPONENTS}>Components</Link>
         <button className="btn btn-primary " onClick={toggleTranslateLanguage}>

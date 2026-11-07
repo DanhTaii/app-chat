@@ -28,10 +28,12 @@ function Auth() {
           Tên người dùng
           <Input
             type="text"
+            name="username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             autoComplete="username"
             aria-invalid={username.length > 0 && !usernameValid}
+            placeholder="Nhập username (a-z, 0-9, _)"
             required
           />
           <span
@@ -49,10 +51,12 @@ function Auth() {
           Mật khẩu
           <Input
             type="password"
+            name="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"
             aria-invalid={password.length > 0 && !passwordValid}
+            placeholder="Nhập mật khẩu"
             required
           />
           <span
