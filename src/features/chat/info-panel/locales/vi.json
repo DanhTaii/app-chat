@@ -1,0 +1,12 @@
+{
+  "info-panel": {
+    "title": {
+      "conversation-info": "Thông tin hội thoại",
+      "image-video": "Ảnh / Video",
+      "file": "Tài liệu đính kèm"
+    },
+    "button": {
+      "watch-all": "Xem tất cả"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+@use "sass:map";
+@use "../../../../shared/assets/styles/mixins" as mixins;
+
+.info-panel {
+  background-color: var(--c-surface);
+  border-left: 1px solid var(--c-border);
+  padding: 10px;
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--c-text-muted);
+  }
+
+  .title-container {
+    text-align: center;
+    //padding: 10px;
+  }
+
+  .user-info {
+    @include mixins.flex-layout(
+            $direction: column
+    );
+    margin-top: 10px;
+
+    img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+
+    .username__container {
+      margin-top: 10px;
+      font-size: var(--font-size-2xl);
+      @include mixins.flex-layout($gap: 10px);
+
+      i {
+        font-size: var(--font-size-lg);
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  @mixin title {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-xl);
+  }
+
+  .resource__image {
+    .title {
+      @include title;
+    }
+
+    .resource__image-list-vertical {
+      @include mixins.flex-layout(
+              $gap: 10px,
+              $direction: column
+      );
+
+      .resource__image-list-horizontal {
+        @include mixins.flex-layout($gap: 10px);
+
+        img {
+          width: 80px;
+          height: 80px;
+          border-radius: 10px;
+        }
+      }
+    }
+
+    .btn {
+      margin-top: 10px;
+      width: 100%;
+    }
+  }
+}

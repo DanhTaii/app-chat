@@ -5,6 +5,7 @@
   --c-bg: #f8faf9;
   --c-surface: #ffffff;
   --c-surface-subtle: #f0f5f2;
+  --color-light-greeen: #F0F5F2;
   --c-accent-soft: #e7f4f0;
   --c-outgoing: #dff3eb;
   --c-border: #dce5e1;
@@ -12,6 +13,7 @@
   --c-text-secondary: #485966;
   --c-text-muted: #5b6971;
   --c-shadow: rgba(0, 0, 0, 0.2);
+  --color-bg-msg: #dff3eb;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
   --font-size-base: 16px;
@@ -50,7 +52,7 @@ body {
 }
 
 #root {
-  width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 

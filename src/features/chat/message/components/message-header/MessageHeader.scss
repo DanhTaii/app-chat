@@ -1,0 +1,70 @@
+@use "sass:map";
+@use "../../../../../shared/assets/styles/mixins" as mixins;
+
+.message-header {
+  @include mixins.flex-layout($justify: space-between, $align: center, $direction: row);
+
+  width: 100%;
+  background-color: var(--c-surface);
+  padding: 10px 30px;
+
+  .avatar-section {
+    @include mixins.flex-layout($justify: left, $align: center, $direction: row);
+
+    .img-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .username {
+      h5 {
+        margin: 0;
+      }
+
+      .state-activity {
+        @include mixins.flex-layout($justify: null, $align: center, $direction: row);
+
+        .dot-state {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background-color: #00645e;
+          margin-right: 10px;
+        }
+
+        .name-state {
+          color: #00645e;
+        }
+
+      }
+    }
+  }
+
+  .action-icon {
+    ul {
+      @include mixins.flex-layout($gap: 10px);
+    }
+
+    li {
+      &:hover {
+        cursor: pointer;
+      }
+
+      .info-icon__box {
+        @include mixins.flex-layout($justify: center);
+        border: 1px solid var(--c-text-muted);
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+    .separator {
+      height: 25px;
+      width: 2px;
+      background-color: var(--c-text-muted);
+    }
+  }
+}
