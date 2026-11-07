@@ -54,10 +54,12 @@ function MainLayout() {
           <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
         </button>
       </nav>
-      <Sidebar />
-      <main className="main-layout__content">
+      <div className="main-layout__body">
+        <Sidebar />
+        <main className="main-layout__content">
         <Outlet />
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
