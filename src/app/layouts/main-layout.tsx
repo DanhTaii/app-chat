@@ -1,3 +1,4 @@
+import "./main-layout.scss";
 import { Link, Outlet } from "react-router-dom";
 import { ROUTES } from "../router/routes";
 import { useTranslation } from "react-i18next";
@@ -32,7 +33,7 @@ function MainLayout() {
   }
 
   return (
-    <>
+    <div className="main-layout">
       <nav>
         <Link to={ROUTES.LOGIN}>Login</Link> |{" "}
         <Link to={ROUTES.REGISTER}>Register</Link> |{" "}
@@ -52,10 +53,10 @@ function MainLayout() {
           <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
         </button>
       </nav>
-      <main>
+      <main className="main-layout__content">
         <Outlet />
       </main>
-    </>
+    </div>
   );
 }
 
