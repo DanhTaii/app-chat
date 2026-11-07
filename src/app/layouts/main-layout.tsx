@@ -8,6 +8,7 @@ import {
   getInitialTheme,
   type Theme,
 } from "../../shared/utils/theme";
+import Sidebar from "./Sidebar";
 
 function MainLayout() {
   const { i18n } = useTranslation();
@@ -53,6 +54,7 @@ function MainLayout() {
           <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
         </button>
       </nav>
+      <Sidebar />
       <main className="main-layout__content">
         <Outlet />
       </main>
