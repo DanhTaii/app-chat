@@ -1,5 +1,5 @@
 import "./main-layout.scss";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { ROUTES } from "../router/routes";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -14,6 +14,8 @@ function MainLayout() {
   const { i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState("vi");
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const { pathname } = useLocation();
+  const showSidebar = pathname.startsWith(ROUTES.CHAT);
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
@@ -55,7 +57,7 @@ function MainLayout() {
         </button>
       </nav>
       <div className="main-layout__body">
-        <Sidebar />
+        {showSidebar ? <Sidebar /> : null}
         <main className="main-layout__content">
         <Outlet />
         </main>
