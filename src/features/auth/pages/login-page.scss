@@ -38,6 +38,20 @@
     color: var(--c-text);
   }
 
+  &__status {
+    margin-top: -2px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+  }
+
+  &__status.is-valid {
+    color: var(--c-primary);
+  }
+
+  &__status.is-invalid {
+    color: var(--c-warning);
+  }
+
   &__submit {
     width: 100%;
     min-height: 42px;
