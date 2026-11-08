@@ -5,8 +5,8 @@
   @include mixins.flex-layout(
           $direction: column
   );
-  background: var(--c-surface-subtle);
-  color: var(--c-text);
+  background: var(--color-subtle-surface-background);
+  color: var(--color-primary-text);
   height: 100%;
   min-height: 0;
 }
