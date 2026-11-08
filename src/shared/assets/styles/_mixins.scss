@@ -10,7 +10,7 @@
   }
 }
 
-@mixin button-state($bg-color: white, $text-color: black, $hover: var(--c-primary)) {
+@mixin button-state($bg-color: var(--color-primary), $text-color: var(--color-on-primary), $hover: var(--color-primary-hover)) {
   background-color: $bg-color;
   color: $text-color;
   border: none;
@@ -19,7 +19,7 @@
 
   &:hover {
     background-color: $hover;
-    color: white;
+    color: var(--color-on-primary);
   }
 
   &:active {

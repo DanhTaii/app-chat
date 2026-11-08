@@ -1,84 +1,215 @@
 :root {
-  // MÃ MÀU
-  --c-primary: #23ada3;
-  --c-primary-hover: #06645e;
-  --c-on-primary: #ffffff;
+  // Màu chính
+  --color-primary: rgb(2, 132, 199); // Màu chủ đạo, dùng cho nút chính, icon và thành phần nổi bật
+  --color-primary-hover: #0369a1; // Màu khi người dùng di chuột lên thành phần mang màu chủ đạo
+  --color-on-primary: #ffffff; // Màu chữ và icon hiển thị trên nền màu chủ đạo
 
-  --c-warning: red;
+  // Màu nền trang và các thành phần giao diện
+  --color-page-background: #f8faf9; // Màu nền tổng thể của trang web
+  --color-raised-surface-background: #ffffff; // Màu nền các thành phần nổi lên trên bề mặt chính như popup, dropdown
+  --color-surface-background: #ffffff; // Màu nền các thành phần như card, khung chat và khu vực nội dung
+  --color-sidebar-background: #0284c7; // Màu nền thanh điều hướng bên trái
+  --color-conversation-panel-background: #ffffff; // Màu nền danh sách và thông tin hội thoại
+  --color-subtle-surface-background: #f1f7fa; // Màu nền phụ, dùng cho khu vực ít nổi bật hoặc vùng phân biệt nội dung
 
-  --c-bg: #f8faf9;
-  --c-bgt: white;
+  // Màu chọn nội dung và màu bong bóng tin nhắn
+  --color-selection-background: #e0f2fe; // Màu nền khi người dùng bôi đen hoặc chọn nội dung
+  --color-outgoing-message-background: rgb(2, 132, 199); // Màu nền bong bóng tin nhắn do người dùng gửi đi
+  --color-border: #d8e3e9; // Màu đường viền của input, card, khung chat và các thành phần giao diện
 
-  --c-surface: #ffffff;
-  --c-surface-subtle: #f0f5f2;
-  --color-light-greeen: #f0f5f2;
+  // Màu chữ
+  --color-primary-text: #1d2933; // Màu chữ chính cho tiêu đề và nội dung quan trọng
+  --color-secondary-text: #485966; // Màu chữ phụ cho mô tả và thông tin bổ sung
+  --color-muted-text: #5b6971; // Màu chữ ít nổi bật cho thời gian, ghi chú và thông tin phụ
 
-  --c-accent-soft: #e7f4f0;
-  --c-outgoing: #dff3eb;
-  --c-border: #dce5e1;
+  // Màu đường phân cách có độ trong suốt
+  --color-overlay-border: rgba(15, 23, 42, 0.2); // Màu đường viền hoặc đường phân cách trên các lớp giao diện
 
-  --c-text: #1d2933;
-  --c-text-secondary: #485966;
-  --c-text-muted: #5b6971;
-  --c-shadow: rgba(0, 0, 0, 0.2);
-
-  --color-bg-msg: #dff3eb;
   color-scheme: light;
 
-  // CỠ CHỮ
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 30px;
-  --font-size-4xl: 36px;
+  // Màu trạng thái thành công
+  --color-success: #16a34a; // Màu chữ, icon hoặc biểu tượng thể hiện thao tác thành công
+  --color-success-background: #dcfce7; // Màu nền thông báo thành công
+  --color-success-border: #86efac; // Màu viền thông báo thành công
 
-  // ĐỘ ĐẬM CHỮ
-  --font-weight-thin: 100;
-  --font-weight-extra-light: 200;
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extra-bold: 800;
-  --font-weight-black: 900;
+  // Màu trạng thái cảnh báo
+  --color-warning: #d97706; // Màu chữ và icon thể hiện trạng thái cần chú ý
+  --color-warning-background: #fef3c7; // Màu nền thông báo cảnh báo
+  --color-warning-border: #fcd34d; // Màu viền thông báo cảnh báo
 
-  // BO GÓC
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-utl: 999px;
+  // Màu trạng thái thông tin
+  --color-info: #0284c7; // Màu chữ và icon hiển thị thông tin
+  --color-info-background: #e0f2fe; // Màu nền thông báo thông tin
+  --color-info-border: #7dd3fc; // Màu viền thông báo thông tin
+
+  // Màu trạng thái lỗi
+  --color-danger: #dc2626; // Màu chữ và icon thể hiện lỗi hoặc thao tác không hợp lệ
+  --color-danger-background: #fee2e2; // Màu nền thông báo lỗi
+  --color-danger-border: #fca5a5; // Màu viền thông báo lỗi
+
+  // Màu tương tác với các thành phần giao diện
+  --color-hover: rgba(2, 132, 199, 0.08); // Màu nền khi di chuột lên thành phần
+  --color-active: rgba(2, 132, 199, 0.16); // Màu nền khi người dùng nhấn vào thành phần
+
+  --color-disabled: #e2e8f0; // Màu nền của thành phần bị vô hiệu hóa
+  --color-disabled-text: #94a3b8; // Màu chữ của thành phần bị vô hiệu hóa
+
+  --color-focus: #0284c7; // Màu viền khi input hoặc thành phần được chọn để tương tác
+  --color-focus-ring: rgba(2, 132, 199, 0.25); // Màu vòng sáng bên ngoài thành phần đang được focus
+
+  // Màu bong bóng tin nhắn
+  --color-incoming-message-background: #f1f5f9; // Màu nền bong bóng tin nhắn nhận được từ người khác
+  --color-incoming-message-text: #1d2933; // Màu chữ bên trong tin nhắn nhận được
+  --color-outgoing-message-text:#e0f2fe; // Màu chữ bên trong tin nhắn do người dùng gửi đi
+
+  // Màu khu vực nhập tin nhắn
+  --color-chat-input-background: #ffffff; // Màu nền ô nhập tin nhắn
+  --color-chat-input-border: #d8e3e9; // Màu đường viền ô nhập tin nhắn
+  --color-chat-placeholder: #94a3b8; // Màu chữ gợi ý bên trong ô nhập tin nhắn
+
+  // Màu thông báo tin nhắn
+  --color-unread-badge: #0284c7; // Màu nền thông báo số lượng tin nhắn chưa đọc
+  --color-unread-badge-text: #ffffff; // Màu chữ hiển thị số lượng tin nhắn chưa đọc
+
+  // Màu trạng thái hoạt động của người dùng
+  --color-status-online: #22c55e; // Màu biểu thị người dùng đang trực tuyến
+  --color-status-offline: #94a3b8; // Màu biểu thị người dùng đang ngoại tuyến
+  --color-status-away: #f59e0b; // Màu biểu thị người dùng đang vắng mặt
+  --color-status-busy: #ef4444; // Màu biểu thị người dùng đang bận
+
+  // Màu lớp phủ và cửa sổ thông báo
+  --color-overlay-background: rgba(15, 23, 42, 0.5); // Màu nền phủ phía sau modal hoặc popup
+
+  // Màu thanh cuộn
+  --color-scrollbar-track: transparent; // Màu nền của khu vực chứa thanh cuộn
+  --color-scrollbar-thumb: #cbd5e1; // Màu phần thanh cuộn
+  --color-scrollbar-thumb-hover: #94a3b8; // Màu thanh cuộn khi người dùng di chuột lên
+
+  // Màu liên kết
+  --color-link: #0284c7; // Màu chữ của các liên kết
+  --color-link-hover: #0369a1; // Màu liên kết khi người dùng di chuột lên
+
+  // Kích thước chữ
+  --font-size-extra-small: 12px; // Chữ rất nhỏ, dùng cho ghi chú và thông tin phụ
+  --font-size-small: 14px; // Chữ nhỏ, dùng cho nội dung phụ và nhãn
+  --font-size-medium: 16px; // Kích thước chữ mặc định cho nội dung
+  --font-size-large: 18px; // Chữ lớn, dùng cho nội dung cần nhấn mạnh
+  --font-size-extra-large: 20px; // Chữ lớn hơn, thường dùng cho tiêu đề nhỏ
+  --font-size-24px: 24px; // Kích thước chữ cho tiêu đề cấp trung bình
+  --font-size-30px: 30px; // Kích thước chữ cho tiêu đề lớn
+  --font-size-36px: 36px; // Kích thước chữ cho tiêu đề chính
+
+  // Độ đậm của chữ
+  --font-weight-thin: 100; // Chữ rất mảnh
+  --font-weight-extra-light: 200; // Chữ mảnh
+  --font-weight-light: 300; // Chữ hơi mảnh
+  --font-weight-normal: 400; // Chữ có độ đậm bình thường
+  --font-weight-medium: 500; // Chữ có độ đậm trung bình
+  --font-weight-semi-bold: 600; // Chữ hơi đậm
+  --font-weight-bold: 700; // Chữ đậm
+  --font-weight-extra-bold: 800; // Chữ rất đậm
+  --font-weight-black: 900; // Chữ có độ đậm tối đa
+
+  // Độ bo góc các thành phần
+  --border-radius-standard: 8px; // Bo góc tiêu chuẩn cho button, input và card
+  --border-radius-large: 12px; // Bo góc lớn cho card và các khung nội dung
+  --border-radius-pill: 999px; // Bo góc hoàn toàn cho nút tròn và thành phần dạng viên thuốc
 
   @media (max-width: 1200px) {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-medium); 
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --c-primary: #5bc4b4;
-  --c-primary-hover: #78d5c7;
-  --c-on-primary: #10211f;
+  // Màu chính
+  --color-primary: #38bdf8; // Màu chủ đạo trong giao diện tối
+  --color-primary-hover: #087fb6; // Màu chủ đạo khi di chuột lên trong giao diện tối
+  --color-on-primary: #082f49; // Màu chữ và icon trên nền màu chủ đạo trong giao diện tối
 
-  --c-bg: grey;
-  --c-bgt: rgba(255, 255, 255, 0.149);
-  --c-surface: #24231a;
-  --c-surface-subtle: rgb(39, 39, 39);
-  --color-light-greeen: #00ffb3;
+  // Màu nền trang và các thành phần giao diện
+  --color-page-background: #111827; // Màu nền tổng thể của trang web
+  --color-raised-surface-background: rgba(255, 255, 255, 0.12); // Màu nền các thành phần nổi trên bề mặt
+  --color-surface-background: #101D24; // Màu nền các thành phần chung trong giao diện tối
+  --color-subtle-surface-background: #0C151A; // Màu nền phụ cho các khu vực ít nổi bật
+  --color-sidebar-background: #081014; // Màu nền thanh điều hướng bên trái trong giao diện tối
+  --color-conversation-panel-background: #111E25; // Màu nền danh sách và thông tin hội thoại trong giao diện tối
 
-  --c-accent-soft: #263e38;
-  --c-outgoing: #244139;
-  --c-border: #34443e;
+  // Màu chọn nội dung và màu bong bóng tin nhắn
+  --color-selection-background: #12334a; // Màu nền khi người dùng chọn nội dung
+  --color-outgoing-message-background: rgb(2, 132, 199); // Màu nền bong bóng tin nhắn gửi đi
+  --color-border: #37475a; // Màu đường viền của các thành phần giao diện
 
-  --c-text: #e5eeea;
-  --c-text-secondary: #c0d0c9;
-  --c-text-muted: rgba(255, 255, 255, 0.455);
-  --c-shadow: rgba(0, 0, 0, 0.4);
+  // Màu chữ
+  --color-primary-text: #e5eeea; // Màu chữ chính
+  --color-secondary-text: #c0d0c9; // Màu chữ phụ
+  --color-muted-text: rgba(255, 255, 255, 0.455); // Màu chữ ít nổi bật
 
-  --color-bg-msg: #244139;
+  // Màu đường phân cách có độ trong suốt
+  --color-overlay-border: rgba(0, 0, 0, 0.4); // Màu đường viền hoặc đường phân cách trên các lớp giao diện
+
+  // Màu trạng thái thành công
+  --color-success: #4ade80; // Màu chữ và icon thể hiện thao tác thành công
+  --color-success-background: #14532d; // Màu nền thông báo thành công
+  --color-success-border: #166534; // Màu viền thông báo thành công
+
+  // Màu trạng thái cảnh báo
+  --color-warning: #fbbf24; // Màu chữ và icon thể hiện trạng thái cần chú ý
+  --color-warning-background: #78350f; // Màu nền thông báo cảnh báo
+  --color-warning-border: #92400e; // Màu viền thông báo cảnh báo
+
+  // Màu trạng thái thông tin
+  --color-info: #38bdf8; // Màu chữ và icon hiển thị thông tin
+  --color-info-background: #12334a; // Màu nền thông báo thông tin
+  --color-info-border: #075985; // Màu viền thông báo thông tin
+
+  // Màu trạng thái lỗi
+  --color-danger: #f87171; // Màu chữ và icon thể hiện lỗi
+  --color-danger-background: #7f1d1d; // Màu nền thông báo lỗi
+  --color-danger-border: #991b1b; // Màu viền thông báo lỗi
+
+  // Màu tương tác với các thành phần giao diện
+  --color-hover: rgba(56, 189, 248, 0.1); // Màu nền khi di chuột lên thành phần
+  --color-active: rgba(56, 189, 248, 0.2); // Màu nền khi người dùng nhấn vào thành phần
+
+  --color-disabled: #374151; // Màu nền của thành phần bị vô hiệu hóa
+  --color-disabled-text: #9ca3af; // Màu chữ của thành phần bị vô hiệu hóa
+
+  --color-focus: #38bdf8; // Màu viền khi thành phần được focus
+  --color-focus-ring: rgba(56, 189, 248, 0.3); // Màu vòng sáng bên ngoài thành phần đang được focus
+
+  // Màu bong bóng tin nhắn
+  --color-incoming-message-background: #374151; // Màu nền bong bóng tin nhắn nhận được
+  --color-incoming-message-text: #e5eeea; // Màu chữ bên trong tin nhắn nhận được
+  --color-outgoing-message-text: #e0f2fe; // Màu chữ bên trong tin nhắn gửi đi
+
+  // Màu khu vực nhập tin nhắn
+  --color-chat-input-background: #1f2937; // Màu nền ô nhập tin nhắn
+  --color-chat-input-border: #37475a; // Màu đường viền ô nhập tin nhắn
+  --color-chat-placeholder: #9ca3af; // Màu chữ gợi ý bên trong ô nhập tin nhắn
+
+  // Màu thông báo tin nhắn
+  --color-unread-badge: #38bdf8; // Màu nền thông báo số lượng tin nhắn chưa đọc
+  --color-unread-badge-text: #082f49; // Màu chữ hiển thị số lượng tin nhắn chưa đọc
+
+  // Màu trạng thái hoạt động của người dùng
+  --color-status-online: #4ade80; // Màu biểu thị người dùng đang trực tuyến
+  --color-status-offline: #64748b; // Màu biểu thị người dùng đang ngoại tuyến
+  --color-status-away: #fbbf24; // Màu biểu thị người dùng đang vắng mặt
+  --color-status-busy: #f87171; // Màu biểu thị người dùng đang bận
+
+  // Màu lớp phủ và cửa sổ thông báo
+  --color-overlay-background: rgba(0, 0, 0, 0.65); // Màu nền phủ phía sau modal hoặc popup
+
+  // Màu thanh cuộn
+  --color-scrollbar-track: transparent; // Màu nền của khu vực chứa thanh cuộn
+  --color-scrollbar-thumb: #475569; // Màu phần thanh cuộn
+  --color-scrollbar-thumb-hover: #64748b; // Màu thanh cuộn khi người dùng di chuột lên
+
+  // Màu liên kết
+  --color-link: #38bdf8; // Màu chữ của các liên kết
+  --color-link-hover: #7dd3fc; // Màu liên kết khi người dùng di chuột lên
 }
 
 * {
@@ -87,17 +218,17 @@
 }
 
 body {
-  margin: 0 auto;
-  background: var(--c-bg);
-  color: var(--c-text);
+  margin: 0 auto; 
+  background: var(--color-page-background); 
+  color: var(--color-primary-text); 
   transition:
     background-color 160ms ease,
-    color 160ms ease;
+    color 160ms ease; 
 }
 
 #root {
   width: 100%;
-  margin: 0 auto;
+  margin: 0 auto; 
 }
 
 .theme-toggle {
@@ -105,16 +236,16 @@ body {
   place-items: center;
   width: 40px;
   height: 40px;
-  margin-inline-start: 8px;
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-utl);
-  background: var(--c-surface);
-  color: var(--c-text);
-  cursor: pointer;
-  font-size: 18px;
+  margin-inline-start: 8px; 
+  border: 1px solid var(--color-border); 
+  border-radius: var(--border-radius-pill); 
+  background: var(--color-surface-background); 
+  color: var(--color-primary-text); 
+  cursor: pointer; 
+  font-size: 18px; 
 }
 
 .theme-toggle:focus-visible {
-  outline: 2px solid var(--c-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
