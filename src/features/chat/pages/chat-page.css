@@ -1,7 +1,7 @@
 .chat-page {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
-  height: calc(100vh - 48px);
+  height: 100%;
   background: var(--c-bg);
   border: 1px solid var(--c-border);
   box-sizing: border-box;

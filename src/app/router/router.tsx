@@ -10,15 +10,34 @@ import ErrorPage from "../../shared/pages/error-page";
 
 export const router = createBrowserRouter([
   {
+    path: ROUTES.ROOT,
     element: <MainLayout />,
-    errorElement: <ErrorPage/>,
+    errorElement: <ErrorPage />,
     children: [
-      { path: ROUTES.ROOT, element: <Navigate to={ROUTES.LOGIN} replace /> },
-      { path: ROUTES.LOGIN, element: <LoginPage /> },
-      { path: ROUTES.REGISTER, element: <RegisterPage /> },
-      { path: ROUTES.CHAT, element: <ChatPage /> },
-      { path: ROUTES.COMPONENTS, element: <ComponentsPage /> },
-      { path: "*", element: <NotFoundPage /> },
+      {
+        index: true,
+        element: <Navigate to={ROUTES.LOGIN} replace />,
+      },
+      {
+        path: ROUTES.LOGIN,
+        element: <LoginPage />,
+      },
+      {
+        path: ROUTES.REGISTER,
+        element: <RegisterPage />,
+      },
+      {
+        path: ROUTES.CHAT,
+        element: <ChatPage />,
+      },
+      {
+        path: ROUTES.COMPONENTS,
+        element: <ComponentsPage />,
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
     ],
   },
 ]);
