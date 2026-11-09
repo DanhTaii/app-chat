@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/components/Button";
 import Input from "../../../shared/components/Input";
+import { ROUTES } from "../../../app/router/routes";
 import { useAppDispatch } from "../../../app/store/hooks";
 import chatSocket, { type SocketResponse } from "../../../shared/services/socket/socketService";
 import { loginSuccess } from "../slices/authSlice";
@@ -33,6 +35,7 @@ function Auth() {
 
   // hàm dispatch
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -59,6 +62,7 @@ function Auth() {
 
       if (result.status === "success") {
         dispatch(loginSuccess({ username }));
+        navigate(ROUTES.CHAT);
       } else {
         setError(result.mes || "Lỗi");
       }
