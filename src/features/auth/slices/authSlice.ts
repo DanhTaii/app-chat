@@ -2,8 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 // khai bao kieu du lieu
 interface User {
-  id: number;
-  name: string;
+  username: string;
 }
 
 // data type cho chuc nang auth

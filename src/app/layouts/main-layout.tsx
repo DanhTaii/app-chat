@@ -30,17 +30,19 @@ function MainLayout() {
     };
 
     async function createSocket() {
-        try {
+      try {
             // 1. Import SocketService
             await chatSocket.connect();
             console.log("WebSocket connected!");
-            // 3. Gửi LOGIN và chờ response
-            const response = await chatSocket.request("LOGIN", {
-                user: "danhtai",
-                pass: "tai.HDT,011892"
-            });
-            // 4. Hiển thị kết quả
-            console.log("LOGIN RESPONSE:", response);
+
+            // comment lại 
+            // // 3. Gửi LOGIN và chờ response
+            // const response = await chatSocket.request("LOGIN", {
+            //     user: "danhtai",
+            //     pass: "tai.HDT,011892"
+            // });
+            // // 4. Hiển thị kết quả
+            // console.log("LOGIN RESPONSE:", response);
 
         } catch (error) {
             console.error("Socket testing failed:", error);
