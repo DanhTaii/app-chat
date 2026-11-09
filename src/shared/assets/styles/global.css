@@ -1,44 +1,138 @@
 :root {
-  --c-primary: #00645e;
-  --c-primary-hover: #06645e;
-  --c-on-primary: #ffffff;
-  --c-bg: #f8faf9;
-  --c-surface: #ffffff;
-  --c-surface-subtle: #f0f5f2;
-  --color-light-greeen: #F0F5F2;
-  --c-accent-soft: #e7f4f0;
-  --c-outgoing: #dff3eb;
-  --c-border: #dce5e1;
-  --c-text: #1d2933;
-  --c-text-secondary: #485966;
-  --c-text-muted: #5b6971;
-  --c-shadow: rgba(0, 0, 0, 0.2);
-  --color-bg-msg: #dff3eb;
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 30px;
-  --font-size-4xl: 36px;
+  --color-primary: rgb(2, 132, 199);
+  --color-primary-hover: #0369a1;
+  --color-on-primary: #ffffff;
+  --color-page-background: #f8faf9;
+  --color-raised-surface-background: #ffffff;
+  --color-surface-background: #ffffff;
+  --color-sidebar-background: #0284c7;
+  --color-conversation-panel-background: #ffffff;
+  --color-subtle-surface-background: #f1f7fa;
+  --color-selection-background: #e0f2fe;
+  --color-outgoing-message-background: rgb(2, 132, 199);
+  --color-border: #d8e3e9;
+  --color-primary-text: #1d2933;
+  --color-secondary-text: #485966;
+  --color-muted-text: #5b6971;
+  --color-overlay-border: rgba(15, 23, 42, 0.2);
+  color-scheme: light;
+  --color-success: #16a34a;
+  --color-success-background: #dcfce7;
+  --color-success-border: #86efac;
+  --color-warning: #d97706;
+  --color-warning-background: #fef3c7;
+  --color-warning-border: #fcd34d;
+  --color-info: #0284c7;
+  --color-info-background: #e0f2fe;
+  --color-info-border: #7dd3fc;
+  --color-danger: #dc2626;
+  --color-danger-background: #fee2e2;
+  --color-danger-border: #fca5a5;
+  --color-hover: rgba(2, 132, 199, 0.08);
+  --color-active: rgba(2, 132, 199, 0.16);
+  --color-disabled: #e2e8f0;
+  --color-disabled-text: #94a3b8;
+  --color-focus: #0284c7;
+  --color-focus-ring: rgba(2, 132, 199, 0.25);
+  --color-incoming-message-background: #f1f5f9;
+  --color-incoming-message-text: #1d2933;
+  --color-outgoing-message-text:#e0f2fe;
+  --color-chat-input-background: #ffffff;
+  --color-chat-input-border: #d8e3e9;
+  --color-chat-placeholder: #94a3b8;
+  --color-unread-badge: #0284c7;
+  --color-unread-badge-text: #ffffff;
+  --color-status-online: #22c55e;
+  --color-status-offline: #94a3b8;
+  --color-status-away: #f59e0b;
+  --color-status-busy: #ef4444;
+  --color-overlay-background: rgba(15, 23, 42, 0.5);
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: #cbd5e1;
+  --color-scrollbar-thumb-hover: #94a3b8;
+  --color-link: #0284c7;
+  --color-link-hover: #0369a1;
+  --font-size-extra-small: 12px;
+  --font-size-small: 14px;
+  --font-size-medium: 16px;
+  --font-size-large: 18px;
+  --font-size-extra-large: 20px;
+  --font-size-24px: 24px;
+  --font-size-30px: 30px;
+  --font-size-36px: 36px;
   --font-weight-thin: 100;
   --font-weight-extra-light: 200;
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
-  --font-weight-semibold: 600;
+  --font-weight-semi-bold: 600;
   --font-weight-bold: 700;
   --font-weight-extra-bold: 800;
   --font-weight-black: 900;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-utl: 999px;
+  --border-radius-standard: 8px;
+  --border-radius-large: 12px;
+  --border-radius-pill: 999px;
 }
 @media (max-width: 1200px) {
   :root {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-medium);
   }
+}
+
+:root[data-theme=dark] {
+  color-scheme: dark;
+  --color-primary: #38bdf8;
+  --color-primary-hover: #087fb6;
+  --color-on-primary: #082f49;
+  --color-page-background: #111827;
+  --color-raised-surface-background: rgba(255, 255, 255, 0.12);
+  --color-surface-background: #101D24;
+  --color-subtle-surface-background: #0C151A;
+  --color-sidebar-background: #081014;
+  --color-conversation-panel-background: #111E25;
+  --color-selection-background: #12334a;
+  --color-outgoing-message-background: rgb(2, 132, 199);
+  --color-border: #37475a;
+  --color-primary-text: #e5eeea;
+  --color-secondary-text: #c0d0c9;
+  --color-muted-text: rgba(255, 255, 255, 0.455);
+  --color-overlay-border: rgba(0, 0, 0, 0.4);
+  --color-success: #4ade80;
+  --color-success-background: #14532d;
+  --color-success-border: #166534;
+  --color-warning: #fbbf24;
+  --color-warning-background: #78350f;
+  --color-warning-border: #92400e;
+  --color-info: #38bdf8;
+  --color-info-background: #12334a;
+  --color-info-border: #075985;
+  --color-danger: #f87171;
+  --color-danger-background: #7f1d1d;
+  --color-danger-border: #991b1b;
+  --color-hover: rgba(56, 189, 248, 0.1);
+  --color-active: rgba(56, 189, 248, 0.2);
+  --color-disabled: #374151;
+  --color-disabled-text: #9ca3af;
+  --color-focus: #38bdf8;
+  --color-focus-ring: rgba(56, 189, 248, 0.3);
+  --color-incoming-message-background: #374151;
+  --color-incoming-message-text: #e5eeea;
+  --color-outgoing-message-text: #e0f2fe;
+  --color-chat-input-background: #1f2937;
+  --color-chat-input-border: #37475a;
+  --color-chat-placeholder: #9ca3af;
+  --color-unread-badge: #38bdf8;
+  --color-unread-badge-text: #082f49;
+  --color-status-online: #4ade80;
+  --color-status-offline: #64748b;
+  --color-status-away: #fbbf24;
+  --color-status-busy: #f87171;
+  --color-overlay-background: rgba(0, 0, 0, 0.65);
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: #475569;
+  --color-scrollbar-thumb-hover: #64748b;
+  --color-link: #38bdf8;
+  --color-link-hover: #7dd3fc;
 }
 
 * {
@@ -48,12 +142,33 @@
 
 body {
   margin: 0 auto;
-  background: var(--c-bg);
+  background: var(--color-page-background);
+  color: var(--color-primary-text);
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
 #root {
   width: 100%;
   margin: 0 auto;
+}
+
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-inline-start: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-pill);
+  background: var(--color-surface-background);
+  color: var(--color-primary-text);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 /*# sourceMappingURL=global.css.map */
