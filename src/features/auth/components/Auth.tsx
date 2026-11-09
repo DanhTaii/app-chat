@@ -1,6 +1,11 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/components/Button";
 import Input from "../../../shared/components/Input";
+import { ROUTES } from "../../../app/router/routes";
+import { useAppDispatch } from "../../../app/store/hooks";
+import chatSocket, { type SocketResponse } from "../../../shared/services/socket/socketService";
+import { loginSuccess } from "../slices/authSlice";
 import {
   isValidPassword,
   isValidUsername,
@@ -8,21 +13,73 @@ import {
 } from "../../../shared/utils/validators";
 
 function Auth() {
+
+  // 2 ô input
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  // loading
+  const [loading, setLoading] = useState(false);
+
+  // response 
+  const [response, setResponse] = useState<SocketResponse | null>(null);
+
+  // lỗi
+  const [error, setError] = useState<string | null>(null);
+
+  // check ô input
   const authError = validateAuth(username, password);
   const usernameValid = isValidUsername(username);
   const passwordValid = isValidPassword(password);
   const formValid = authError.length === 0;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  // hàm dispatch
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!formValid) return;
+    if (!formValid || loading) return;
+
+    setLoading(true);
+    setError(null);
+    setResponse(null);
+
+    try {
+      console.log("Nút bật");
+
+      await chatSocket.connect();
+      console.log("websocket kết nối");
+
+      const result = await chatSocket.request("LOGIN", {
+        user: username,
+        pass: password,
+      });
+      console.log("Phản hồi login:", result);
+
+      setResponse(result);
+
+      if (result.status === "success") {
+        dispatch(loginSuccess({ username }));
+        navigate(ROUTES.CHAT);
+      } else {
+        setError(result.mes || "Lỗi");
+      }
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "ko vào đc.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <section className="login-card">
-      <h1>Đăng nhập</h1>
+    <section className="login-card" aria-labelledby="login-title">
+      <h1 id="login-title">Đăng nhập</h1>
       <form className="login-form" onSubmit={handleSubmit}>
         <label>
           Tên người dùng
@@ -44,7 +101,7 @@ function Auth() {
               ? "Tên người dùng bao gồm chữ, số, và gạch dưới."
               : usernameValid
                 ? "Tên người dùng hợp lệ."
-                : "Cảnh báo: Chỉ có chữ, số, và gạch dưới mới được phép"}
+                : "Cảnh báo: Chỉ có chữ, số, và gạch dưới mới được phép."}
           </span>
         </label>
         <label>
@@ -74,11 +131,20 @@ function Auth() {
           variant="primary"
           className="login-form__submit"
           type="submit"
-          disabled={!formValid}
+          disabled={!formValid || loading}
         >
-          Đăng nhập
+          {loading ? "Đang đăng nhập…" : "Đăng nhập"}
         </Button>
       </form>
+
+      {error && <p role="alert">{error}</p>}
+      {response && (
+        <section aria-live="polite">
+          <h2>{response.status === "success" ? "Đăng nhập thành công" : "Kết quả đăng nhập"}</h2>
+          {response.mes && <p>{response.mes}</p>}
+          <pre>{JSON.stringify(response.data)}</pre>
+        </section>
+      )}
     </section>
   );
 }
