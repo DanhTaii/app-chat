@@ -1,37 +1,66 @@
+export interface SocketResponse<T = unknown> {
+    status?: "success" | "error";
+    event?: string;
+    data?: T;
+    mes?: string
+}
+
+type ResponseListener = (response: SocketResponse) => void;
+
 class SocketService {
     private socket: WebSocket | null;
     private readonly SOCKET_URL = "wss://chat.longapp.io.vn/chat/chat";
+    private listeners = new Map<string, Set<ResponseListener>>();
 
     constructor() {
         this.socket = null;
     }
 
-    connect() {
-        if (this.socket) return;
-
-        // @ts-ignore
-        this.socket = new WebSocket(this.SOCKET_URL);
-
-        // @ts-ignore
-        this.socket.onopen = () => {
-            console.log("WebSocket Connected !")
+    connect(): Promise<void> {
+        if (this.socket?.readyState === WebSocket.OPEN) {
+            return Promise.resolve();
         }
 
-        // @ts-ignore
-        this.socket.onclose = () => {
-            console.log("WebSocket Connected !")
+        if (this.socket?.readyState === WebSocket.CONNECTING) {
+            return Promise.reject(
+                new Error("WebSocket is connecting !")
+            )
         }
 
-        // @ts-ignore
-        this.socket.onerror = (error) => {
-            console.error('WebSocket error: ', error);
-        }
+        return new Promise((resolve, reject) => {
+            // @ts-ignore
+            this.socket = new WebSocket(this.SOCKET_URL);
 
-        // @ts-ignore
-        this.socket.onmessage = (event) => {
-            const response = JSON.parse(event.data);
-            console.log('Server response: ', response)
-        }
+            // @ts-ignore
+            this.socket.onopen = () => {
+                console.log("WebSocket Connected !");
+                resolve();
+            }
+
+            // @ts-ignore
+            this.socket.onclose = () => {
+                console.log("WebSocket Disconnected !")
+                this.socket = null;
+            }
+
+            // @ts-ignore
+            this.socket.onerror = (error) => {
+                console.error('WebSocket error: ', error);
+                reject(error);
+            }
+
+            // @ts-ignore
+            this.socket.onmessage = (event) => {
+                const response = JSON.parse(event.data);
+
+                if (!response.event) return;
+
+                const eventListeners = this.listeners.get(response.event);
+
+                eventListeners?.forEach(listener => listener(response));
+                console.log('Server response: ', response)
+            }
+        })
     }
 
     send(event: string, data: object) {
@@ -58,6 +87,43 @@ class SocketService {
         this.socket.send(JSON.stringify(msg));
 
         console.log("Send request:", msg);
+    }
+
+    request<T = unknown>(event: string, data: object): Promise<SocketResponse<T>> {
+        return new Promise((resolve, reject) => {
+            const eventListeners =
+                this.listeners.get(event) ?? new Set<ResponseListener>();
+
+            const listener: ResponseListener = (response) => {
+                eventListeners.delete(listener);
+                if (eventListeners.size === 0) {
+                    this.listeners.delete(event);
+                }
+
+                if (response.status === "error") {
+                    reject(new Error(response.mes || `${event} failed`));
+                    return;
+                }
+
+                resolve(response as SocketResponse<T>);
+            }
+
+            eventListeners.add(listener);
+
+            this.listeners.set(event, eventListeners);
+
+            try {
+                this.send(event, data);
+            } catch (error) {
+                eventListeners.delete(listener);
+
+                if (eventListeners.size === 0) {
+                    this.listeners.delete(event);
+                }
+
+                reject(error);
+            }
+        })
     }
 
     disconnect() {

@@ -5,16 +5,16 @@
   padding: 16px;
   box-sizing: border-box;
   overflow-y: auto;
-  background: var(--c-surface);
-  border-right: 1px solid var(--c-border);
-  color: var(--c-text);
+  background: var(--color-conversation-panel-background);
+  border-right: 1px solid var(--color-border);
+  color: var(--color-primary-text);
   text-align: left;
 }
 .conversation-list h2 {
   margin: 0;
   font-size: 21px;
   line-height: 28px;
-  color: var(--c-text);
+  color: var(--color-primary-text);
 }
 .conversation-list ul {
   display: flex;
@@ -31,10 +31,10 @@
   box-sizing: border-box;
   font: inherit;
   font-size: 14px;
-  color: var(--c-text);
-  background: var(--c-surface-subtle);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-md);
+  color: var(--color-primary-text);
+  background: var(--color-subtle-surface-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-standard);
 }
 
 .conversation-list__item {
@@ -50,16 +50,19 @@
   color: inherit;
   background: transparent;
   border: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--border-radius-standard);
   cursor: pointer;
 }
-.conversation-list__item:hover, .conversation-list__item[aria-current=true] {
-  background: var(--c-accent-soft);
+.conversation-list__item:hover {
+  background: var(--color-hover);
+}
+.conversation-list__item[aria-current=true] {
+  background: var(--color-active);
 }
 
 .conversation-list__search:focus-visible,
 .conversation-list__item:focus-visible {
-  outline: 2px solid var(--c-primary);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -71,8 +74,8 @@
   width: 40px;
   height: 40px;
   font-weight: 600;
-  color: var(--c-primary);
-  background: var(--c-accent-soft);
+  color: var(--color-primary);
+  background: var(--color-hover);
   border-radius: 50%;
 }
 
@@ -91,7 +94,7 @@
 .conversation-list__last {
   overflow: hidden;
   font-size: 13px;
-  color: var(--c-text-muted);
+  color: var(--color-muted-text);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -99,7 +102,7 @@
 .conversation-list__time {
   flex: none;
   font-size: 12px;
-  color: var(--c-text-muted);
+  color: var(--color-muted-text);
 }
 
 .conversation-list__filters {
@@ -116,29 +119,29 @@
   font: inherit;
   font-size: 14px;
   font-weight: 600;
-  color: var(--c-text-secondary);
-  background: var(--c-surface-subtle);
+  color: var(--color-secondary-text);
+  background: var(--color-subtle-surface-background);
   border: 0;
-  border-radius: var(--radius-utl);
+  border-radius: var(--border-radius-pill);
   cursor: pointer;
 }
 .conversation-list__chip:hover {
-  background: var(--c-accent-soft);
+  background: var(--color-selection-background);
 }
 .conversation-list__chip:focus-visible {
-  outline: 2px solid var(--c-primary);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
 .conversation-list__chip-active {
-  color: var(--c-primary);
-  background: var(--c-accent-soft);
+  color: var(--color-primary);
+  background: var(--color-active);
 }
 
 .conversation-list__dot {
   width: 6px;
   height: 6px;
-  background: var(--c-primary);
+  background: var(--color-primary);
   border-radius: 50%;
 }
 
@@ -148,9 +151,9 @@
   font-size: 12px;
   line-height: 20px;
   text-align: center;
-  color: var(--c-text-secondary);
-  background: var(--c-border);
-  border-radius: var(--radius-utl);
+  color: var(--color-unread-badge-text);
+  background: var(--color-unread-badge);
+  border-radius: var(--border-radius-pill);
 }
 
 /*# sourceMappingURL=conversation-list.css.map */
