@@ -1,0 +1,24 @@
+@use "../../shared/assets/styles/mixins" as mixins;
+
+.main-layout {
+  @include mixins.flex-layout($align: stretch, $direction: column);
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--color-page-background);
+
+  &__body {
+    @include mixins.flex-layout($align: stretch, $direction: row);
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow: auto;
+  }
+}

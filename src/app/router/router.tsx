@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import MainLayout from "../layouts/main-layout";
+import MainLayout from "../layouts/MainLayout";
 import { ROUTES } from "./routes";
 import LoginPage from "../../features/auth/pages/login-page";
 import RegisterPage from "../../features/auth/pages/register-page";
