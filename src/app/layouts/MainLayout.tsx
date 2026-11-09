@@ -1,4 +1,4 @@
-import "./MainLayout.css";
+import "./MainLayout.scss";
 import {Link, Outlet, useLocation} from "react-router-dom";
 import {ROUTES} from "../router/routes";
 import {useTranslation} from "react-i18next";
