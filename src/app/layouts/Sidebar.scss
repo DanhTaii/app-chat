@@ -6,7 +6,7 @@
           $align: center,
           $direction: column
   );
-  width: 64px;
+  width: 72px;
   height: 100%;
   padding: 16px 0;
   background-color: var(--color-sidebar-background);
@@ -14,12 +14,69 @@
 
   &__top,
   &__bottom {
-    @include mixins.flex-layout($align: center, $direction: column, $gap: 12px);
+    @include mixins.flex-layout($align: center, $direction: column, $gap: 16px);
   }
 
   &__logo {
     width: 32px;
     height: 32px;
+  }
+
+  &__item {
+    @include mixins.flex-layout($align: center, $direction: column, $gap: 4px);
+    padding: 8px;
+    border: none;
+    border-radius: var(--border-radius-standard);
+    background: transparent;
+    color: var(--color-primary-text);
+    font-size: var(--font-size-extra-small);
+    text-decoration: none;
+    cursor: pointer;
+
+    i {
+      font-size: var(--font-size-large);
+    }
+
+    &:hover {
+      background-color: var(--color-hover);
+      color: var(--color-primary-text);
+    }
+  }
+
+  &__setting {
+    position: relative;
+  }
+
+  &__menu {
+    @include mixins.flex-layout($direction: column);
+    position: absolute;
+    top: 0;
+    left: calc(100% + 8px);
+    width: 200px;
+    padding: 6px 0;
+    background-color: var(--color-surface-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-standard);
+    z-index: 100;
+  }
+
+  &__menu-item {
+    @include mixins.flex-layout($align: center, $gap: 10px);
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background: transparent;
+    color: var(--color-primary-text);
+    font-size: var(--font-size-small);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-hover);
+    }
+
+    &--danger {
+      color: var(--color-danger);
+    }
   }
 
   &__avatar {
