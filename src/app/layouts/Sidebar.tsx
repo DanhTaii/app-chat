@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ROUTES } from "../router/routes";
 import {
@@ -29,17 +29,18 @@ function Sidebar() {
     return (
         <aside className="sidebar">
             <div className="sidebar__top">
-                <img className="sidebar__logo" src="/src/shared/assets/logo.png" alt="App Logo"/>
+                <img className="sidebar__logo" src="/src/shared/assets/logo-light.svg" alt="App Logo"/>
 
-                <Link to={ROUTES.CHAT} className="sidebar__item">
-                    <i className="fa-regular fa-comment"></i>
+                <NavLink to={ROUTES.CHAT} className={({isActive}) => isActive ? "sidebar__item sidebar__item--active" : "sidebar__item"}>
+                    <img className="sidebar__icon" src="/src/shared/assets/messages.svg" alt="Tin nhắn"/>
                     <span>Tin nhắn</span>
-                </Link>
+                </NavLink>
 
+                {/*phần setting*/}
                 <div className="sidebar__setting">
                     <button type="button" className="sidebar__item"
                         onClick={() => setIsSettingOpen(!isSettingOpen)}>
-                        <i className="fa-solid fa-gear"></i>
+                        <img className="sidebar__icon" src="/src/shared/assets/setting.svg" alt="Cài đặt"/>
                         <span>Cài đặt</span>
                     </button>
 
