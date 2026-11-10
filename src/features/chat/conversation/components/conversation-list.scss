@@ -1,161 +1,269 @@
+@use "../../../../shared/assets/styles/mixins" as mixins;
 .conversation-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  box-sizing: border-box;
-  overflow-y: auto;
+  @include mixins.flex-layout($align: stretch, $direction: column);
+  height: 100%;
+  min-height: 0;
   background: var(--color-conversation-panel-background);
   border-right: 1px solid var(--color-border);
   color: var(--color-primary-text);
-  text-align: left;
+  box-sizing: border-box;
 
-  h2 {
-    margin: 0;
-    font-size: 21px;
-    line-height: 28px;
+  &__top {
+    @include mixins.flex-layout($align: stretch, $direction: column, $gap: 12px);
+    padding: 16px 16px 8px;
+  }
+
+  &__header {
+    @include mixins.flex-layout($justify: space-between, $align: center);
+
+    h2 {
+      margin: 0;
+      font-size: var(--font-size-extra-large);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary-text);
+    }
+  }
+
+  &__compose-btn {
+    @include mixins.flex-layout($justify: center, $align: center);
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--border-radius-standard);
+    background: transparent;
+    color: var(--color-secondary-text);
+    font-size: var(--font-size-medium);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-hover);
+      color: var(--color-primary);
+    }
+  }
+
+  &__search-box {
+    @include mixins.flex-layout($align: center, $gap: 10px);
+    height: 40px;
+    padding: 0 14px;
+    background: var(--color-subtle-surface-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-large);
+
+    &:focus-within {
+      border-color: var(--color-focus);
+      background: var(--color-surface-background);
+    }
+  }
+
+  &__search-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  &__search {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
     color: var(--color-primary-text);
+    font-size: var(--font-size-small);
+
+    &::placeholder {
+      color: var(--color-chat-placeholder);
+    }
   }
 
-  ul {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  &__filters {
+    @include mixins.flex-layout($align: center, $gap: 8px);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__chip {
+    @include mixins.flex-layout($align: center, $gap: 6px);
+    height: 30px;
+    padding: 0 12px;
+    border: none;
+    border-radius: var(--border-radius-pill);
+    background: transparent;
+    color: var(--color-secondary-text);
+    font-size: var(--font-size-extra-small);
+    font-weight: var(--font-weight-semi-bold);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-hover);
+    }
+
+    &--active {
+      background: var(--color-selection-background);
+      color: var(--color-primary);
+    }
+  }
+
+  &__filter-badge {
+    padding: 1px 6px;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-disabled);
+    color: var(--color-secondary-text);
+    font-size: 11px;
+  }
+
+  &__items {
+    @include mixins.flex-layout($align: stretch, $direction: column, $gap: 4px);
+    flex: 1;
+    min-height: 0;
     margin: 0;
-    padding: 0;
+    padding: 8px 10px;
     list-style: none;
-  }
-}
-
-.conversation-list__search {
-  height: 40px;
-  padding: 0 12px;
-  box-sizing: border-box;
-  font: inherit;
-  font-size: 14px;
-  color: var(--color-primary-text);
-  background: var(--color-subtle-surface-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-standard);
-}
-
-.conversation-list__item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 56px;
-  padding: 8px 12px;
-  box-sizing: border-box;
-  font: inherit;
-  text-align: left;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  border-radius: var(--border-radius-standard);
-  cursor: pointer;
-
-  &:hover {
-    background: var(--color-hover);
+    overflow-y: auto;
   }
 
-  &[aria-current='true'] {
-    background: var(--color-active);
+  &__item {
+    @include mixins.flex-layout($align: center, $gap: 12px);
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: var(--border-radius-large);
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-hover);
+    }
+
+    &--active {
+      background: var(--color-selection-background);
+    }
   }
-}
 
-.conversation-list__search:focus-visible,
-.conversation-list__item:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 2px;
-}
+  &__avatar {
+    @include mixins.flex-layout($justify: center, $align: center);
+    position: relative;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-bold);
 
-.conversation-list__avatar {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  font-weight: 600;
-  color: var(--color-primary);
-  background: var(--color-hover);
-  border-radius: 50%;
-}
+    &--default {
+      background: var(--color-subtle-surface-background);
+      color: var(--color-secondary-text);
+    }
 
-.conversation-list__text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-}
+    &--primary {
+      background: var(--color-info-background);
+      color: var(--color-primary);
+      border: 1px solid var(--color-info-border);
+    }
 
-.conversation-list__name {
-  font-size: 14px;
-  font-weight: 600;
-}
+    &--pink {
+      background: var(--color-danger-background);
+      color: var(--color-danger);
+    }
 
-.conversation-list__last {
-  overflow: hidden;
-  font-size: 13px;
-  color: var(--color-muted-text);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.conversation-list__time {
-  flex: none;
-  font-size: 12px;
-  color: var(--color-muted-text);
-}
-
-.conversation-list__filters{
-  display: flex;
-  gap:8px;
-}
-
-.conversation-list__chip{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 36px;
-  padding: 0 8px;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-secondary-text);
-  background: var(--color-subtle-surface-background);
-  border: 0;
-  border-radius: var(--border-radius-pill);
-  cursor: pointer;
-  &:hover{
-    background: var(--color-selection-background);
+    &--group {
+      border-radius: var(--border-radius-large);
+    }
   }
-  &:focus-visible{
-    outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
+
+  &__online-dot {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-status-online);
+    border: 2px solid var(--color-conversation-panel-background);
   }
-}
 
-.conversation-list__chip-active{
-  color: var(--color-primary);
-  background: var(--color-active);
-}
+  &__text {
+    @include mixins.flex-layout($align: stretch, $direction: column, $gap: 4px);
+    flex: 1;
+    min-width: 0;
+  }
 
-.conversation-list__dot{
-  width: 6px;
-  height: 6px;
-  background: var(--color-primary);
-  border-radius: 50%;
- }
+  &__name {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-.conversation-list__count{
-  min-width: 10px;
-  padding: 0 6px;
-  font-size: 12px;
-  line-height: 20px;
-  text-align: center;
-  color: var(--color-unread-badge-text);
-  background: var(--color-unread-badge);
-  border-radius: var(--border-radius-pill);
+    &--bold {
+      font-weight: var(--font-weight-bold);
+    }
+  }
+
+  &__last {
+    font-size: var(--font-size-extra-small);
+    color: var(--color-muted-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__sender {
+    color: var(--color-secondary-text);
+    font-weight: var(--font-weight-semi-bold);
+  }
+
+  &__meta {
+    @include mixins.flex-layout($align: flex-end, $direction: column, $gap: 6px);
+    flex-shrink: 0;
+  }
+
+  &__time {
+    font-size: 11px;
+    color: var(--color-muted-text);
+
+    &--active {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-bold);
+    }
+  }
+
+  &__unread-badge {
+    @include mixins.flex-layout($justify: center, $align: center);
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-danger);
+    color: var(--color-on-primary);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+  }
+
+  &__footer {
+    @include mixins.flex-layout($justify: space-between, $align: center);
+    padding: 10px 16px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-subtle-surface-background);
+    font-size: 11px;
+    color: var(--color-muted-text);
+  }
+
+  &__network {
+    @include mixins.flex-layout($align: center, $gap: 8px);
+  }
+
+  &__network-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+  }
+
+  &__version {
+    color: var(--color-disabled-text);
+  }
 }
