@@ -1,10 +1,18 @@
 .login-page {
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
   padding: 48px 16px;
   background: var(--color-page-background);
   color: var(--color-primary-text);
   text-align: left;
+}
+
+#login-title {
+  text-align: center;
+  font-weight: var(--font-weight-bold);
 }
 
 .login-card {
@@ -17,11 +25,34 @@
   border-radius: var(--border-radius-large);
 }
 
+.auth-panel {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-heading {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .login-card h1 {
   margin: 0 0 4px;
   font-size: var(--font-size-extra-large);
   line-height: 28px;
   color: var(--color-primary-text);
+}
+
+.auth-brand-icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 12px;
+}
+
+.auth-heading h1 {
+  margin: 0;
+  text-align: center;
+  font-weight: var(--font-weight-bold);
 }
 
 .login-form {
@@ -32,7 +63,7 @@
   label {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     font-size: var(--font-size-extra-small);
     // font-weight: var(--font-weight-semi-bold);
     color: var(--color-primary-text);
@@ -59,6 +90,96 @@
   }
 }
 
+.login-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--font-size-extra-small);
+}
+
+.login-form__password-field {
+  position: relative;
+  display: block;
+}
+
+.login-form__password-field .form-control {
+  padding-right: 44px;
+}
+
+.login-form__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--color-secondary-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.login-form__password-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.login-form__password-toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.register-title,
+.register-login-link {
+  text-align: center;
+
+}
+
+.register-title {
+      font-weight: var(--font-weight-bold);
+
+}
+
+.input-title{
+  font-weight: var(--font-weight-semi-bold);
+}
+
+.register-login-link {
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-secondary-text);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.register-login-link a {
+  margin-left: 4px;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semi-bold);
+  text-decoration: none;
+}
+
+.register-login-link a:hover {
+  text-decoration: underline;
+}
+
+.register-login-link a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 @media (max-width: 480px) {
   .login-page {
     padding: 32px 16px;
@@ -69,10 +190,25 @@
   }
 }
 
-.login-form__remember {
+.login-form label.login-form__remember {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-end;
   gap: 8px;
   font-weight: 400 !important;
   color: var(--color-secondary-text) !important;
 }
+
+.login-form__remember span {
+  line-height: 1;
+}
+
+.remember-me input[type="checkbox"] {
+  margin: 0; /* Xóa margin mặc định của trình duyệt để căn chuẩn xác nhất */
+}
+
+
+.login-form label.login-form__remember {
+    line-height: 1;
+}
+
