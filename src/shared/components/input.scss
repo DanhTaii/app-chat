@@ -13,8 +13,18 @@
 .form-control::placeholder { color: var(--color-muted-text); }
 
 .form-control:focus {
-  border-color: var(--color-focus);
-  outline: 2px solid var(--color-focus-ring);
+  border-color: var(--color-border);
+  outline: none;
+  box-shadow: none;
+}
+
+.form-control[aria-invalid="true"] {
+  border-color: var(--color-warning);
+}
+
+.form-control[aria-invalid="true"]:focus {
+  border-color: var(--color-warning);
+  outline-color: var(--color-warning-border);
 }
 
 .form-control:disabled {
