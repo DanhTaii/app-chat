@@ -2,7 +2,7 @@ import './MessageHeader.scss'
 import {useTranslation} from "react-i18next";
 
 // @ts-ignore
-export default function MessageHeader({onToggleInfo}) {
+export default function MessageHeader({receiverName, onToggleInfo}) {
     const {t} = useTranslation("message");
 
     return (
@@ -10,7 +10,7 @@ export default function MessageHeader({onToggleInfo}) {
             <div className={"avatar-section"}>
                 <img className={"img-avatar"} src="/src/shared/assets/avatar.webp"/>
                 <div className={"username"}>
-                    <h5>Minh Anh</h5>
+                    <h5>{receiverName}</h5>
                     <div className={"state-activity"}>
                         <div className={"dot-state"}></div>
                         <div className={"name-state"}>{t("message.status.active")}</div>

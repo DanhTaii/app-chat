@@ -58,7 +58,8 @@
   --color-focus-ring: rgba(2, 132, 199, 0.25); // Màu vòng sáng bên ngoài thành phần đang được focus
 
   // Màu bong bóng tin nhắn
-  --color-incoming-message-background: #f1f5f9; // Màu nền bong bóng tin nhắn nhận được từ người khác
+  //--color-incoming-message-background: #f1f5f9; // Màu nền bong bóng tin nhắn nhận được từ người khác
+  --color-incoming-message-background: white;
   --color-incoming-message-text: #1d2933; // Màu chữ bên trong tin nhắn nhận được
   --color-outgoing-message-text:#e0f2fe; // Màu chữ bên trong tin nhắn do người dùng gửi đi
 

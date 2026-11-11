@@ -1,17 +1,33 @@
 import './MessageList.scss'
 import {useTranslation} from "react-i18next";
-import {findListMessage} from "@/features/chat/message/services/messageApi.ts";
+import type {Message} from "@/features/chat/message/types.ts";
 
-export default function MessageList() {
-    async function getListMessage() {
-        return await findListMessage({
-            name: "Wabisoo_",
-            page: 1
-        });
-    }
+type MessageGroup = {
+    isSender: boolean,
+    messages: Message[]
+}
 
-    getListMessage();
+// @ts-ignore
+export default function MessageList({listMsg, user}) {
+    // ============== XỬ LÝ DANH SÁCH TIN NHẮN NHẬN TỪ API ==============
+    const groupedMessages: MessageGroup[] = [];
+    // ĐẢO NGƯỢC LẠI DO DANH SÁCH TIN NHẮN LÀ MỚI Ở TRÊN ĐẦU CÒN CŨ Ở DƯỚI
+    [...listMsg].reverse().forEach((msg) => {
+        let isSender = msg.name === user?.username;
+        let lastGroup = groupedMessages[groupedMessages.length - 1]
+        // console.log(lastGroup)
 
+        if (lastGroup && lastGroup.isSender === isSender) {
+            lastGroup.messages.push(msg);
+        } else {
+            groupedMessages.push({
+                isSender: isSender,
+                messages: [msg]
+            });
+        }
+    })
+
+    // ============== XỬ LÝ ĐA NGÔN NGỮ ==============
     const {t} = useTranslation("message");
 
     return (
@@ -21,47 +37,51 @@ export default function MessageList() {
                 {t("message.separator.time.today")}, 24/10
             </div>
 
-            <div className={"receiver-msg__block"}>
-                <div className={"receiver-msg__avatar"}>
-                    <img className={"img-avatar"} src="/src/shared/assets/avatar.webp"/>
-                </div>
-                <ul className={"receiver-msg__list-content"}>
-                    <li className={"receiver-msg__name"}>
-                        <div className={"receiver-msg__name"}>
-                            Minh Anh
-                        </div>
-                    </li>
-                    <li>
-                        <div className={"receiver-msg__content"}>
-                            Đúng rồi nhóm 3 người tụi mình chia nhau: cậy làm chat workshop, bảo làm Auth, còn mình
-                            phụ trách media
-                        </div>
-                    </li>
-                    <li>
-                        <div className={"receiver-msg__content"}>
-                            Chiều này trao đổi phần gioa diện nha bạn ?
-                        </div>
-                        <div className={"msg-time"}>12:00</div>
-                    </li>
-                </ul>
-            </div>
+            {
+                groupedMessages.map((group, index) => (
+                        <div key={index} className={group.isSender ? "sender-msg__block" : "receiver-msg__block"}>
+                            {/*HIỂN THIJ ẢNH NẾU NHƯ KHÔNG PHẢI LÀ NGƯỜI NHẬN*/}
+                            {
+                                !group.isSender && (
+                                    <div className={"receiver-msg__avatar"}>
+                                        <img className={"img-avatar"} src="/src/shared/assets/avatar.webp"/>
+                                    </div>
+                                )
+                            }
 
-            <div className={"sender-msg__block"}>
-                <ul className={"sender-msg__list-content"}>
-                    <li>
-                        <div className={"sender-msg__content"}>
-                            Đúng rồi nhóm 3 người tụi mình chia nhau: cậy làm chat, bảo làm Auth, còn mình phụ trách
-                            media
+                            <ul className={group.isSender ? "sender-msg__list-content" : "receiver-msg__list-content"}>
+                                {/*{*/}
+                                {/*    !group.isSender && (*/}
+                                {/*        <li className={"receiver-msg__name"}>*/}
+                                {/*            <div className={"receiver-msg__name"}>*/}
+                                {/*                {group.messages[0].name}*/}
+                                {/*            </div>*/}
+                                {/*        </li>*/}
+                                {/*    )*/}
+                                {/*}*/}
+                                {
+                                    group.messages.map((msg, index) => (
+                                        <li key={msg.id}>
+                                            <div className={
+                                                     group.isSender ? "sender-msg__content" : "receiver-msg__content"
+                                                 }>
+                                                {msg.mes}
+                                            </div>
+                                            {
+                                                index === group.messages.length - 1 && (
+                                                    <div className="msg-time">
+                                                        12:00
+                                                    </div>
+                                                )
+                                            }
+                                        </li>
+                                    ))
+                                }
+                            </ul>
                         </div>
-                    </li>
-                    <li>
-                        <div className={"sender-msg__content"}>
-                            Chiều này trao đổi phần gioa diện nha bạn ?
-                        </div>
-                        <div className={"msg-time"}>12:00</div>
-                    </li>
-                </ul>
-            </div>
+                    )
+                )
+            }
         </div>
     )
 }
