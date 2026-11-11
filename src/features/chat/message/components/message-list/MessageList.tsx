@@ -1,7 +1,17 @@
 import './MessageList.scss'
 import {useTranslation} from "react-i18next";
+import {findListMessage} from "@/features/chat/message/services/messageApi.ts";
 
 export default function MessageList() {
+    async function getListMessage() {
+        return await findListMessage({
+            name: "Wabisoo_",
+            page: 1
+        });
+    }
+
+    getListMessage();
+
     const {t} = useTranslation("message");
 
     return (

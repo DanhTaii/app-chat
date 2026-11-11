@@ -58,7 +58,10 @@ class SocketService {
                 const eventListeners = this.listeners.get(response.event);
 
                 eventListeners?.forEach(listener => listener(response));
-                console.log('Server response: ', response)
+                console.log(
+                    `SERVER RESPONSE [${response.event}]:`,
+                    response
+                );
 
             }
         })
@@ -130,8 +133,7 @@ class SocketService {
     }
 
     disconnect() {
-        if (!this.socket) {
-            // @ts-ignore
+        if (this.socket) {
             this.socket.close();
             this.socket = null;
         }
