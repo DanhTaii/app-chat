@@ -18,3 +18,16 @@ export interface GetPeopleChatMessResponse {
     data?: Message[];
     mes?: string;
 }
+
+export interface SendPeopleChatRequest {
+    type: string,
+    to: string,
+    mes: string
+}
+
+export interface SendPeopleChatResponse {
+    name: string,
+    to: string,
+    mes: string,
+    type: 0 | 1
+}

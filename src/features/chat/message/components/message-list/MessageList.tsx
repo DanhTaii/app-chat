@@ -1,6 +1,7 @@
 import './MessageList.scss'
 import {useTranslation} from "react-i18next";
 import type {Message} from "@/features/chat/message/types.ts";
+import {useEffect, useRef} from "react";
 
 type MessageGroup = {
     isSender: boolean,
@@ -30,8 +31,18 @@ export default function MessageList({listMsg, user}) {
     // ============== XỬ LÝ ĐA NGÔN NGỮ ==============
     const {t} = useTranslation("message");
 
+    // XỬ LÝ TỰ ĐỘNG CUỘN XUỐNG DƯỚI
+    const listRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const list = listRef.current;
+
+        if (list && listMsg.length > 0) {
+            list.scrollTop = list.scrollHeight;
+        }
+    }, [listMsg]);
+
     return (
-        <div className={"message-list"}>
+        <div ref={listRef} className={"message-list"}>
             <div className={"time-separator"}>
                 <i className="fa-solid fa-calendar"></i>
                 {t("message.separator.time.today")}, 24/10

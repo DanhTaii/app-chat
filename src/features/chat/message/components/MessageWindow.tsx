@@ -34,7 +34,7 @@ function MessageWindow({onToggleInfo}) {
 
             <MessageList listMsg={listMsg} user={user}/>
 
-            <MessageComposer/>
+            <MessageComposer receiverName={receiverName}/>
         </section>
     )
 }

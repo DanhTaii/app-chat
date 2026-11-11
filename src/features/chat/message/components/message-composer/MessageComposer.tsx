@@ -2,10 +2,24 @@ import './MessageComposer.scss'
 import Button from "../../../../../shared/components/Button";
 import Input from "../../../../../shared/components/Input";
 import {useTranslation} from "react-i18next";
+import {sendMessageSingle} from "@/features/chat/message/services/messageApi.ts";
+import {useState} from "react";
 
 
-export default function MessageComposer() {
+// @ts-ignore
+export default function MessageComposer({receiverName}) {
+    const [mes, setMes] = useState("")
     const {t} = useTranslation("message");
+
+    const sendMessage = async () => {
+        sendMessageSingle({
+            type: "people",
+            to: receiverName,
+            mes: mes
+        });
+
+        setMes("");
+    }
 
     return (
         <div className={"message-footer"}>
@@ -36,10 +50,12 @@ export default function MessageComposer() {
                             placeholder={t("message.placeholder.enter-message")}
                             aria-label="Nhập tin nhắn"
                             className="message-input"
+                            value={mes}
+                            onChange={event => setMes(event.target.value)}
                         />
 
-                        <Button type="button" className="btn">
-                            {t("message.button.send")}
+                        <Button type="button" className="btn" onClick={sendMessage}>
+                            {/*{t("message.button.send")}*/}
                             <i className="fa-solid fa-paper-plane"></i>
                         </Button>
                     </form>
