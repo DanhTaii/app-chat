@@ -19,6 +19,24 @@ const messageSlice = createSlice({
     initialState: initialState,
     name: "message",
     reducers: {
+
+        addPeopleMessages: (state, action) => {
+            const {name, message} = action.payload;
+
+            // NẾU NHƯ CHƯA CÓ CONVERSATION THÌ TẠO MỚI 1 CÁI
+            if (!state.conversations[name]) {
+                state.conversations[name] = {
+                    type: 0,
+                    messages: []
+                };
+            }
+
+            // RỒI THÊM MSG ĐÓ VÀO CONVERSATION
+            // PHẢI LÀ unshift chứ không thể là push do nếu push là nó push lên trên đầu
+            // NHƯNG BÊN MessageList đang hiển thị ngược lại. DO ĐÓ PHẢI CHO NÓ VÀO CUỐI
+            state.conversations[name].messages.unshift(message);
+        },
+
         loadPeopleMessages: (state, action) => {
             const {name, messages} = action.payload;
             state.conversations[name] = {
@@ -35,10 +53,16 @@ const messageSlice = createSlice({
                 user,
                 messages
             }
-        }
+        },
+
+        addRoomMessages: (state, action) => {
+            const {name, message} = action.payload;
+            state.conversations[name].messages.push(message)
+
+        },
     }
 });
 
-export const {loadPeopleMessages, loadRoomMessages} = messageSlice.actions;
+export const {loadPeopleMessages, loadRoomMessages, addRoomMessages, addPeopleMessages} = messageSlice.actions;
 
 export default messageSlice.reducer

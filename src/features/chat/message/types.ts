@@ -2,7 +2,7 @@
 // ======================================= ĐỊNH DẠNG GỬI VÀ NHẬN TỪ BÊN API BACKEND SERVER
 
 export interface Message {
-    id: number;
+    id?: number;
     name: string;
     to: string;
     mes: string;

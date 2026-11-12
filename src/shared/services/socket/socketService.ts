@@ -51,7 +51,7 @@ class SocketService {
 
             // @ts-ignore
             this.socket.onmessage = (event) => {
-                   const response = JSON.parse(event.data);
+                const response = JSON.parse(event.data);
 
                 if (!response.event) return;
 
@@ -87,7 +87,7 @@ class SocketService {
             }
         };
 
-            console.log("SEND TO SERVER:", msg);
+        console.log("SEND TO SERVER:", msg);
 
         // chuyển JavaScript Object thành JSON String và gửi đi dữ liệu
         this.socket.send(JSON.stringify(msg));

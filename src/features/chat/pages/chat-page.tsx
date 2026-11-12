@@ -6,16 +6,16 @@ import {useState} from "react";
 
 // chỉ ghép Conversation và Message
 function ChatPage() {
-    const [isInfoOpen, setIsInfoOpen] = useState(false);
+    const [isInfoOpen, setIsInfoOpen] = useState(true);
 
     // 1 là room chat |
     // 0 là people chat
 
-    // const receiverName = "Wabisoo_";
-    // const typeConversation = 0;
+    const receiverName = "Wabisoo_";
+    const typeConversation = 0;
 
-    const receiverName = "Lớp Karate thầy Quang"
-    const typeConversation = 1;
+    // const receiverName = "Lớp Karate thầy Quang"
+    // const typeConversation = 1;
 
 
     const handleToggleInfo = () => {
@@ -27,7 +27,7 @@ function ChatPage() {
         <div className={`chat-page ${isInfoOpen ? 'info-open' : ''}`}>
             <ConversationList/>
             <MessageWindow onToggleInfo={handleToggleInfo} receiverName={receiverName}
-                           typeConversation={typeConversation}/>
+                           conversationType={typeConversation}/>
 
             {/* Cú pháp Conditional Rendering nếu isInforOpen là true thì sẽ render InfoPanel*/}
             {isInfoOpen && <InfoPanel/>}

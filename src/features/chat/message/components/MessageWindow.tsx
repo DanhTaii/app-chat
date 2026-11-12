@@ -8,7 +8,7 @@ import {useEffect} from "react";
 import {loadPeopleMessages, loadRoomMessages} from "@/features/chat/message/slices/messageSlice.ts";
 
 // @ts-ignore
-function MessageWindow({receiverName, typeConversation, onToggleInfo}) {
+function MessageWindow({receiverName, conversationType, onToggleInfo}) {
     let page = 1;
 
     const user = useAppSelector((state) => state.auth.user)
@@ -53,13 +53,15 @@ function MessageWindow({receiverName, typeConversation, onToggleInfo}) {
         }
 
         // DỰA VÀO LOẠI MÀ BÊN CONVERSATION CUNG CẤP MÀ LOAD DANH SÁCH TIN NHẮN LÊN
-        if (typeConversation === 0) {
+        if (conversationType === 0) {
             getListMessage(receiverName, page)
-        } else if (typeConversation === 1) {
+        } else if (conversationType === 1) {
             getRoomListMessage(receiverName, page)
         }
 
-    }, [dispatch]);
+        console.log("MSG WINDOW - CONVERSATION: ",conversations)
+
+    }, [dispatch, receiverName, conversationType]);
 
     return (
         <section className="message-window">
@@ -67,7 +69,7 @@ function MessageWindow({receiverName, typeConversation, onToggleInfo}) {
 
             <MessageList conversations={conversations} user={user}/>
 
-            <MessageComposer receiverName={receiverName}/>
+            <MessageComposer receiverName={receiverName} user={user} conversationType={conversationType}/>
         </section>
     )
 }
