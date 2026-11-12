@@ -45,24 +45,25 @@ export interface GetRoomChatMessResponse {
     event: "GET_ROOM_CHAT_MES";
     data: {
         name: string;
-        user: {
+        userList: {
             id: number;
             name: string;
         }[];
-        chatMess: Message[];
+        chatData: Message[];
     };
     mes?: string;
 }
 
 // ======================================= SỬ DUỤNG CHO REDUX STORE
-
+// 1 là room chat |
+// 0 là people chat
 export interface PeopleConversation {
-    type: "people";
+    type: 0;
     messages: Message[];
 }
 
 export interface RoomConversation {
-    type: "room";
+    type: 1;
     name: string;
     user: {
         id: number;

@@ -22,7 +22,7 @@ const messageSlice = createSlice({
         loadPeopleMessages: (state, action) => {
             const {name, messages} = action.payload;
             state.conversations[name] = {
-                type: "people",
+                type: 0,
                 messages
             }
         },
@@ -30,7 +30,7 @@ const messageSlice = createSlice({
         loadRoomMessages: (state, action) => {
             const {name, user, messages} = action.payload
             state.conversations[name] = {
-                type: "room",
+                type: 1,
                 name,
                 user,
                 messages

@@ -8,9 +8,7 @@ import {useEffect} from "react";
 import {loadPeopleMessages, loadRoomMessages} from "@/features/chat/message/slices/messageSlice.ts";
 
 // @ts-ignore
-function MessageWindow({onToggleInfo}) {
-    const receiverName = "Wabisoo_";
-    let typeConversation = 1;
+function MessageWindow({receiverName, typeConversation, onToggleInfo}) {
     let page = 1;
 
     const user = useAppSelector((state) => state.auth.user)
@@ -19,7 +17,6 @@ function MessageWindow({onToggleInfo}) {
     const conversations = useAppSelector(
         (state) => state.message?.conversations[receiverName] ?? []
     )
-    const listMsg = conversations?.messages ?? []
     const dispatch = useAppDispatch();
     useEffect(() => {
         async function getListMessage(receiver: string, page: number) {
@@ -31,7 +28,7 @@ function MessageWindow({onToggleInfo}) {
             // LƯU VAO REDUX
             // KHÚC NÀY CHỈ LÀ response.data thôi vì bên API thầy cấp hiện đang trả về đúng là 1 danh sách tin nhắn
             dispatch(loadPeopleMessages({
-                name: receiverName,
+                name: receiver,
                 messages: response.data ?? []
             }));
         }
@@ -44,21 +41,21 @@ function MessageWindow({onToggleInfo}) {
             }) as any
 
             // LƯU KẾT QUAR VÀO REDUX
+            // TRONG SHEET THÌ API NÀY ĐANG ĐẶT TÊN KHÁC:
+            // chatMes và user chứ không phải userList và chatData
             if (response.status === "success" && response.data) {
                 dispatch(loadRoomMessages({
-                    name: receiverName,
-                    user: response.data.user ?? [],
-                    messages: response.data.chatMes ?? []
+                    name: receiver,
+                    user: response.data.userList ?? [],
+                    messages: response.data.chatData ?? []
                 }));
             }
         }
 
         // DỰA VÀO LOẠI MÀ BÊN CONVERSATION CUNG CẤP MÀ LOAD DANH SÁCH TIN NHẮN LÊN
         if (typeConversation === 0) {
-            const receiverName = "Wabisoo_";
             getListMessage(receiverName, page)
         } else if (typeConversation === 1) {
-            const receiverName = "Lớp Karate thầy Quang";
             getRoomListMessage(receiverName, page)
         }
 
@@ -68,7 +65,7 @@ function MessageWindow({onToggleInfo}) {
         <section className="message-window">
             <MessageHeader receiverName={receiverName} onToggleInfo={onToggleInfo}/>
 
-            <MessageList listMsg={listMsg} user={user}/>
+            <MessageList conversations={conversations} user={user}/>
 
             <MessageComposer receiverName={receiverName}/>
         </section>
