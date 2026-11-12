@@ -1,15 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-// khai bao kieu du lieu
-interface User {
-  username: string;
-}
-
-// data type cho chuc nang auth
-interface AuthState {
-  user: User | null;
-  isLoggedIn: boolean;
-}
+import type { AuthState } from "@/shared/types/session";
+import type { User } from "@/shared/types/user";
 
 // state ban dau : chua dang nhap
 const initialState: AuthState = {
@@ -26,12 +17,11 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isLoggedIn = true;
     },
-    logout: (state) => {
-      state.user = null;
-      state.isLoggedIn = false;
+    updateReLoginCode: (state, action: PayloadAction<string>) => {
+      if (state.user) state.user.reLoginCode = action.payload;
     },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, updateReLoginCode} = authSlice.actions;
 export default authSlice.reducer;

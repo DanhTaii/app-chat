@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../../shared/components/Button";
+import Button from "../../../shared/components/button";
 import Input from "../../../shared/components/Input";
 import { ROUTES } from "../../../app/router/routes";
 import { useAppDispatch } from "../../../app/store/hooks";
 import chatSocket, { type SocketResponse } from "../../../shared/services/socket/socketService";
 import { loginSuccess } from "../slices/authSlice";
+import { login } from "../services/authApi";
+import { saveSession } from "../services/authSession";
 import brandIcon from "../../../shared/assets/logo.png";
 import {
   isValidPassword,
@@ -54,16 +56,15 @@ function Auth() {
       await chatSocket.connect();
       console.log("websocket kết nối");
 
-      const result = await chatSocket.request("LOGIN", {
-        user: username,
-        pass: password,
-      });
+      const result = await login({user: username, pass: password});
       console.log("Phản hồi login:", result);
 
       setResponse(result);
 
       if (result.status === "success") {
-        dispatch(loginSuccess({ username }));
+        const reLoginCode = result.data?.RE_LOGIN_CODE ?? null;
+        if (reLoginCode) saveSession(username, reLoginCode);
+        dispatch(loginSuccess({username, reLoginCode}));
         navigate(ROUTES.CHAT);
       } else {
         setError(result.mes || "Lỗi");
