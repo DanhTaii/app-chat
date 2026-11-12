@@ -1,13 +1,14 @@
-import {configureStore} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../../features/auth/slices/authSlice";
 import messageReducer from "../../features/chat/message/slices/messageSlice";
-
+import conversationReducer from "../../features/chat/conversation/slices/conversationSlice";
 // store
 export const store = configureStore({
     reducer: {
         auth: authReducer, // them reducer o day
-        message: messageReducer
-    },
+        message: messageReducer,
+        conversation: conversationReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -3,6 +3,7 @@ import MessageWindow from '../message/components/MessageWindow.tsx'
 import './chat-page.scss'
 import InfoPanel from "@/features/chat/info-panel/components/InfoPanel.tsx";
 import {useState} from "react";
+import {useAppSelector} from "@/app/store/hooks.ts";
 
 // chỉ ghép Conversation và Message
 function ChatPage() {
@@ -14,8 +15,11 @@ function ChatPage() {
     // const receiverName = "Wabisoo_";
     // const typeConversation = 0;
 
-    const receiverName = "Lớp Karate thầy Quang"
-    const typeConversation = 1;
+    // const receiverName = "Lớp Karate thầy Quang"
+    // const typeConversation = 1;
+    const selectedConversation = useAppSelector((state) => state.conversation.selectedConversation);
+    const receiverName = selectedConversation?.name ?? "";
+    const typeConversation = selectedConversation?.type ?? null;
 
 
     const handleToggleInfo = () => {
