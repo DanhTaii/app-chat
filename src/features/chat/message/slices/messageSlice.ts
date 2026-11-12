@@ -1,26 +1,44 @@
 import {createSlice} from "@reduxjs/toolkit";
-import type {Message} from "@/features/chat/message/types.ts";
+import type {
+    PeopleConversation, RoomConversation
+} from "@/features/chat/message/types.ts";
 
 // DỊNH DẠNG KIỂU MESSAGE STATE SẼ NHẬN LÀ DANH SÁCH CÁC DẠNG MESSGAE
 type MessageState = {
-    list: Message[];
+    conversations: {
+        [name: string]: PeopleConversation | RoomConversation
+    };
 };
 
 // TẠO 1 MESSAGE STATE RỖNG
 const initialState: MessageState = {
-    list: []
+    conversations: {}
 };
 
 const messageSlice = createSlice({
     initialState: initialState,
     name: "message",
     reducers: {
-        loadMessages: (state, action) => {
-            state.list = action.payload;
+        loadPeopleMessages: (state, action) => {
+            const {name, messages} = action.payload;
+            state.conversations[name] = {
+                type: "people",
+                messages
+            }
+        },
+
+        loadRoomMessages: (state, action) => {
+            const {name, user, messages} = action.payload
+            state.conversations[name] = {
+                type: "room",
+                name,
+                user,
+                messages
+            }
         }
     }
 });
 
-export const {loadMessages} = messageSlice.actions;
+export const {loadPeopleMessages, loadRoomMessages} = messageSlice.actions;
 
 export default messageSlice.reducer

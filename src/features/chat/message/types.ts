@@ -1,3 +1,6 @@
+
+// ======================================= ĐỊNH DẠNG GỬI VÀ NHẬN TỪ BÊN API BACKEND SERVER
+
 export interface Message {
     id: number;
     name: string;
@@ -30,4 +33,40 @@ export interface SendPeopleChatResponse {
     to: string,
     mes: string,
     type: 0 | 1
+}
+
+export interface GetRoomChatMessRequest {
+    name: string,
+    page: number
+}
+
+export interface GetRoomChatMessResponse {
+    status: "success" | "error";
+    event: "GET_ROOM_CHAT_MES";
+    data: {
+        name: string;
+        user: {
+            id: number;
+            name: string;
+        }[];
+        chatMess: Message[];
+    };
+    mes?: string;
+}
+
+// ======================================= SỬ DUỤNG CHO REDUX STORE
+
+export interface PeopleConversation {
+    type: "people";
+    messages: Message[];
+}
+
+export interface RoomConversation {
+    type: "room";
+    name: string;
+    user: {
+        id: number;
+        name: string;
+    }[];
+    messages: Message[];
 }

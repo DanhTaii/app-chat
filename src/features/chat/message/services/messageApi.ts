@@ -1,7 +1,7 @@
 import chatSocket, {type SocketResponse} from "@/shared/services/socket/socketService.ts";
 import type {
     GetPeopleChatMessRequest,
-    GetPeopleChatMessResponse,
+    GetPeopleChatMessResponse, GetRoomChatMessRequest, GetRoomChatMessResponse,
     SendPeopleChatRequest, SendPeopleChatResponse
 } from "@/features/chat/message/types.ts";
 
@@ -22,6 +22,18 @@ export async function sendMessageSingle(params: SendPeopleChatRequest): Promise<
     try {
         return await chatSocket.request<SendPeopleChatResponse>(
             "SEND_CHAT",
+            params
+        )
+    } catch (e) {
+        console.error("Socket testing failed:", e);
+        throw e;
+    }
+}
+
+export async function findGroupListMessage(params: GetRoomChatMessRequest): Promise<SocketResponse<GetRoomChatMessResponse>> {
+    try {
+        return await chatSocket.request<GetRoomChatMessResponse>(
+            "GET_ROOM_CHAT_MES",
             params
         )
     } catch (e) {
