@@ -2,21 +2,54 @@ import './MessageComposer.scss'
 import Button from "../../../../../shared/components/Button";
 import Input from "../../../../../shared/components/Input";
 import {useTranslation} from "react-i18next";
-import {sendMessageSingle} from "@/features/chat/message/services/messageApi.ts";
+import {sendMessageRoom, sendMessageSingle} from "@/features/chat/message/services/messageApi.ts";
 import {useState} from "react";
-
+import {useAppDispatch} from "@/app/store/hooks.ts";
+import {addPeopleMessages} from "@/features/chat/message/slices/messageSlice.ts";
 
 // @ts-ignore
-export default function MessageComposer({receiverName}) {
+// 1 là room chat |
+// 0 là people chat
+export default function MessageComposer({receiverName, user, conversationType}) {
     const [mes, setMes] = useState("")
     const {t} = useTranslation("message");
+    const dispatch = useAppDispatch();
 
     const sendMessage = async () => {
-        sendMessageSingle({
-            type: "people",
-            to: receiverName,
-            mes: mes
-        });
+        const content = mes.trim();
+
+        if (!content) return;
+
+        // console.log("SENDER:", {
+        //     receiverName,
+        //     content
+        // });
+
+        dispatch(addPeopleMessages({
+            name: receiverName,
+            message: {
+                // id?: number;
+                name: user?.username,
+                to: receiverName,
+                mes: content,
+                createAt: new Date().toISOString(),
+                type: conversationType,
+            }
+        }))
+
+        if (conversationType === 0) {
+            sendMessageSingle({
+                type: "people",
+                to: receiverName,
+                mes: content
+            });
+        } else if (conversationType === 1) {
+            sendMessageRoom({
+                type: "room",
+                to: receiverName,
+                mes: content
+            })
+        }
 
         setMes("");
     }

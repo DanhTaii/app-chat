@@ -5,28 +5,39 @@ import {useEffect, useRef} from "react";
 
 type MessageGroup = {
     isSender: boolean,
+    senderName: string
     messages: Message[]
 }
 
 // @ts-ignore
-export default function MessageList({listMsg, user}) {
+export default function MessageList({conversations, user}) {
+    // 1 là room chat |
+    // 0 là people chat
+
+    // console.log("MSG LISTTTTT: ",listMsg);
+    const listMsg = conversations?.messages ?? [];
+    const conversationType = conversations.type;
+
     // ============== XỬ LÝ DANH SÁCH TIN NHẮN NHẬN TỪ API ==============
     const groupedMessages: MessageGroup[] = [];
     // ĐẢO NGƯỢC LẠI DO DANH SÁCH TIN NHẮN LÀ MỚI Ở TRÊN ĐẦU CÒN CŨ Ở DƯỚI
     [...listMsg].reverse().forEach((msg) => {
         let isSender = msg.name === user?.username;
+        let senderName = msg.name;
         let lastGroup = groupedMessages[groupedMessages.length - 1]
-        // console.log(lastGroup)
 
-        if (lastGroup && lastGroup.isSender === isSender) {
+        if (lastGroup && lastGroup.senderName === senderName) {
             lastGroup.messages.push(msg);
         } else {
             groupedMessages.push({
                 isSender: isSender,
+                senderName: senderName,
                 messages: [msg]
             });
         }
     })
+
+    // console.log("MSG LISTTTTT group: ",groupedMessages);
 
     // ============== XỬ LÝ ĐA NGÔN NGỮ ==============
     const {t} = useTranslation("message");
@@ -61,18 +72,18 @@ export default function MessageList({listMsg, user}) {
                             }
 
                             <ul className={group.isSender ? "sender-msg__list-content" : "receiver-msg__list-content"}>
-                                {/*{*/}
-                                {/*    !group.isSender && (*/}
-                                {/*        <li className={"receiver-msg__name"}>*/}
-                                {/*            <div className={"receiver-msg__name"}>*/}
-                                {/*                {group.messages[0].name}*/}
-                                {/*            </div>*/}
-                                {/*        </li>*/}
-                                {/*    )*/}
-                                {/*}*/}
+                                {
+                                    conversationType === 1 && (
+                                        <li className={"receiver-msg__name"}>
+                                            <div className={"receiver-msg__name"}>
+                                                {group.messages[0].name}
+                                            </div>
+                                        </li>
+                                    )
+                                }
                                 {
                                     group.messages.map((msg, index) => (
-                                        <li key={msg.id}>
+                                        <li key={index}>
                                             <div className={
                                                      group.isSender ? "sender-msg__content" : "receiver-msg__content"
                                                  }>
