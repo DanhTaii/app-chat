@@ -8,6 +8,9 @@ import NotFoundPage from "../../shared/pages/not-found";
 import ComponentsPage from "../../features/auth/pages/components-page";
 import ErrorPage from "../../shared/pages/error-page";
 
+import { useAppSelector } from "../store/hooks";
+
+
 export const router = createBrowserRouter([
   {
     path: ROUTES.ROOT,
@@ -20,7 +23,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.LOGIN,
-        element: <LoginPage />,
+        element: <ReloginCheckingPage page="login" />,
       },
       {
         path: ROUTES.REGISTER,
@@ -28,7 +31,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.CHAT,
-        element: <ChatPage />,
+        element: <ReloginCheckingPage page="chat" />,
       },
       {
         path: ROUTES.COMPONENTS,
@@ -41,3 +44,13 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+function ReloginCheckingPage({ page }: { page: "login" | "chat" }) {
+    const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+
+    if (page === "login") {
+        return isLoggedIn ? <Navigate to={ROUTES.CHAT} replace /> : <LoginPage />;
+    }
+
+    return isLoggedIn ? <ChatPage /> : <Navigate to={ROUTES.LOGIN} replace />;
+}
