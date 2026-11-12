@@ -250,33 +250,5 @@
   font-size: 11px;
   font-weight: var(--font-weight-bold);
 }
-.conversation-list__footer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-subtle-surface-background);
-  font-size: 11px;
-  color: var(--color-muted-text);
-}
-.conversation-list__network {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-.conversation-list__network-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--border-radius-pill);
-  background: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-focus-ring);
-}
-.conversation-list__version {
-  color: var(--color-disabled-text);
-}
 
 /*# sourceMappingURL=conversation-list.css.map */

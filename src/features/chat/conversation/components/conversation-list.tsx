@@ -1,11 +1,16 @@
-import {useState} from "react";
-import {useTranslation} from "react-i18next";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "./conversation-list.scss";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { getUserList } from "@/features/chat/conversation/services/conversationApi";
+import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
+import {setConversations, selectConversation,} from "@/features/chat/conversation/slices/conversationSlice";
 
 interface ConversationItem {
-    id: number;
+    id: string;
     initials?: string;
     name: string;
+    type: 0 | 1;
     senderPrefix?: string;
     lastMessage: string;
     time: string;
@@ -15,32 +20,102 @@ interface ConversationItem {
     variant?: "primary" | "default" | "pink";
 }
 
-const SAMPLE_CONVERSATIONS: ConversationItem[] = [
-    {
-        id: 1,
-        initials: "MA",
-        name: "Minh Anh",
-        lastMessage: "Chiều nay mình trao đổi phần giao diện...",
-        time: "10:42",
-        unreadCount: 2,
-        online: true,
-        variant: "primary",
-    },
-    {
-        id: 2,
-        name: "Nhóm Frontend Đồ Án",
-        senderPrefix: "Minh Anh:",
-        lastMessage: "Hẹn gặp ở thư viện 2h...",
-        time: "Th 3",
-        isGroup: true,
-        variant: "primary",
+// const SAMPLE_CONVERSATIONS: ConversationItem[] = [
+//     {
+//         id: 1,
+//         initials: "MA",
+//         name: "Minh Anh",
+//         lastMessage: "Chiều nay mình trao đổi phần giao diện...",
+//         time: "10:42",
+//         unreadCount: 2,
+//         online: true,
+//         variant: "primary",
+//     },
+//     {
+//         id: 2,
+//         name: "Nhóm Frontend Đồ Án",
+//         senderPrefix: "Minh Anh:",
+//         lastMessage: "Hẹn gặp ở thư viện 2h...",
+//         time: "Th 3",
+//         isGroup: true,
+//         variant: "primary",
+//     }
+// ];
+
+function getInitials(name: string): string {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
-];
+    return name.slice(0, 2).toUpperCase();
+}
+
+function formatActionTime(actionTime: string): string {
+    if (!actionTime) return "";
+    const parts = actionTime.split(" ");
+    if (parts.length === 2) {
+        return parts[1].slice(0, 5);
+    }
+    return actionTime;
+}
+
+function mapApiToConversationItem(item: ApiConversationItem): ConversationItem {
+    return {
+        id: `${item.type}-${item.name}`,
+        name: item.name,
+        type: item.type,
+        initials: getInitials(item.name),
+        lastMessage: item.type === 1 ? "Nhóm trò chuyện" : "Trò chuyện cá nhân",
+        time: formatActionTime(item.actionTime),
+        isGroup: item.type === 1,
+        variant: "primary",
+    };
+}
 
 function ConversationList() {
     const {t} = useTranslation("conversation");
     const [activeFilter, setActiveFilter] = useState<"all" | "unread" | "groups">("all");
-    const [selectedId, setSelectedId] = useState<number>(1);
+    const dispatch = useAppDispatch();
+    const apiConversations = useAppSelector((state) => state.conversation.conversations);
+    const selectedConversation = useAppSelector((state) => state.conversation.selectedConversation);
+    const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            return;
+        }
+
+        let isMounted = true;
+        const fetchUserList = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const data = await getUserList();
+                if (!isMounted) return;
+                // đẩy data lên store
+                dispatch(setConversations(data));
+                // truyền { name, type } mặc định item đầu lên Redux
+                if (data.length > 0) {
+                    dispatch(selectConversation({name: data[0].name, type: data[0].type}));
+                }
+            } catch (err) {
+                if (!isMounted) return;
+                setError(err instanceof Error ? err.message : "Không thể tải danh sách hội thoại");
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+        fetchUserList();
+        return () => {
+            isMounted = false;
+        };
+    }, [dispatch, isLoggedIn]);
+
+    const conversationItems = apiConversations.map(mapApiToConversationItem);
 
     return (
         <aside className="conversation-list" aria-label="Danh sách hội thoại">
@@ -81,58 +156,55 @@ function ConversationList() {
             </div>
 
             <ul className="conversation-list__items">
-                {SAMPLE_CONVERSATIONS.map((item) => {
-                    const isSelected = item.id === selectedId;
-                    const displayTime = item.time === "yesterday" ? t("conversation.time.yesterday") : item.time;
+                {!isLoggedIn && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-danger, red)"}}>Đăng nhập trước.</li>)}
 
-                    return (
-                        <li key={item.id}>
-                            <button type="button"
+                {isLoggedIn && loading && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-secondary-text)"}}>Đang tải danh sách...</li>)}
+
+                {isLoggedIn && !loading && error && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-danger, red)"}}>Lỗi: {error}</li>)}
+
+                {isLoggedIn && !loading && !error && conversationItems.length === 0
+                    && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-secondary-text)"}}>Không có cuộc trò chuyện nào.</li>)}
+
+                {isLoggedIn && !loading && !error && conversationItems.map((item) => {
+                        const isSelected =
+                            selectedConversation?.name === item.name &&
+                            selectedConversation?.type === item.type;
+
+                        return (
+                            <li key={item.id}>
+                                <button type="button"
                                     className={`conversation-list__item ${isSelected ? "conversation-list__item--active" : ""}`}
-                                    onClick={() => setSelectedId(item.id)}>
-                                <div
-                                    className={`conversation-list__avatar conversation-list__avatar--${item.variant || "default"} ${
-                                        item.isGroup ? "conversation-list__avatar--group" : ""}`}>
-                                    {item.isGroup ? (<i className="fa-solid fa-user-group"></i>) : (
-                                        <span>{item.initials}</span>)}
-                                    {item.online && (<span className="conversation-list__online-dot"></span>)}
-                                </div>
+                                    onClick={() => dispatch(selectConversation({name: item.name, type: item.type}))}>
+                                    <div className={`conversation-list__avatar conversation-list__avatar--${item.variant || "default"}
+                                        ${item.isGroup ? "conversation-list__avatar--group" : ""}`}>
+                                        {item.isGroup ? (<i className="fa-solid fa-user-group"></i>) : (<span>{item.initials}</span>)}
+                                        {item.online && <span className="conversation-list__online-dot"></span>}
+                                    </div>
 
-                                <div className="conversation-list__text">
-                                    <span
-                                        className={`conversation-list__name ${isSelected || item.unreadCount || item.isGroup ? "conversation-list__name--bold" : ""}`}>
+                                    <div className="conversation-list__text">
+                                      <span className={`conversation-list__name ${isSelected || item.unreadCount || item.isGroup ? "conversation-list__name--bold" : ""}`}>
                                         {item.name}
-                                    </span>
-                                    <span className="conversation-list__last">
-                                        {item.senderPrefix && (
-                                            <strong className="conversation-list__sender">
-                                                {item.senderPrefix}{" "}
-                                            </strong>)}
+                                      </span>
+                                      <span className="conversation-list__last">
+                                        {item.senderPrefix && (<strong className="conversation-list__sender">{item.senderPrefix}{" "}</strong>)}
                                         {item.lastMessage}
-                                    </span>
-                                </div>
+                                      </span>
+                                    </div>
 
-                                <div className="conversation-list__meta">
-                                    <span
-                                        className={`conversation-list__time ${isSelected ? "conversation-list__time--active" : ""}`}>
-                                        {displayTime}
-                                    </span>
-                                    {item.unreadCount && (
-                                        <span className="conversation-list__unread-badge">{item.unreadCount}</span>)}
-                                </div>
-                            </button>
-                        </li>
-                    );
-                })}
+                                    <div className="conversation-list__meta">
+                                      <span className={`conversation-list__time ${isSelected ? "conversation-list__time--active" : ""}`}>
+                                        {item.time}
+                                      </span>
+                                       {item.unreadCount && (
+                                            <span className="conversation-list__unread-badge">
+                                              {item.unreadCount}
+                                            </span>)}
+                                    </div>
+                                </button>
+                            </li>
+                        );
+                    })}
             </ul>
-
-            <div className="conversation-list__footer">
-                <div className="conversation-list__network">
-                    <span className="conversation-list__network-dot"></span>
-                    <span>Mạng kết nối: Rất tốt</span>
-                </div>
-                <span className="conversation-list__version">v1.0.0</span>
-            </div>
         </aside>
     );
 }
