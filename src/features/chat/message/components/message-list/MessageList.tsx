@@ -37,7 +37,7 @@ export default function MessageList({conversations, user}) {
         }
     })
 
-    console.log("MSG LISTTTTT group: ",groupedMessages);
+    // console.log("MSG LISTTTTT group: ",groupedMessages);
 
     // ============== XỬ LÝ ĐA NGÔN NGỮ ==============
     const {t} = useTranslation("message");
@@ -81,20 +81,6 @@ export default function MessageList({conversations, user}) {
                                         </li>
                                     )
                                 }
-                                <div style={{
-                                    background: "red",
-                                    color: "white",
-                                    padding: "10px"
-                                }}>
-                                    TEST MESSAGE LIST
-                                    {groupedMessages.map(group =>
-                                        group.messages.map(msg => (
-                                            <div key={msg.id}>
-                                                {msg.mes}
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
                                 {
                                     group.messages.map((msg, index) => (
                                         <li key={index}>

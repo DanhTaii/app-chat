@@ -10,12 +10,12 @@ function ChatPage() {
 
     // 1 là room chat |
     // 0 là people chat
+    //
+    // const receiverName = "Wabisoo_";
+    // const typeConversation = 0;
 
-    const receiverName = "Wabisoo_";
-    const typeConversation = 0;
-
-    // const receiverName = "Lớp Karate thầy Quang"
-    // const typeConversation = 1;
+    const receiverName = "Lớp Karate thầy Quang"
+    const typeConversation = 1;
 
 
     const handleToggleInfo = () => {

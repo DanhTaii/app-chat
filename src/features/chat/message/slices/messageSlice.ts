@@ -3,6 +3,9 @@ import type {
     PeopleConversation, RoomConversation
 } from "@/features/chat/message/types.ts";
 
+// 1 là room chat |
+// 0 là people chat
+
 // DỊNH DẠNG KIỂU MESSAGE STATE SẼ NHẬN LÀ DANH SÁCH CÁC DẠNG MESSGAE
 type MessageState = {
     conversations: {
@@ -57,8 +60,13 @@ const messageSlice = createSlice({
 
         addRoomMessages: (state, action) => {
             const {name, message} = action.payload;
-            state.conversations[name].messages.push(message)
-
+            if (!state.conversations[name]) {
+                state.conversations[name] = {
+                    type: 0,
+                    messages: []
+                }
+            }
+            state.conversations[name].messages.unshift(message)
         },
     }
 });

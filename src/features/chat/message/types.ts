@@ -54,6 +54,19 @@ export interface GetRoomChatMessResponse {
     mes?: string;
 }
 
+export interface SendRoomChatRequest {
+    type: string,
+    to: string,
+    mes: string
+}
+
+export interface SendRoomChatResponse {
+    name: string,
+    to: string,
+    mes: string,
+    type: 0 | 1
+}
+
 // ======================================= SỬ DUỤNG CHO REDUX STORE
 // 1 là room chat |
 // 0 là people chat
