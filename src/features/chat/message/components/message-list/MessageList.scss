@@ -53,6 +53,9 @@
     }
 
     .receiver-msg__list-content {
+      flex: 1;
+      min-width: 0;
+
       li:not(.receiver-msg__name) {
         @include msg(
           $color-bg: var(--color-incoming-message-background),
@@ -68,9 +71,12 @@
   }
 
   .sender-msg__block {
+    width: 100%;
     @include mixins.flex-layout($justify: flex-end);
 
     .sender-msg__list-content {
+      width: 100%;
+      min-width: 0;
       @include mixins.flex-layout(
         $justify: flex-end,
         $direction: column,
