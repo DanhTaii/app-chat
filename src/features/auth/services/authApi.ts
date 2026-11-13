@@ -10,3 +10,8 @@ export function login(params: LoginRequest): Promise<SocketResponse<LoginRespons
 export function reLogin(params: ReLoginRequest): Promise<SocketResponse<ReLoginResponseData>> {
     return chatSocket.request<ReLoginResponseData>("RE_LOGIN", params);
 }
+
+// logout
+export function logout(): Promise<SocketResponse<string>> {
+    return chatSocket.request<string>("LOGOUT", {});
+}

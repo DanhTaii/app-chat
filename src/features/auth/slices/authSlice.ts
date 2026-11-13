@@ -17,11 +17,15 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isLoggedIn = true;
     },
+    logout: (state) => {
+      state.user = null;
+      state.isLoggedIn = false;
+    },
     updateReLoginCode: (state, action: PayloadAction<string>) => {
       if (state.user) state.user.reLoginCode = action.payload;
     },
   },
 });
 
-export const { loginSuccess, updateReLoginCode} = authSlice.actions;
+export const { loginSuccess, logout, updateReLoginCode} = authSlice.actions;
 export default authSlice.reducer;
