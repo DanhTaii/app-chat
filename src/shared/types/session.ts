@@ -32,3 +32,9 @@ export interface ReLoginRequest {
 export interface ReLoginResponseData {
   RE_LOGIN_CODE: string;
 }
+
+// request cua register
+export interface RegisterRequest {
+    user: string;
+    pass: string;
+}

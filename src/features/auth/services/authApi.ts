@@ -1,5 +1,10 @@
 import chatSocket, { type SocketResponse } from "@/shared/services/socket/socketService";
-import type { LoginRequest,LoginResponseData, ReLoginRequest, ReLoginResponseData } from "@/shared/types/session";
+import type { LoginRequest,LoginResponseData, ReLoginRequest, ReLoginResponseData, RegisterRequest } from "@/shared/types/session";
+
+// register
+export function register(params: RegisterRequest): Promise<SocketResponse<string>> {
+    return chatSocket.request<string>("REGISTER", params);
+}
 
 // login
 export function login(params: LoginRequest): Promise<SocketResponse<LoginResponseData>> {
