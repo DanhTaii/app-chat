@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.LOGIN,
-        element: <ReloginCheckingPage page="login" />,
+        element: <LoginPage />,
       },
       {
         path: ROUTES.REGISTER,
@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.CHAT,
-        element: <ReloginCheckingPage page="chat" />,
+        element: <ReloginCheckingPage />,
       },
       {
         path: ROUTES.COMPONENTS,
@@ -45,12 +45,7 @@ export const router = createBrowserRouter([
   },
 ]);
 
-function ReloginCheckingPage({ page }: { page: "login" | "chat" }) {
+function ReloginCheckingPage() {
     const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-
-    if (page === "login") {
-        return isLoggedIn ? <Navigate to={ROUTES.CHAT} replace /> : <LoginPage />;
-    }
-
     return isLoggedIn ? <ChatPage /> : <Navigate to={ROUTES.LOGIN} replace />;
 }

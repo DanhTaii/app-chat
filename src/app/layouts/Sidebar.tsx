@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ROUTES } from "../router/routes";
 import {
@@ -8,12 +8,23 @@ import {
     type Theme,
 } from "../../shared/utils/theme";
 import "./Sidebar.scss";
+import chatSocket from "../../shared/services/socket/socketService";
+import { logout as logoutApi } from "../../features/auth/services/authApi";
+import { clearSession } from "../../features/auth/services/authSession";
+import { logout as logoutSuccess } from "../../features/auth/slices/authSlice";
+import { useAppDispatch } from "../store/hooks";
 
 function Sidebar() {
     const { i18n } = useTranslation();
     const [currentLanguage, setCurrentLanguage] = useState("vi");
     const [theme, setTheme] = useState<Theme>(getInitialTheme);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
+
+    // logout
+    const [logOut, setLogOut] = useState(false);
+    const [logoutError, setLogoutError] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const toggleTheme = () => {
         const nextTheme = theme === "dark" ? "light" : "dark";
@@ -24,6 +35,28 @@ function Sidebar() {
     const toggleTranslateLanguage = () => {
         setCurrentLanguage(currentLanguage === "en" ? "vi" : "en");
         i18n.changeLanguage(currentLanguage === "en" ? "vi" : "en");
+    };
+
+    const handleLogout = async () => {
+        if (logOut) return;
+
+        setLogOut(true);
+        setLogoutError(null);
+        try {
+            const response = await logoutApi();
+            if (response.status !== "success") {
+                throw new Error(response.mes || "Đăng xuất thất bại.");
+            }
+
+            clearSession();
+            dispatch(logoutSuccess());
+            chatSocket.disconnect();
+            navigate(ROUTES.LOGIN, { replace: true });
+        } catch (error) {
+            setLogoutError(error instanceof Error ? error.message : "Đăng xuất thất bại.");
+        } finally {
+            setLogOut(false);
+        }
     };
 
     return (
@@ -63,8 +96,10 @@ function Sidebar() {
                             <button
                                 type="button"
                                 className="sidebar__menu-item sidebar__menu-item--danger"
+                                onClick={handleLogout}
+                                disabled={logOut}
                             >
-                                <span>Log out</span>
+                                <span>{logOut ? "Đang đăng xuất…" : "Đăng xuất"}</span>
                             </button>
                         </div>
                     )}
