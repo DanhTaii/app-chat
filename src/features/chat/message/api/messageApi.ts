@@ -2,7 +2,7 @@ import chatSocket, {type SocketResponse} from "@/shared/services/socket/socketSe
 import type {
     GetPeopleChatMessRequest,
     GetPeopleChatMessResponse, GetRoomChatMessRequest, GetRoomChatMessResponse,
-    SendPeopleChatRequest, SendPeopleChatResponse, SendRoomChatRequest, SendRoomChatResponse
+    SendPeopleChatRequest, SendRoomChatRequest
 } from "@/features/chat/message/types.ts";
 
 export async function findListMessage(params: GetPeopleChatMessRequest): Promise<SocketResponse<GetPeopleChatMessResponse>> {
@@ -18,9 +18,9 @@ export async function findListMessage(params: GetPeopleChatMessRequest): Promise
     }
 }
 
-export async function sendMessageSingle(params: SendPeopleChatRequest): Promise<SocketResponse<SendPeopleChatResponse>> {
+export function sendMessageSingle(params: SendPeopleChatRequest) {
     try {
-        return await chatSocket.request<SendPeopleChatResponse>(
+        return chatSocket.send(
             "SEND_CHAT",
             params
         )
@@ -42,9 +42,9 @@ export async function findGroupListMessage(params: GetRoomChatMessRequest): Prom
     }
 }
 
-export async function sendMessageRoom(params: SendRoomChatRequest): Promise<SocketResponse<SendRoomChatResponse>> {
+export function sendMessageRoom(params: SendRoomChatRequest) {
     try {
-        return await chatSocket.request<SendPeopleChatResponse>(
+        return chatSocket.send(
             "SEND_CHAT",
             params
         )
