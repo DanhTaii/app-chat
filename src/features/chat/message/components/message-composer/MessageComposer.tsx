@@ -1,11 +1,10 @@
 import './MessageComposer.scss'
+// @ts-ignore
 import Button from "../../../../../shared/components/Button";
 import Input from "../../../../../shared/components/Input";
 import {useTranslation} from "react-i18next";
-import {sendMessageRoom, sendMessageSingle} from "@/features/chat/message/services/messageApi.ts";
 import {useState} from "react";
-import {useAppDispatch} from "@/app/store/hooks.ts";
-import {addPeopleMessages} from "@/features/chat/message/slices/messageSlice.ts";
+import {useSendMessage} from "@/features/chat/message/hooks/useSendMessage.ts";
 
 // @ts-ignore
 // 1 là room chat |
@@ -13,45 +12,18 @@ import {addPeopleMessages} from "@/features/chat/message/slices/messageSlice.ts"
 export default function MessageComposer({receiverName, user, conversationType}) {
     const [mes, setMes] = useState("")
     const {t} = useTranslation("message");
-    const dispatch = useAppDispatch();
 
-    const sendMessage = async () => {
+    const {sendMessage} = useSendMessage(receiverName, user.username, conversationType);
+
+    const handleSendMessage = async () => {
         const content = mes.trim();
 
         if (!content) return;
 
-        // console.log("SENDER:", {
-        //     receiverName,
-        //     content
-        // });
-
-        dispatch(addPeopleMessages({
-            name: receiverName,
-            message: {
-                // id?: number;
-                name: user?.username,
-                to: receiverName,
-                mes: content,
-                createAt: new Date().toISOString(),
-                type: conversationType,
-            }
-        }))
-
-        if (conversationType === 0) {
-            sendMessageSingle({
-                type: "people",
-                to: receiverName,
-                mes: content
-            });
-        } else if (conversationType === 1) {
-            sendMessageRoom({
-                type: "room",
-                to: receiverName,
-                mes: content
-            })
+        const success = await sendMessage(content);
+        if (success) {
+            setMes("")
         }
-
-        setMes("");
     }
 
     return (
@@ -87,7 +59,7 @@ export default function MessageComposer({receiverName, user, conversationType}) 
                             onChange={event => setMes(event.target.value)}
                         />
 
-                        <Button type="button" className="btn" onClick={sendMessage}>
+                        <Button type="button" className="btn" onClick={handleSendMessage}>
                             {/*{t("message.button.send")}*/}
                             <i className="fa-solid fa-paper-plane"></i>
                         </Button>
