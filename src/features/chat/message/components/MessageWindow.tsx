@@ -5,7 +5,13 @@ import MessageHeader from "@/features/chat/message/components/message-header/Mes
 import {findGroupListMessage, findListMessage} from "@/features/chat/message/services/messageApi.ts";
 import {useAppDispatch, useAppSelector} from "@/app/store/hooks.ts";
 import {useEffect} from "react";
-import {loadPeopleMessages, loadRoomMessages} from "@/features/chat/message/slices/messageSlice.ts";
+import {
+    addPeopleMessages,
+    addRoomMessages,
+    loadPeopleMessages,
+    loadRoomMessages
+} from "@/features/chat/message/slices/messageSlice.ts";
+import chatSocket from "@/shared/services/socket/socketService.ts";
 
 // @ts-ignore
 function MessageWindow({receiverName, conversationType, onToggleInfo}) {
@@ -59,7 +65,90 @@ function MessageWindow({receiverName, conversationType, onToggleInfo}) {
             getRoomListMessage(receiverName, page)
         }
 
-        console.log("MSG WINDOW - CONVERSATION: ",conversations)
+        // console.log("MSG WINDOW - CONVERSATION: ",conversations)
+
+
+        function handleIncomingMessage(serverResponse: any) {
+            // BƯỚC 1: KIỂM TRA RESPONSE
+            console.log("========== NHẬN TIN NHẮN TỪ SERVER ==========");
+            console.log("SERVER RESPONSE:", serverResponse);
+
+            if (
+                serverResponse.status !== "success" ||
+                !serverResponse.data
+            ) {
+                console.log("RESPONSE KHÔNG HỢP LỆ HOẶC BỊ ERROR");
+                return;
+            }
+
+            // BƯỚC 2: KIỂM TRA DỮ LIỆU
+            console.log("========== CHECK PEOPLE MESSAGE ==========");
+
+            console.log({
+                conversationType: conversationType,
+                messageType: serverResponse.data.type,
+
+                receiverName: receiverName,
+                currentUsername: user?.username,
+
+                sender: serverResponse.data.name,
+                to: serverResponse.data.to,
+
+                check1: conversationType === 0,
+                check2: serverResponse.data.type === 0,
+                check3: serverResponse.data.to === user?.username,
+                check4: serverResponse.data.name === receiverName
+            });
+
+            if (serverResponse.status === "success" && serverResponse.data) {
+                console.log("1. CHUẨN BỊ DISPATCH:", {
+                    name: receiverName,
+                    message: serverResponse.data
+                });
+
+                if (conversationType === 0 &&
+                    conversationType === serverResponse.data.type &&
+                    receiverName === serverResponse.data.to
+                ) {
+                    dispatch(addPeopleMessages({
+                        name: serverResponse.data.to,
+                        message: {
+                            name: serverResponse.data.name,
+                            to: serverResponse.data.to,
+                            mes: serverResponse.data.mes,
+                            createAt: new Date().toISOString(),
+                            type: serverResponse.data.type,
+                        }
+                    }))
+                    console.log("2. ĐÃ GỌI DISPATCH PEOPLE MESSAGE");
+                } else if (
+                    conversationType === 1 &&
+                    conversationType === serverResponse.data.type &&
+                    receiverName === serverResponse.data.to
+                ) {
+                    dispatch(addRoomMessages({
+                        name: serverResponse.data.to,
+                        message: {
+                            name: serverResponse.data.name,
+                            to: serverResponse.data.to,
+                            mes: serverResponse.data.mes,
+                            createAt: new Date().toISOString(),
+                            type: serverResponse.data.type,
+                        }
+                    }));
+                    console.log("2. ĐÃ GỌI DISPATCH ROOM MESSAGE");
+                } else {
+                    console.log("KHÔNG THỎA ĐIỀU KIỆN NÀO HẾT")
+                }
+            }
+        }
+
+        chatSocket.subscribeReceiveMessage("SEND_CHAT", handleIncomingMessage)
+
+        return () => {
+            chatSocket.unsubscribeReceiveMessage("SEND_CHAT", handleIncomingMessage)
+        }
+
 
     }, [dispatch, receiverName, conversationType]);
 

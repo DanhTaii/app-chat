@@ -21,6 +21,7 @@ function ChatPage() {
     const receiverName = selectedConversation?.name ?? "";
     const typeConversation = selectedConversation?.type ?? null;
 
+    console.log("+++++++++++TÊN RECEIVER TỪ CHAT PAGE GỬI QUA: ", receiverName);
 
     const handleToggleInfo = () => {
         // prev là giá trị state trước khi cập nhật.
