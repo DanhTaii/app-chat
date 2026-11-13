@@ -2,6 +2,7 @@ import './MessageList.scss'
 import {useTranslation} from "react-i18next";
 import type {Message} from "@/features/chat/message/types.ts";
 import {useEffect, useRef} from "react";
+import {useMessage} from "@/features/chat/message/hooks/useMessage.ts";
 
 type MessageGroup = {
     isSender: boolean,
@@ -10,13 +11,12 @@ type MessageGroup = {
 }
 
 // @ts-ignore
-export default function MessageList({conversations, user}) {
+export default function MessageList({receiverName, user, conversationType}) {
     // 1 là room chat |
     // 0 là people chat
 
-    // console.log("MSG LISTTTTT: ",listMsg);
-    const listMsg = conversations?.messages ?? [];
-    const conversationType = conversations.type;
+    const {conversations} = useMessage(receiverName, 1, conversationType);
+    const listMsg = conversations.messages ?? []
 
     // ============== XỬ LÝ DANH SÁCH TIN NHẮN NHẬN TỪ API ==============
     const groupedMessages: MessageGroup[] = [];

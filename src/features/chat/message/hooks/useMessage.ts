@@ -14,7 +14,7 @@ import {useEffect} from "react";
 export function useMessage(receiver: string, page: number, conversationType: number) {
     const dispatch = useAppDispatch();
 
-    const messages = useAppSelector(state =>
+    const conversations = useAppSelector(state =>
         selectMessagesByConversationName(state, receiver)
     );
 
@@ -58,5 +58,5 @@ export function useMessage(receiver: string, page: number, conversationType: num
 
     }, [dispatch, receiver, conversationType])
 
-    return {messages};
+    return {conversations};
 }
