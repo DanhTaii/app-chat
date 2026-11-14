@@ -2,7 +2,7 @@ import chatSocket, { type SocketResponse } from "@/shared/services/socket/socket
 import type {
   ReLoginRequest,
   ReLoginResponseData,
-} from "@/shared/types/session";
+} from "../../types";
 
 export function reLogin(params: ReLoginRequest): Promise<SocketResponse<ReLoginResponseData>> {
   return chatSocket.request<ReLoginResponseData>("RE_LOGIN", params);
