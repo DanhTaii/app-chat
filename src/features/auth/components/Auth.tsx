@@ -8,7 +8,9 @@ import chatSocket, { type SocketResponse } from "../../../shared/services/socket
 import { loginSuccess } from "../slices/authSlice";
 import { login } from "../services/authApi";
 import { saveSession } from "../services/authSession";
-import brandIcon from "../../../shared/assets/logo.png";
+import logoLight from "../../../shared/assets/logo-light.svg";
+import logoDark from "../../../shared/assets/logo-dark.svg";
+import { getInitialTheme } from "../../../shared/utils/theme";
 import {
   isValidPassword,
   isValidUsername,
@@ -40,6 +42,9 @@ function Auth() {
   // hàm dispatch
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  // theme
+  const theme = getInitialTheme();
 
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -83,7 +88,7 @@ function Auth() {
   return (
     <div className="auth-panel">
       <header className="auth-heading">
-        <img className="auth-brand-icon" src={brandIcon} alt="" />
+        <img className="auth-brand-icon" src={theme === "dark" ? logoDark : logoLight} alt="Logo"/>
         <h3 id="login-title">Đăng nhập</h3>
       </header>
       <section className="login-card" aria-labelledby="login-title">

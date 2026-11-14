@@ -1,4 +1,4 @@
-import ConversationList from '../conversation/components/conversation-list'
+import ConversationList from '../conversation/components/ConversationList.tsx'
 import MessageWindow from '../message/components/MessageWindow.tsx'
 import './chat-page.scss'
 import InfoPanel from "@/features/chat/info-panel/components/InfoPanel.tsx";

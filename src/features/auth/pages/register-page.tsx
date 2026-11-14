@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "../../../shared/components/button";
 import Input from "../../../shared/components/Input";
 import { ROUTES } from "../../../app/router/routes";
-import brandIcon from "../../../shared/assets/logo.png";
+import brandIcon from "../../../shared/assets/logo-dark.svg";
 import {
   isValidPassword,
   isValidUsername,
