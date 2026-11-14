@@ -1,4 +1,4 @@
-import type { AuthSession } from "@/shared/types/session";
+import type { AuthSession } from "../../types";
 
 const SESSION_KEY = "session_key";
 const SESSION_LIMIT = 2 * 60 * 60 * 1000; // 2 tieng

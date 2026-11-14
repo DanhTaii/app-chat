@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { AuthState } from "@/shared/types/session";
-import type { User } from "@/shared/types/user";
+import type { AuthState, User } from "../types";
 
 // state ban dau : chua dang nhap
 const initialState: AuthState = {
