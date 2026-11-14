@@ -29,27 +29,21 @@
 
   // Màu trạng thái thành công
   --color-success: #16a34a; // Màu chữ, icon hoặc biểu tượng thể hiện thao tác thành công
-  --color-success-background: #dcfce7; // Màu nền thông báo thành công
-  --color-success-border: #86efac; // Màu viền thông báo thành công
 
   // Màu trạng thái cảnh báo
   --color-warning: #d97706; // Màu chữ và icon thể hiện trạng thái cần chú ý
-  --color-warning-background: #fef3c7; // Màu nền thông báo cảnh báo
   --color-warning-border: #fcd34d; // Màu viền thông báo cảnh báo
 
   // Màu trạng thái thông tin
-  --color-info: #0284c7; // Màu chữ và icon hiển thị thông tin
   --color-info-background: #e0f2fe; // Màu nền thông báo thông tin
   --color-info-border: #7dd3fc; // Màu viền thông báo thông tin
 
   // Màu trạng thái lỗi
   --color-danger: #dc2626; // Màu chữ và icon thể hiện lỗi hoặc thao tác không hợp lệ
   --color-danger-background: #fee2e2; // Màu nền thông báo lỗi
-  --color-danger-border: #fca5a5; // Màu viền thông báo lỗi
 
   // Màu tương tác với các thành phần giao diện
   --color-hover: rgba(2, 132, 199, 0.08); // Màu nền khi di chuột lên thành phần
-  --color-active: rgba(2, 132, 199, 0.16); // Màu nền khi người dùng nhấn vào thành phần
 
   --color-disabled: #e2e8f0; // Màu nền của thành phần bị vô hiệu hóa
   --color-disabled-text: #94a3b8; // Màu chữ của thành phần bị vô hiệu hóa
@@ -65,30 +59,10 @@
 
   // Màu khu vực nhập tin nhắn
   --color-chat-input-background: #ffffff; // Màu nền ô nhập tin nhắn
-  --color-chat-input-border: #d8e3e9; // Màu đường viền ô nhập tin nhắn
   --color-chat-placeholder: #94a3b8; // Màu chữ gợi ý bên trong ô nhập tin nhắn
-
-  // Màu thông báo tin nhắn
-  --color-unread-badge: #0284c7; // Màu nền thông báo số lượng tin nhắn chưa đọc
-  --color-unread-badge-text: #ffffff; // Màu chữ hiển thị số lượng tin nhắn chưa đọc
 
   // Màu trạng thái hoạt động của người dùng
   --color-status-online: #22c55e; // Màu biểu thị người dùng đang trực tuyến
-  --color-status-offline: #94a3b8; // Màu biểu thị người dùng đang ngoại tuyến
-  --color-status-away: #f59e0b; // Màu biểu thị người dùng đang vắng mặt
-  --color-status-busy: #ef4444; // Màu biểu thị người dùng đang bận
-
-  // Màu lớp phủ và cửa sổ thông báo
-  --color-overlay-background: rgba(15, 23, 42, 0.5); // Màu nền phủ phía sau modal hoặc popup
-
-  // Màu thanh cuộn
-  --color-scrollbar-track: transparent; // Màu nền của khu vực chứa thanh cuộn
-  --color-scrollbar-thumb: #cbd5e1; // Màu phần thanh cuộn
-  --color-scrollbar-thumb-hover: #94a3b8; // Màu thanh cuộn khi người dùng di chuột lên
-
-  // Màu liên kết
-  --color-link: #0284c7; // Màu chữ của các liên kết
-  --color-link-hover: #0369a1; // Màu liên kết khi người dùng di chuột lên
 
   // Kích thước chữ
   --font-size-extra-small: 12px; // Chữ rất nhỏ, dùng cho ghi chú và thông tin phụ
@@ -130,7 +104,7 @@
   --color-on-primary: #082f49; // Màu chữ và icon trên nền màu chủ đạo trong giao diện tối
 
   // Màu nền trang và các thành phần giao diện
-  --color-page-background: #111827; // Màu nền tổng thể của trang web
+  --color-page-background: #081014; // Màu nền tổng thể của trang web
   --color-raised-surface-background: rgba(255, 255, 255, 0.12); // Màu nền các thành phần nổi trên bề mặt
   --color-surface-background: #101D24; // Màu nền các thành phần chung trong giao diện tối
   --color-subtle-surface-background: #0C151A; // Màu nền phụ cho các khu vực ít nổi bật
@@ -152,27 +126,21 @@
 
   // Màu trạng thái thành công
   --color-success: #4ade80; // Màu chữ và icon thể hiện thao tác thành công
-  --color-success-background: #14532d; // Màu nền thông báo thành công
-  --color-success-border: #166534; // Màu viền thông báo thành công
 
   // Màu trạng thái cảnh báo
   --color-warning: #fbbf24; // Màu chữ và icon thể hiện trạng thái cần chú ý
-  --color-warning-background: #78350f; // Màu nền thông báo cảnh báo
   --color-warning-border: #92400e; // Màu viền thông báo cảnh báo
 
   // Màu trạng thái thông tin
-  --color-info: #38bdf8; // Màu chữ và icon hiển thị thông tin
   --color-info-background: #12334a; // Màu nền thông báo thông tin
   --color-info-border: #075985; // Màu viền thông báo thông tin
 
   // Màu trạng thái lỗi
   --color-danger: #f87171; // Màu chữ và icon thể hiện lỗi
   --color-danger-background: #7f1d1d; // Màu nền thông báo lỗi
-  --color-danger-border: #991b1b; // Màu viền thông báo lỗi
 
   // Màu tương tác với các thành phần giao diện
   --color-hover: rgba(56, 189, 248, 0.1); // Màu nền khi di chuột lên thành phần
-  --color-active: rgba(56, 189, 248, 0.2); // Màu nền khi người dùng nhấn vào thành phần
 
   --color-disabled: #374151; // Màu nền của thành phần bị vô hiệu hóa
   --color-disabled-text: #9ca3af; // Màu chữ của thành phần bị vô hiệu hóa
@@ -187,30 +155,10 @@
 
   // Màu khu vực nhập tin nhắn
   --color-chat-input-background: #1f2937; // Màu nền ô nhập tin nhắn
-  --color-chat-input-border: #37475a; // Màu đường viền ô nhập tin nhắn
   --color-chat-placeholder: #9ca3af; // Màu chữ gợi ý bên trong ô nhập tin nhắn
-
-  // Màu thông báo tin nhắn
-  --color-unread-badge: #38bdf8; // Màu nền thông báo số lượng tin nhắn chưa đọc
-  --color-unread-badge-text: #082f49; // Màu chữ hiển thị số lượng tin nhắn chưa đọc
 
   // Màu trạng thái hoạt động của người dùng
   --color-status-online: #4ade80; // Màu biểu thị người dùng đang trực tuyến
-  --color-status-offline: #64748b; // Màu biểu thị người dùng đang ngoại tuyến
-  --color-status-away: #fbbf24; // Màu biểu thị người dùng đang vắng mặt
-  --color-status-busy: #f87171; // Màu biểu thị người dùng đang bận
-
-  // Màu lớp phủ và cửa sổ thông báo
-  --color-overlay-background: rgba(0, 0, 0, 0.65); // Màu nền phủ phía sau modal hoặc popup
-
-  // Màu thanh cuộn
-  --color-scrollbar-track: transparent; // Màu nền của khu vực chứa thanh cuộn
-  --color-scrollbar-thumb: #475569; // Màu phần thanh cuộn
-  --color-scrollbar-thumb-hover: #64748b; // Màu thanh cuộn khi người dùng di chuột lên
-
-  // Màu liên kết
-  --color-link: #38bdf8; // Màu chữ của các liên kết
-  --color-link-hover: #7dd3fc; // Màu liên kết khi người dùng di chuột lên
 }
 
 * {

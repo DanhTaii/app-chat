@@ -9,9 +9,9 @@ import {
 } from "../../shared/utils/theme";
 import "./Sidebar.scss";
 import chatSocket from "../../shared/services/socket/socketService";
-import { logout as logoutApi } from "../../features/auth/services/authApi";
-import { clearSession } from "../../features/auth/services/authSession";
-import { logout as logoutSuccess } from "../../features/auth/slices/authSlice";
+import { logout as logoutApi } from "../../features/auth/session/api/sessionApi";
+import { clearSession } from "../../features/auth/session/services/authSession";
+import { logout as logoutSuccess } from "../../features/auth/store/authSlice";
 import { useAppDispatch } from "../store/hooks";
 import logoLight from "../../shared/assets/logo-light.svg";
 import logoDark from "../../shared/assets/logo-dark.svg";

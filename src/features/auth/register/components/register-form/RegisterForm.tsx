@@ -1,60 +1,33 @@
-import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import Button from "../../../shared/components/button";
-import Input from "../../../shared/components/Input";
-import { ROUTES } from "../../../app/router/routes";
-import brandIcon from "../../../shared/assets/logo-dark.svg";
-import {
-  isValidPassword,
-  isValidUsername,
-} from "../../../shared/utils/validators";
-import chatSocket from "../../../shared/services/socket/socketService";
-import { register } from "../services/authApi";
-import "./login-page.scss";
+import Button from "../../../../../shared/components/Button";
+import Input from "../../../../../shared/components/Input";
+import { ROUTES } from "../../../../../app/router/routes";
+import { useRegister } from "../../hooks/useRegister";
 
-function RegisterPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const usernameValid = isValidUsername(username);
-  const passwordValid = isValidPassword(password);
-  const passwordsMatch =
-    confirmPassword.length > 0 && password === confirmPassword;
-  const formValid = usernameValid && passwordValid && passwordsMatch;
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!formValid || loading) return;
-
-    setLoading(true);
-    setMessage(null);
-    setError(null);
-
-    try {
-      await chatSocket.connect();
-      const response = await register({ user: username, pass: password });
-      setMessage(response.data || "Tạo tài khoản đc!");
-    } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Đăng ký fail rùi");
-    } finally {
-      setLoading(false);
-    }
-  };
+function RegisterForm() {
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    showPassword,
+    setShowPassword,
+    showConfirmPassword,
+    setShowConfirmPassword,
+    loading,
+    message,
+    error,
+    usernameValid,
+    passwordValid,
+    passwordsMatch,
+    formValid,
+    handleSubmit,
+  } = useRegister();
 
   return (
-    <div className="login-page">
-      <div className="auth-panel">
-        <header className="auth-heading">
-          <img className="auth-brand-icon" src={brandIcon} alt="" />
-          <h3 id="register-title" className="register-title">Đăng ký</h3>
-        </header>
-        <section className="login-card" aria-labelledby="register-title">
-
+    <>
         <form
           className="login-form"
           onSubmit={handleSubmit}
@@ -164,10 +137,8 @@ function RegisterPage() {
         <p className="register-login-link">
           Đã có tài khoản? <Link to={ROUTES.LOGIN}>Đăng nhập</Link>
         </p>
-        </section>
-      </div>
-    </div>
+    </>
   );
 }
 
-export default RegisterPage;
+export default RegisterForm;
