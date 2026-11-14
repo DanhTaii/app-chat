@@ -3,9 +3,9 @@ import { RouterProvider } from "react-router-dom";
 import { useAppDispatch } from "./store/hooks";
 import { router } from "./router/router";
 import chatSocket from "../shared/services/socket/socketService";
-import { reLogin } from "../features/auth/services/authApi";
-import {checkAndGetSession,clearSession,saveSession} from "../features/auth/services/authSession";
-import { loginSuccess } from "../features/auth/slices/authSlice";
+import { reLogin } from "../features/auth/session/api/sessionApi";
+import {checkAndGetSession,clearSession,saveSession} from "../features/auth/session/services/authSession";
+import { loginSuccess } from "../features/auth/store/authSlice";
 import type { User } from "../shared/types/user";
 
 let restoreSessionRequest: Promise<User | null> | null = null;
