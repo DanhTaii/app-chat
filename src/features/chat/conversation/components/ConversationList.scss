@@ -14,10 +14,14 @@
   }
 
   &__header {
-    @include mixins.flex-layout($justify: space-between, $align: center);
+    @include mixins.flex-layout($justify: space-between, $align: center, $gap: 8px);
 
     h2 {
       margin: 0;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       font-size: var(--font-size-extra-large);
       font-weight: var(--font-weight-bold);
       color: var(--color-primary-text);
@@ -26,6 +30,7 @@
 
   &__compose-btn {
     @include mixins.flex-layout($justify: center, $align: center);
+    flex-shrink: 0;
     width: 32px;
     height: 32px;
     border: none;
@@ -169,7 +174,18 @@
 
     &--group {
       border-radius: var(--border-radius-large);
+      background: var(--color-primary);
+      border: none;
+      :root[data-theme="dark"] & {
+        background: var(--color-outgoing-message-background);
+      }
     }
+  }
+
+  &__avatar-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
   }
 
   &__online-dot {
