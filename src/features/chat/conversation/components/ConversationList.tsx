@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import "./conversation-list.scss";
+import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { getUserList } from "@/features/chat/conversation/services/conversationApi";
 import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";

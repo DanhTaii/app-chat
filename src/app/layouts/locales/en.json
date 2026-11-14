@@ -1,0 +1,12 @@
+{
+  "sidebar": {
+    "light": "Light",
+    "dark": "Dark",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "changeLanguage": "Change language",
+    "logout": "Log out",
+    "exit": "Logout",
+    "logoutFailed": "Logout failed."
+  }
+}

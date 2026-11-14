@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ROUTES } from "../router/routes";
 import {
@@ -13,12 +13,15 @@ import { logout as logoutApi } from "../../features/auth/session/api/sessionApi"
 import { clearSession } from "../../features/auth/session/services/authSession";
 import { logout as logoutSuccess } from "../../features/auth/store/authSlice";
 import { useAppDispatch } from "../store/hooks";
+import logoLight from "../../shared/assets/logo-light.svg";
+import logoDark from "../../shared/assets/logo-dark.svg";
+import themeLight from "../../shared/assets/theme-light.svg";
+import themeDark from "../../shared/assets/theme-dark.svg";
 
 function Sidebar() {
-    const { i18n } = useTranslation();
-    const [currentLanguage, setCurrentLanguage] = useState("vi");
+    const { t, i18n } = useTranslation("layout");
+    const currentLanguage = i18n.language === "en" ? "en" : "vi";
     const [theme, setTheme] = useState<Theme>(getInitialTheme);
-    const [isSettingOpen, setIsSettingOpen] = useState(false);
 
     // logout
     const [logOut, setLogOut] = useState(false);
@@ -33,8 +36,8 @@ function Sidebar() {
     };
 
     const toggleTranslateLanguage = () => {
-        setCurrentLanguage(currentLanguage === "en" ? "vi" : "en");
-        i18n.changeLanguage(currentLanguage === "en" ? "vi" : "en");
+        const nextLanguage = currentLanguage === "en" ? "vi" : "en";
+        i18n.changeLanguage(nextLanguage);
     };
 
     const handleLogout = async () => {
@@ -62,56 +65,21 @@ function Sidebar() {
     return (
         <aside className="sidebar">
             <div className="sidebar__top">
-                <img className="sidebar__logo" src="/src/shared/assets/logo-light.svg" alt="App Logo"/>
-
-                <NavLink to={ROUTES.CHAT} className={({isActive}) => isActive ? "sidebar__item sidebar__item--active" : "sidebar__item"}>
-                    <img className="sidebar__icon" src="/src/shared/assets/messages.svg" alt="Tin nhắn"/>
-                    <span>Tin nhắn</span>
-                </NavLink>
-
-                {/*phần setting*/}
-                <div className="sidebar__setting">
-                    <button type="button" className="sidebar__item"
-                        onClick={() => setIsSettingOpen(!isSettingOpen)}>
-                        <img className="sidebar__icon" src="/src/shared/assets/setting.svg" alt="Cài đặt"/>
-                        <span>Cài đặt</span>
-                    </button>
-
-                    {isSettingOpen && (
-                        <div className="sidebar__menu">
-                            <button type="button" className="sidebar__menu-item" onClick={toggleTheme}>
-                                <span>{theme === "dark" ? "☀️" : "🌙"}</span>
-                                <span>Theme ({theme})</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                className="sidebar__menu-item"
-                                onClick={toggleTranslateLanguage}
-                            >
-                                <i className="fa-solid fa-globe"></i>
-                                <span>Language ({currentLanguage.toUpperCase()})</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                className="sidebar__menu-item sidebar__menu-item--danger"
-                                onClick={handleLogout}
-                                disabled={logOut}
-                            >
-                                <span>{logOut ? "Đang đăng xuất…" : "Đăng xuất"}</span>
-                            </button>
-                        </div>
-                    )}
-                </div>
+                <img className="sidebar__logo" src={theme === "dark" ? logoDark : logoLight} alt="App Logo"/>
             </div>
-
             <div className="sidebar__bottom">
-                <img
-                    className="sidebar__avatar"
-                    src="/src/shared/assets/avatar.webp"
-                    alt="Avatar"
-                />
+                <button type="button" className="sidebar__item" onClick={toggleTheme} title={theme === "dark" ? t("sidebar.lightMode") : t("sidebar.darkMode")}>
+                    <img className="sidebar__icon" src={theme === "dark" ? themeDark : themeLight} alt="" aria-hidden="true"/>
+                    <span>{theme === "dark" ? t("sidebar.light") : t("sidebar.dark")}</span>
+                </button>
+                <button type="button" className="sidebar__item" onClick={toggleTranslateLanguage} title={t("sidebar.changeLanguage")}>
+                    <i className="fa-solid fa-globe"></i>
+                    <span>{currentLanguage.toUpperCase()}</span>
+                </button>
+                <button type="button" className="sidebar__item sidebar__item--danger" onClick={handleLogout} disabled={logOut} title={logoutError || t("sidebar.logout")}>
+                    <i className="fa-solid fa-right-from-bracket"></i>
+                    <span>{logOut ? "..." : t("sidebar.exit")}</span>
+                </button>
             </div>
         </aside>
     );
