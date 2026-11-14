@@ -1,92 +1,26 @@
-import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../../../shared/components/button";
-import Input from "../../../shared/components/Input";
-import { ROUTES } from "../../../app/router/routes";
-import { useAppDispatch } from "../../../app/store/hooks";
-import chatSocket, { type SocketResponse } from "../../../shared/services/socket/socketService";
-import { loginSuccess } from "../slices/authSlice";
-import { login } from "../services/authApi";
-import { saveSession } from "../services/authSession";
-import brandIcon from "../../../shared/assets/logo.png";
-import {
-  isValidPassword,
-  isValidUsername,
-  validateAuth,
-} from "../../../shared/utils/validators";
+import Button from "../../../../../shared/components/Button";
+import Input from "../../../../../shared/components/Input";
+import { useAuth } from "../../hooks/useAuth";
 
-function Auth() {
-
-  // 2 ô input
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  // loading
-  const [loading, setLoading] = useState(false);
-
-  // response 
-  const [response, setResponse] = useState<SocketResponse | null>(null);
-
-  // lỗi
-  const [error, setError] = useState<string | null>(null);
-
-  // check ô input
-  const authError = validateAuth(username, password);
-  const usernameValid = isValidUsername(username);
-  const passwordValid = isValidPassword(password);
-  const formValid = authError.length === 0;
-
-  // hàm dispatch
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!formValid || loading) return;
-
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    try {
-      console.log("Nút bật");
-
-      await chatSocket.connect();
-      console.log("websocket kết nối");
-
-      const result = await login({user: username, pass: password});
-      console.log("Phản hồi login:", result);
-
-      setResponse(result);
-
-      if (result.status === "success") {
-        const reLoginCode = result.data?.RE_LOGIN_CODE ?? null;
-        if (reLoginCode) saveSession(username, reLoginCode);
-        dispatch(loginSuccess({username, reLoginCode}));
-        navigate(ROUTES.CHAT);
-      } else {
-        setError(result.mes || "Lỗi");
-      }
-    } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "ko vào đc.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+function LoginForm() {
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    loading,
+    response,
+    error,
+    usernameValid,
+    passwordValid,
+    formValid,
+    handleSubmit,
+  } = useAuth();
 
   return (
-    <div className="auth-panel">
-      <header className="auth-heading">
-        <img className="auth-brand-icon" src={brandIcon} alt="" />
-        <h3 id="login-title">Đăng nhập</h3>
-      </header>
-      <section className="login-card" aria-labelledby="login-title">
+    <>
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="login-form__field">
           <label className="input-title" htmlFor="login-username">Tên người dùng</label>
@@ -168,9 +102,8 @@ function Auth() {
           <pre>{JSON.stringify(response.data)}</pre>
         </section>
       )}
-      </section>
-    </div>
+    </>
   );
 }
 
-export default Auth;
+export default LoginForm;
