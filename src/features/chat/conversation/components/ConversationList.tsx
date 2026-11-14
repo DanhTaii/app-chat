@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { getUserList } from "@/features/chat/conversation/services/conversationApi";
 import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
 import {setConversations, selectConversation,} from "@/features/chat/conversation/slices/conversationSlice";
+import groupIcon from "@/shared/assets/group.svg";
 
 interface ConversationItem {
     id: string;
@@ -43,11 +44,13 @@ interface ConversationItem {
 // ];
 
 function getInitials(name: string): string {
-    const parts = name.trim().split(/\s+/);
+    const trimmedName = name.trim();
+    if (!trimmedName) return "?";
+    const parts = trimmedName.split(/\s+/);
     if (parts.length >= 2) {
         return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
-    return name.slice(0, 2).toUpperCase();
+    return trimmedName.slice(0, 2).toUpperCase();
 }
 
 function formatActionTime(actionTime: string): string {
@@ -74,13 +77,15 @@ function mapApiToConversationItem(item: ApiConversationItem): ConversationItem {
 
 function ConversationList() {
     const {t} = useTranslation("conversation");
-    const [activeFilter, setActiveFilter] = useState<"all" | "unread" | "groups">("all");
+    const [activeFilter, setActiveFilter] = useState<"all" | "direct" | "groups">("all");
     const dispatch = useAppDispatch();
     const apiConversations = useAppSelector((state) => state.conversation.conversations);
     const selectedConversation = useAppSelector((state) => state.conversation.selectedConversation);
     const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+    const username = useAppSelector((state) => state.auth.user?.username);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -117,11 +122,37 @@ function ConversationList() {
 
     const conversationItems = apiConversations.map(mapApiToConversationItem);
 
+    const normalizedKeyword = searchKeyword.trim().toLowerCase();
+
+    const filteredConversations = conversationItems.filter((item) => {
+        const matchesFilter =
+            activeFilter === "all" ||
+            (activeFilter === "groups" && item.type === 1) ||
+            (activeFilter === "direct" && item.type === 0);
+
+        const matchesSearch =
+            normalizedKeyword === "" ||
+            item.name.toLowerCase().includes(normalizedKeyword);
+
+        return matchesFilter && matchesSearch;
+    });
+
+    // xử lý click
+    const handleSelectConversation = (conversation: ConversationItem) => {
+        dispatch(
+            selectConversation({
+                name: conversation.name,
+                type: conversation.type,
+            })
+        );
+        setSearchKeyword("");
+    };
+
     return (
         <aside className="conversation-list" aria-label="Danh sách hội thoại">
             <div className="conversation-list__top">
                 <div className="conversation-list__header">
-                    <h2>{t("conversation.title.messages")}</h2>
+                    <h2>{username ? t("conversation.title.greeting", { username }) : t("conversation.title.messages")}</h2>
                     <button type="button" className="conversation-list__compose-btn"
                             aria-label="Tạo cuộc trò chuyện mới">
                         <i className="fa-regular fa-pen-to-square"></i>
@@ -130,9 +161,9 @@ function ConversationList() {
 
                 <div className="conversation-list__search-box">
                     <img className="conversation-list__search-icon" src="/src/shared/assets/search.svg" alt="Search"/>
-                    <input type="search" className="conversation-list__search"
-                           aria-label={t("conversation.search.placeholder")}
-                           placeholder={t("conversation.search.placeholder")}/>
+                    <input type="search" className="conversation-list__search" aria-label={t("conversation.search.placeholder")}
+                        placeholder={t("conversation.search.placeholder")} value={searchKeyword}
+                        onChange={(event) => setSearchKeyword(event.target.value)}/>
                 </div>
 
                 <div className="conversation-list__filters" role="group" aria-label="Lọc hội thoại">
@@ -142,10 +173,9 @@ function ConversationList() {
                         {t("conversation.filter.all")}
                     </button>
                     <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "unread" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("unread")}>
-                        {t("conversation.filter.unread")}
-                        <span className="conversation-list__filter-badge">3</span>
+                            className={`conversation-list__chip ${activeFilter === "direct" ? "conversation-list__chip--active" : ""}`}
+                            onClick={() => setActiveFilter("direct")}>
+                        {t("conversation.filter.direct")}
                     </button>
                     <button type="button"
                             className={`conversation-list__chip ${activeFilter === "groups" ? "conversation-list__chip--active" : ""}`}
@@ -165,19 +195,22 @@ function ConversationList() {
                 {isLoggedIn && !loading && !error && conversationItems.length === 0
                     && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-secondary-text)"}}>Không có cuộc trò chuyện nào.</li>)}
 
-                {isLoggedIn && !loading && !error && conversationItems.map((item) => {
+                {isLoggedIn && !loading && !error && conversationItems.length > 0 && filteredConversations.length === 0 && (
+                    <li style={{ padding: "16px", textAlign: "center", color: "var(--color-secondary-text)" }}>
+                        Không tìm thấy cuộc trò chuyện phù hợp.
+                    </li>
+                )}
+
+                {isLoggedIn && !loading && !error && filteredConversations.map((item) => {
                         const isSelected =
                             selectedConversation?.name === item.name &&
                             selectedConversation?.type === item.type;
 
                         return (
                             <li key={item.id}>
-                                <button type="button"
-                                    className={`conversation-list__item ${isSelected ? "conversation-list__item--active" : ""}`}
-                                    onClick={() => dispatch(selectConversation({name: item.name, type: item.type}))}>
-                                    <div className={`conversation-list__avatar conversation-list__avatar--${item.variant || "default"}
-                                        ${item.isGroup ? "conversation-list__avatar--group" : ""}`}>
-                                        {item.isGroup ? (<i className="fa-solid fa-user-group"></i>) : (<span>{item.initials}</span>)}
+                                <button type="button" className={`conversation-list__item ${isSelected ? "conversation-list__item--active" : ""}`} onClick={() => handleSelectConversation(item)}>
+                                    <div className={`conversation-list__avatar ${item.isGroup ? "conversation-list__avatar--group" : `conversation-list__avatar--${item.variant || "primary"}`}`}>
+                                        {item.isGroup ? (<img className="conversation-list__avatar-icon" src={groupIcon} alt={item.name} />) : (<span>{item.initials}</span>)}
                                         {item.online && <span className="conversation-list__online-dot"></span>}
                                     </div>
 

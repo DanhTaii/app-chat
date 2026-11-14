@@ -1,14 +1,15 @@
 {
   "conversation": {
     "title": {
-      "messages": "Messages"
+      "messages": "Messages",
+      "greeting": "Hi, {{username}}"
     },
     "search": {
       "placeholder": "Search conversations . . ."
     },
     "filter": {
       "all": "All",
-      "unread": "Unread",
+      "direct": "Direct",
       "groups": "Groups"
     },
     "time": {

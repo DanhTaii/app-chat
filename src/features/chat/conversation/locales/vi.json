@@ -1,14 +1,15 @@
 {
   "conversation": {
     "title": {
-      "messages": "Tin nhắn"
+      "messages": "Tin nhắn",
+      "greeting": "Chào, {{username}}"
     },
     "search": {
       "placeholder": "Tìm cuộc trò chuyện..."
     },
     "filter": {
       "all": "Tất cả",
-      "unread": "Chưa đọc",
+      "direct": "Chat đơn",
       "groups": "Nhóm"
     },
     "time": {
