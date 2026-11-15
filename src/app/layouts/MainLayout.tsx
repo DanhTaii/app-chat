@@ -10,6 +10,7 @@ import {ROUTES} from "../router/routes";
 //     type Theme,
 // } from "../../shared/utils/theme";
 import Sidebar from "./Sidebar";
+import {createCall} from "@/features/chat/video-call/services/callService.ts";
 // import chatSocket from "@/shared/services/socket/socketService.ts";
 
 function MainLayout() {
@@ -50,27 +51,39 @@ function MainLayout() {
     //     }
     // }
 
+    const handleCall = async () => {
+        const callId = await createCall(
+            "userA",
+            "userB"
+        );
+
+        console.log("Call ID:", callId);
+    };
+
     return (
         <div className="main-layout">
-            {/* <nav>
-                <Link to={ROUTES.LOGIN}>Login</Link> |{" "}
-                <Link to={ROUTES.REGISTER}>Register</Link> |{" "}
-                <Link to={ROUTES.CHAT}>Chat</Link> |{" "}
-                <Link to={ROUTES.COMPONENTS}>Components</Link>
-                <button className="btn btn-primary " onClick={toggleTranslateLanguage}>
-                    Change language EN - VI
+            <nav>
+                {/*<Link to={ROUTES.LOGIN}>Login</Link> |{" "}*/}
+                {/*<Link to={ROUTES.REGISTER}>Register</Link> |{" "}*/}
+                {/*<Link to={ROUTES.CHAT}>Chat</Link> |{" "}*/}
+                {/*<Link to={ROUTES.COMPONENTS}>Components</Link>*/}
+                {/*<button className="btn btn-primary " onClick={toggleTranslateLanguage}>*/}
+                {/*    Change language EN - VI*/}
+                {/*</button>*/}
+                {/*<button onClick={createSocket}>Socket Testing</button>*/}
+                {/*<button*/}
+                {/*    className="theme-toggle"*/}
+                {/*    type="button"*/}
+                {/*    onClick={toggleTheme}*/}
+                {/*    aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}*/}
+                {/*    title={`Chuyển ${theme === "dark" ? "light" : "dark"} theme`}*/}
+                {/*>*/}
+                {/*    <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>*/}
+                {/*</button>*/}
+                <button onClick={handleCall}>
+                    Gọi điện
                 </button>
-                <button onClick={createSocket}>Socket Testing</button>
-                <button
-                    className="theme-toggle"
-                    type="button"
-                    onClick={toggleTheme}
-                    aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-                    title={`Chuyển ${theme === "dark" ? "light" : "dark"} theme`}
-                >
-                    <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
-                </button>
-            </nav> */}
+            </nav>
             <div className="main-layout__body">
                 {showSidebar ? <Sidebar/> : null}
                 <main className="main-layout__content">
