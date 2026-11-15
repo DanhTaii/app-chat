@@ -1,17 +1,14 @@
-
-import AuthHeader from "../../components/auth-header/AuthHeader";
+import AuthLayout from "../../components/AuthLayout";
 import LoginForm from "./login-form/LoginForm";
 
 function Login() {
   return (
-    <div className="auth-panel">
-        <AuthHeader>
-          <h3 id="login-title">Đăng nhập</h3>
-        </AuthHeader>
-        <section className="login-card" aria-labelledby="login-title">
-          <LoginForm />
-        </section>
-    </div>
+    <AuthLayout
+      title="Đăng nhập"
+      description="Vui lòng nhập thông tin tài khoản"
+    >
+      <LoginForm />
+    </AuthLayout>
   );
 }
 

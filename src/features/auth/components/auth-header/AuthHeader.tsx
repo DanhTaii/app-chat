@@ -1,15 +1,16 @@
-import type { ReactNode } from "react";
-import brandIcon from "../../../../shared/assets/logo.png";
+// import brandIcon from "../../../../shared/assets/logo.png";
 
 type AuthHeaderProps = {
-  children: ReactNode;
+  title: string;
+  description: string;
 };
 
-function AuthHeader({ children }: AuthHeaderProps) {
+function AuthHeader({ title, description }: AuthHeaderProps) {
   return (
     <header className="auth-heading">
-      <img className="auth-brand-icon" src={brandIcon} alt="" />
-      {children}
+      {/* <img className="auth-brand-icon" src={brandIcon} alt="" /> */}
+      <h1 id="auth-title">{title}</h1>
+      <p className="auth-description">{description}</p>
     </header>
   );
 }
