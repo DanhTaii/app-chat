@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { ROUTES } from "./routes";
-import LoginPage from "../../features/auth/login/pages/login-page";
-import RegisterPage from "../../features/auth/register/pages/register-page";
+import LoginPage from "../../features/auth/pages/login-page";
+import RegisterPage from "../../features/auth/pages/register-page";
 import ChatPage from "../../features/chat/pages/chat-page";
 import NotFoundPage from "../../shared/pages/not-found";
 import ErrorPage from "../../shared/pages/error-page";

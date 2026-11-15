@@ -15,7 +15,6 @@ import { saveSession } from "../../session/services/authSession";
 export function useAuth() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<SocketResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -71,8 +70,6 @@ export function useAuth() {
     setUsername,
     password,
     setPassword,
-    showPassword,
-    setShowPassword,
     loading,
     response,
     error,

@@ -1,4 +1,4 @@
-.login-page {
+.auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,13 +11,14 @@
   font-size: var(--font-size-medium);
 }
 
-#login-title {
+#auth-title {
+  margin: 0;
   text-align: center;
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-large);
+  font-size: var(--font-size-36px);
 }
 
-.login-card {
+.auth-card {
   width: 100%;
   max-width: 420px;
   padding: 32px;
@@ -37,13 +38,6 @@
   text-align: center;
 }
 
-.login-card h1 {
-  margin: 0 0 4px;
-  font-size: var(--font-size-extra-large);
-  line-height: 28px;
-  color: var(--color-primary-text);
-}
-
 .auth-brand-icon {
   display: block;
   width: 50px;
@@ -51,13 +45,13 @@
   margin: 0 auto 12px;
 }
 
-.auth-heading h1 {
-  margin: 0;
-  text-align: center;
-  font-weight: var(--font-weight-bold);
+.auth-description {
+  margin: 8px 0 0;
+  color: var(--color-secondary-text);
+  font-size: var(--font-size-medium);
 }
 
-.login-form {
+.auth-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -92,23 +86,32 @@
   }
 }
 
-.login-form__field {
+.auth-error {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--border-radius-standard);
+  color: var(--color-danger);
+  background: var(--color-danger-background);
+}
+
+.auth-form__field {
   display: flex;
   flex-direction: column;
   gap: 8px;
   font-size: var(--font-size-medium);
 }
 
-.login-form__password-field {
+.auth-form__password-field {
   position: relative;
   display: block;
 }
 
-.login-form__password-field .form-control {
+.auth-form__password-field .form-control {
   padding-right: 44px;
 }
 
-.login-form__password-toggle {
+.auth-form__password-toggle {
   position: absolute;
   top: 50%;
   right: 10px;
@@ -125,7 +128,7 @@
   cursor: pointer;
 }
 
-.login-form__password-toggle svg {
+.auth-form__password-toggle svg {
   width: 18px;
   height: 18px;
   fill: none;
@@ -135,29 +138,18 @@
   stroke-width: 1.8;
 }
 
-.login-form__password-toggle:focus-visible {
+.auth-form__password-toggle:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: 3px;
 }
 
-.register-title,
-.register-login-link {
-  text-align: center;
-
-}
-
-.register-title {
-      font-weight: var(--font-weight-bold);
-      font-size: var(--font-size-large);
-
-}
-
-.input-title{
+.auth-input__title {
   font-weight: var(--font-weight-semi-bold);
 }
 
-.register-login-link {
+.auth-footer {
+  text-align: center;
   margin: 20px 0 0;
   padding-top: 16px;
   border-top: 1px solid var(--color-border);
@@ -166,52 +158,31 @@
   line-height: 1.5;
 }
 
-.register-login-link a {
+.auth-footer a {
   margin-left: 4px;
   color: var(--color-primary);
   font-weight: var(--font-weight-semi-bold);
   text-decoration: none;
 }
 
-.register-login-link a:hover {
+.auth-footer a:hover {
   text-decoration: underline;
 }
 
-.register-login-link a:focus-visible {
+.auth-footer a:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
 @media (max-width: 480px) {
-  .login-page {
+  .auth-page {
     padding: 32px 16px;
   }
 
-  .login-card {
+  .auth-card {
     padding: 24px;
   }
 }
 
-.login-form label.login-form__remember {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 8px;
-  font-weight: 400 !important;
-  color: var(--color-secondary-text) !important;
-}
-
-.login-form__remember span {
-  line-height: 1;
-}
-
-.remember-me input[type="checkbox"] {
-  margin: 0; /* Xóa margin mặc định của trình duyệt để căn chuẩn xác nhất */
-}
-
-
-.login-form label.login-form__remember {
-    line-height: 1;
-}
 
