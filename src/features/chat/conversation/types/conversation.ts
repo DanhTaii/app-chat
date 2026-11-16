@@ -3,3 +3,10 @@ export interface ApiConversationItem{
     type: 0|1;
     actionTime: string;
 }
+
+export interface CheckUserOnlineRequest {
+    user: string;
+}
+export interface CheckUserOnlineResponse {
+    status: boolean;
+}

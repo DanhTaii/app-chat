@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { getUserList } from "@/features/chat/conversation/services/conversationApi";
+import { getUserList, checkUserOnline } from "@/features/chat/conversation/api/conversationApi";
 import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
-import {setConversations, selectConversation,} from "@/features/chat/conversation/slices/conversationSlice";
+import {setConversations, selectConversation, setUserOnlineStatus} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
 
 interface ConversationItem {
@@ -62,7 +62,26 @@ function formatActionTime(actionTime: string): string {
     return actionTime;
 }
 
-function mapApiToConversationItem(item: ApiConversationItem): ConversationItem {
+async function syncDirectUsersOnline(
+    conversations: ApiConversationItem[],
+    onStatusUpdate: (name: string, online: boolean) => void,
+    isCancelled: () => boolean
+) {
+    const directUsers = conversations.filter((item) => item.type === 0);
+    for (const item of directUsers) {
+        if (isCancelled()) break;
+        try {
+            const online = await checkUserOnline(item.name);
+            if (isCancelled()) break;
+            onStatusUpdate(item.name, online);
+        } catch {
+            // bỏ qua user lỗi để tiep tục kiem tra
+        }
+    }
+}
+
+function mapApiToConversationItem(item: ApiConversationItem, onlineUsers: Record<string, boolean>): ConversationItem {
+    const isDirect = item.type === 0;
     return {
         id: `${item.type}-${item.name}`,
         name: item.name,
@@ -70,6 +89,7 @@ function mapApiToConversationItem(item: ApiConversationItem): ConversationItem {
         initials: getInitials(item.name),
         lastMessage: item.type === 1 ? "Nhóm trò chuyện" : "Trò chuyện cá nhân",
         time: formatActionTime(item.actionTime),
+        online: isDirect ? Boolean(onlineUsers[item.name]) : false,
         isGroup: item.type === 1,
         variant: "primary",
     };
@@ -86,6 +106,7 @@ function ConversationList() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
+    const onlineUsers = useAppSelector((state) => state.conversation.onlineUsers);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -105,6 +126,12 @@ function ConversationList() {
                 if (data.length > 0) {
                     dispatch(selectConversation({name: data[0].name, type: data[0].type}));
                 }
+                setLoading(false);
+                await syncDirectUsersOnline(
+                    data,
+                    (name, online) => dispatch(setUserOnlineStatus({ name, online })),
+                    () => !isMounted
+                );
             } catch (err) {
                 if (!isMounted) return;
                 setError(err instanceof Error ? err.message : "Không thể tải danh sách hội thoại");
@@ -120,7 +147,34 @@ function ConversationList() {
         };
     }, [dispatch, isLoggedIn]);
 
-    const conversationItems = apiConversations.map(mapApiToConversationItem);
+    useEffect(() => {
+        if (!isLoggedIn || apiConversations.length === 0) {
+            return;
+        }
+        let isMounted = true;
+        let isChecking = false;
+        const intervalId = window.setInterval(async () => {
+            if (isChecking) return;
+            isChecking = true;
+            try {
+                await syncDirectUsersOnline(
+                    apiConversations,
+                    (name, online) => dispatch(setUserOnlineStatus({ name, online })),
+                    () => !isMounted
+                );
+            } finally {
+                isChecking = false;
+            }
+        }, 30000);
+        return () => {
+            isMounted = false;
+            window.clearInterval(intervalId);
+        };
+    }, [apiConversations, dispatch, isLoggedIn]);
+
+    const conversationItems = apiConversations.map((item) =>
+        mapApiToConversationItem(item, onlineUsers)
+    );
 
     const normalizedKeyword = searchKeyword.trim().toLowerCase();
 
@@ -138,7 +192,7 @@ function ConversationList() {
     });
 
     // xử lý click
-    const handleSelectConversation = (conversation: ConversationItem) => {
+    const handleSelectConversation = async (conversation: ConversationItem) => {
         dispatch(
             selectConversation({
                 name: conversation.name,
@@ -146,7 +200,14 @@ function ConversationList() {
             })
         );
         setSearchKeyword("");
+        if (conversation.type === 0) {
+            try {
+                const online = await checkUserOnline(conversation.name);
+                dispatch(setUserOnlineStatus({ name: conversation.name, online }));
+            } catch {}
+        }
     };
+
 
     return (
         <aside className="conversation-list" aria-label="Danh sách hội thoại">
