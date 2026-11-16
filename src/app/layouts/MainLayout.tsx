@@ -10,7 +10,7 @@ import {ROUTES} from "../router/routes";
 //     type Theme,
 // } from "../../shared/utils/theme";
 import Sidebar from "./Sidebar";
-// import chatSocket from "@/shared/services/socket/socketService.ts";
+// import chatSocket from "@/shared/api/socket/socketService.ts";
 
 function MainLayout() {
     // const {i18n} = useTranslation();

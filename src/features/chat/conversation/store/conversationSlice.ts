@@ -9,11 +9,13 @@ export interface SelectedConversation {
 interface ConversationState {
     conversations: ApiConversationItem[];
     selectedConversation: SelectedConversation | null;
+    onlineUsers: Record<string, boolean>;
 }
 
 const initialState: ConversationState = {
     conversations: [],
     selectedConversation: null,
+    onlineUsers: {}
 };
 
 const conversationSlice = createSlice({
@@ -25,9 +27,15 @@ const conversationSlice = createSlice({
         },
         selectConversation: (state, action: PayloadAction<SelectedConversation>) => {
             state.selectedConversation = action.payload;
+        },
+        setUserOnlineStatus: (
+            state,
+            action: PayloadAction<{ name: string; online: boolean }>
+        ) => {
+            state.onlineUsers[action.payload.name] = action.payload.online;
         }
     }
 });
 
-export const { setConversations, selectConversation } = conversationSlice.actions;
+export const { setConversations, selectConversation, setUserOnlineStatus } = conversationSlice.actions;
 export default conversationSlice.reducer;
