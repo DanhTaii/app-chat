@@ -10,3 +10,18 @@ export interface CheckUserOnlineRequest {
 export interface CheckUserOnlineResponse {
     status: boolean;
 }
+
+export interface RoomMember {
+    id: number;
+    name: string;
+}
+
+export interface CreateRoomRequest {
+    name: string;
+}
+
+export interface CreateRoomResponse {
+    name: string;
+    user?: RoomMember[];
+    userList?: RoomMember[];
+}
