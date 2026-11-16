@@ -14,6 +14,17 @@
     },
     "time": {
       "yesterday": "Yesterday"
+    },
+    "createRoom": {
+      "title": "Create new room",
+      "label": "Room name",
+      "placeholder": "Enter room name...",
+      "cancel": "Cancel",
+      "submit": "Create room",
+      "submitting": "Creating...",
+      "errorEmpty": "Please enter a room name.",
+      "errorExist": "Room name already exists, please choose another.",
+      "errorDefault": "Could not create room, please try again."
     }
   }
 }

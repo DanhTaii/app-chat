@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { getUserList, checkUserOnline } from "@/features/chat/conversation/api/conversationApi";
+import {getUserList, checkUserOnline, createRoom} from "@/features/chat/conversation/api/conversationApi";
 import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
-import {setConversations, selectConversation, setUserOnlineStatus} from "@/features/chat/conversation/store/conversationSlice";
+import {setConversations, selectConversation, setUserOnlineStatus, addConversation} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
+import CreateRoomModal from "./create-room-modal/CreateRoomModal";
 
 interface ConversationItem {
     id: string;
@@ -107,6 +108,7 @@ function ConversationList() {
     const [error, setError] = useState<string | null>(null);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
     const onlineUsers = useAppSelector((state) => state.conversation.onlineUsers);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -208,14 +210,30 @@ function ConversationList() {
         }
     };
 
+    const handleCreateRoom = async (roomName: string) => {
+        const createdRoom = await createRoom(roomName);
+        const finalRoomName = createdRoom.name || roomName;
+
+        dispatch(
+            addConversation({
+                name: finalRoomName,
+                type: 1,
+            })
+        );
+
+        setSearchKeyword("");
+        if (activeFilter === "direct") {
+            setActiveFilter("all");
+        }
+    };
+
 
     return (
         <aside className="conversation-list" aria-label="Danh sách hội thoại">
             <div className="conversation-list__top">
                 <div className="conversation-list__header">
                     <h2>{username ? t("conversation.title.greeting", { username }) : t("conversation.title.messages")}</h2>
-                    <button type="button" className="conversation-list__compose-btn"
-                            aria-label="Tạo cuộc trò chuyện mới">
+                    <button type="button" className="conversation-list__compose-btn" onClick={() => setIsCreateModalOpen(true)} aria-label="Tạo cuộc trò chuyện mới">
                         <i className="fa-regular fa-pen-to-square"></i>
                     </button>
                 </div>
@@ -299,6 +317,7 @@ function ConversationList() {
                         );
                     })}
             </ul>
+            <CreateRoomModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onCreateRoom={handleCreateRoom}/>
         </aside>
     );
 }
