@@ -18,6 +18,12 @@ const initialState: ConversationState = {
     onlineUsers: {}
 };
 
+function formatCurrentActionTime(): string {
+    const now = new Date();
+    const pad = (value: number) => String(value).padStart(2, "0");
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+
 const conversationSlice = createSlice({
     name: "conversation",
     initialState,
@@ -33,9 +39,32 @@ const conversationSlice = createSlice({
             action: PayloadAction<{ name: string; online: boolean }>
         ) => {
             state.onlineUsers[action.payload.name] = action.payload.online;
+        },
+        addConversation: (
+            state,
+            action: PayloadAction<{ name: string; type: 0 | 1; actionTime?: string }>
+        ) => {
+            const exists = state.conversations.some(
+                (item) =>
+                    item.name === action.payload.name &&
+                    item.type === action.payload.type
+            );
+
+            if (!exists) {
+                state.conversations.unshift({
+                    name: action.payload.name,
+                    type: action.payload.type,
+                    actionTime: action.payload.actionTime ?? formatCurrentActionTime(),
+                });
+            }
+
+            state.selectedConversation = {
+                name: action.payload.name,
+                type: action.payload.type,
+            };
         }
     }
 });
 
-export const { setConversations, selectConversation, setUserOnlineStatus } = conversationSlice.actions;
+export const { setConversations, selectConversation, setUserOnlineStatus, addConversation } = conversationSlice.actions;
 export default conversationSlice.reducer;

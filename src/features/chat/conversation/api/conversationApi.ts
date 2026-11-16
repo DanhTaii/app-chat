@@ -1,5 +1,5 @@
 import chatSocket from "@/shared/services/socket/socketService.ts";
-import type {ApiConversationItem, CheckUserOnlineRequest, CheckUserOnlineResponse} from "@/features/chat/conversation/types/conversation.ts";
+import type {ApiConversationItem, CheckUserOnlineRequest, CheckUserOnlineResponse,CreateRoomRequest, CreateRoomResponse} from "@/features/chat/conversation/types/conversation.ts";
 
 let onlineCheckQueue: Promise<unknown> = Promise.resolve();
 
@@ -21,4 +21,14 @@ export const checkUserOnline = async (user: string): Promise<boolean> => {
     });
     onlineCheckQueue = task.catch(() => false);
     return task;
+};
+
+export const createRoom = async (name: string): Promise<CreateRoomResponse> => {
+    await chatSocket.connect();
+    const payload: CreateRoomRequest = { name };
+    const response = await chatSocket.request<CreateRoomResponse>(
+        "CREATE_ROOM",
+        payload
+    );
+    return response.data ?? { name };
 };
