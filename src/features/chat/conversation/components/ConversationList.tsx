@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import {getUserList, checkUserOnline, createRoom} from "@/features/chat/conversation/api/conversationApi";
-import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
+import {getUserList, checkUserOnline, createRoom, joinRoom} from "@/features/chat/conversation/api/conversationApi";
+import type { ApiConversationItem, RoomModalMode } from "@/features/chat/conversation/types/conversation";
 import {setConversations, selectConversation, setUserOnlineStatus, addConversation} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
-import CreateRoomModal from "./create-room-modal/CreateRoomModal";
+import RoomModal from "@/features/chat/conversation/components/room-modal/RoomModal.tsx";
 
 interface ConversationItem {
     id: string;
@@ -81,14 +81,22 @@ async function syncDirectUsersOnline(
     }
 }
 
-function mapApiToConversationItem(item: ApiConversationItem, onlineUsers: Record<string, boolean>): ConversationItem {
+type ConversationFilter = "all" | "direct" | "groups";
+
+const CONVERSATION_FILTERS: readonly ConversationFilter[] = ["all", "direct", "groups"];
+
+function mapApiToConversationItem(
+    item: ApiConversationItem,
+    onlineUsers: Record<string, boolean>,
+    typeLabels: { direct: string; group: string }
+): ConversationItem {
     const isDirect = item.type === 0;
     return {
         id: `${item.type}-${item.name}`,
         name: item.name,
         type: item.type,
         initials: getInitials(item.name),
-        lastMessage: item.type === 1 ? "Nhóm trò chuyện" : "Trò chuyện cá nhân",
+        lastMessage: item.type === 1 ? typeLabels.group : typeLabels.direct,
         time: formatActionTime(item.actionTime),
         online: isDirect ? Boolean(onlineUsers[item.name]) : false,
         isGroup: item.type === 1,
@@ -98,7 +106,7 @@ function mapApiToConversationItem(item: ApiConversationItem, onlineUsers: Record
 
 function ConversationList() {
     const {t} = useTranslation("conversation");
-    const [activeFilter, setActiveFilter] = useState<"all" | "direct" | "groups">("all");
+    const [activeFilter, setActiveFilter] = useState<ConversationFilter>("all");
     const dispatch = useAppDispatch();
     const apiConversations = useAppSelector((state) => state.conversation.conversations);
     const selectedConversation = useAppSelector((state) => state.conversation.selectedConversation);
@@ -108,7 +116,7 @@ function ConversationList() {
     const [error, setError] = useState<string | null>(null);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
     const onlineUsers = useAppSelector((state) => state.conversation.onlineUsers);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+    const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -174,8 +182,13 @@ function ConversationList() {
         };
     }, [apiConversations, dispatch, isLoggedIn]);
 
+    const typeLabels = {
+        direct: t("conversation.itemType.direct"),
+        group: t("conversation.itemType.group"),
+    };
+
     const conversationItems = apiConversations.map((item) =>
-        mapApiToConversationItem(item, onlineUsers)
+        mapApiToConversationItem(item, onlineUsers, typeLabels)
     );
 
     const normalizedKeyword = searchKeyword.trim().toLowerCase();
@@ -210,10 +223,10 @@ function ConversationList() {
         }
     };
 
-    const handleCreateRoom = async (roomName: string) => {
-        const createdRoom = await createRoom(roomName);
-        const finalRoomName = createdRoom.name || roomName;
-
+    const handleRoomSubmit = async (roomName: string, mode: RoomModalMode) => {
+        const roomData =
+            mode === "join" ? await joinRoom(roomName) : await createRoom(roomName);
+        const finalRoomName = roomData.name || roomName;
         dispatch(
             addConversation({
                 name: finalRoomName,
@@ -227,13 +240,30 @@ function ConversationList() {
         }
     };
 
+    const formatRoomModalError = (rawMessage: string, mode: RoomModalMode) => {
+        const normalized = rawMessage.toLowerCase();
+        if (mode === "create" && normalized.includes("exist")) {
+            return t("conversation.roomModal.errorExist");
+        }
+        if (mode === "join" && (normalized.includes("not found") || normalized.includes("not exist"))) {
+            return t("conversation.roomModal.errorNotFound");
+        }
+        return (
+            rawMessage || t(mode === "join" ? "conversation.roomModal.errorJoinDefault" : "conversation.roomModal.errorCreateDefault")
+        );
+    };
+
 
     return (
         <aside className="conversation-list" aria-label="Danh sách hội thoại">
             <div className="conversation-list__top">
                 <div className="conversation-list__header">
                     <h2>{username ? t("conversation.title.greeting", { username }) : t("conversation.title.messages")}</h2>
-                    <button type="button" className="conversation-list__compose-btn" onClick={() => setIsCreateModalOpen(true)} aria-label="Tạo cuộc trò chuyện mới">
+                    <button type="button" className="conversation-list__compose-btn"
+                            onClick={() => setIsRoomModalOpen(true)}
+                            disabled={!isLoggedIn}
+                            aria-label={t("conversation.actions.openRoomModal")}
+                            title={t("conversation.actions.openRoomModal")}>
                         <i className="fa-regular fa-pen-to-square"></i>
                     </button>
                 </div>
@@ -246,21 +276,12 @@ function ConversationList() {
                 </div>
 
                 <div className="conversation-list__filters" role="group" aria-label="Lọc hội thoại">
-                    <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "all" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("all")}>
-                        {t("conversation.filter.all")}
-                    </button>
-                    <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "direct" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("direct")}>
-                        {t("conversation.filter.direct")}
-                    </button>
-                    <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "groups" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("groups")}>
-                        {t("conversation.filter.groups")}
-                    </button>
+                    {CONVERSATION_FILTERS.map((filterKey) => (
+                        <button key={filterKey} type="button" className={`conversation-list__chip ${activeFilter === filterKey ? "conversation-list__chip--active" : ""}`}
+                            onClick={() => setActiveFilter(filterKey)}>
+                            {t(`conversation.filter.${filterKey}`)}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -317,7 +338,21 @@ function ConversationList() {
                         );
                     })}
             </ul>
-            <CreateRoomModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onCreateRoom={handleCreateRoom}/>
+            <RoomModal
+                isOpen={isRoomModalOpen}
+                title={t("conversation.roomModal.title")}
+                label={t("conversation.roomModal.label")}
+                placeholder={t("conversation.roomModal.placeholder")}
+                cancelText={t("conversation.roomModal.cancel")}
+                joinText={t("conversation.roomModal.joinSubmit")}
+                joiningText={t("conversation.roomModal.joining")}
+                createText={t("conversation.roomModal.createSubmit")}
+                creatingText={t("conversation.roomModal.creating")}
+                emptyErrorText={t("conversation.roomModal.errorEmpty")}
+                onClose={() => setIsRoomModalOpen(false)}
+                onSubmit={handleRoomSubmit}
+                formatError={formatRoomModalError}
+            />
         </aside>
     );
 }

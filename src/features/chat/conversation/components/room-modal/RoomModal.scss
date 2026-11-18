@@ -1,6 +1,6 @@
 @use "../../../../../shared/assets/styles/mixins" as mixins;
 
-.create-room-modal {
+.room-modal {
   &__backdrop {
     @include mixins.flex-layout($justify: center, $align: center);
     position: fixed;
@@ -15,7 +15,8 @@
     max-width: 400px;
     padding: 20px;
     border: 1px solid var(--color-border);
-    background: var(--color-raised-surface-background);
+    border-radius: var(--border-radius-large);
+    background: var(--color-surface-background);
     color: var(--color-primary-text);
   }
 
@@ -72,5 +73,9 @@
   &__actions {
     @include mixins.flex-layout($justify: flex-end, $align: center, $gap: 8px);
     margin-top: 4px;
+
+    .btn-outline:hover:not(:disabled) {
+      background: var(--color-hover);
+    }
   }
 }

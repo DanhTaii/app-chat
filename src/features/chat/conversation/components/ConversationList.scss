@@ -40,9 +40,13 @@
     font-size: var(--font-size-medium);
     cursor: pointer;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: var(--color-hover);
       color: var(--color-primary);
+    }
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
   }
 
