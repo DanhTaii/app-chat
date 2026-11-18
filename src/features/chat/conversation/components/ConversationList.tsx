@@ -6,7 +6,7 @@ import {getUserList, checkUserOnline, createRoom} from "@/features/chat/conversa
 import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
 import {setConversations, selectConversation, setUserOnlineStatus, addConversation} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
-import CreateRoomModal from "./create-room-modal/CreateRoomModal";
+import RoomModal from "@/features/chat/conversation/components/room-modal/RoomModal.tsx";
 
 interface ConversationItem {
     id: string;
@@ -317,7 +317,23 @@ function ConversationList() {
                         );
                     })}
             </ul>
-            <CreateRoomModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onCreateRoom={handleCreateRoom}/>
+            <RoomModal
+                isOpen={isCreateModalOpen}
+                title={t("conversation.createRoom.title")}
+                label={t("conversation.createRoom.label")}
+                placeholder={t("conversation.createRoom.placeholder")}
+                cancelText={t("conversation.createRoom.cancel")}
+                submitText={t("conversation.createRoom.submit")}
+                submittingText={t("conversation.createRoom.submitting")}
+                emptyErrorText={t("conversation.createRoom.errorEmpty")}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSubmit={handleCreateRoom}
+                formatError={(rawMessage) =>
+                    rawMessage.toLowerCase().includes("exist")
+                        ? t("conversation.createRoom.errorExist")
+                        : rawMessage || t("conversation.createRoom.errorDefault")
+                }
+            />
         </aside>
     );
 }
