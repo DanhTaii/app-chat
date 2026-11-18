@@ -11,6 +11,7 @@ import {ROUTES} from "../router/routes";
 // } from "../../shared/utils/theme";
 import Sidebar from "./Sidebar";
 import {createCall} from "@/features/chat/video-call/services/callService.ts";
+import IncomingCallListener from "@/features/chat/video-call/IncomingCallListener.tsx";
 // import chatSocket from "@/shared/services/socket/socketService.ts";
 
 function MainLayout() {
@@ -52,16 +53,23 @@ function MainLayout() {
     // }
 
     const handleCall = async () => {
+        const receiver =
+            currentUserName === "userA" ? "userB" : "userA";
+
         const callId = await createCall(
-            "userA",
-            "userB"
+            currentUserName,
+            receiver
         );
 
         console.log("Call ID:", callId);
     };
 
+    const currentUserName = localStorage.getItem("username") || "userA";
+
     return (
         <div className="main-layout">
+            {/* Lắng nghe cuộc gọi đến */}
+            <IncomingCallListener />
             <nav>
                 {/*<Link to={ROUTES.LOGIN}>Login</Link> |{" "}*/}
                 {/*<Link to={ROUTES.REGISTER}>Register</Link> |{" "}*/}
