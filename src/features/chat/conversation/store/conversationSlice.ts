@@ -44,20 +44,21 @@ const conversationSlice = createSlice({
             state,
             action: PayloadAction<{ name: string; type: 0 | 1; actionTime?: string }>
         ) => {
-            const exists = state.conversations.some(
+            const actionTime = action.payload.actionTime ?? formatCurrentActionTime();
+            const existingConversation = state.conversations.find(
                 (item) =>
                     item.name === action.payload.name &&
                     item.type === action.payload.type
             );
-
-            if (!exists) {
+            if (existingConversation) {
+                existingConversation.actionTime = actionTime;
+            } else {
                 state.conversations.unshift({
                     name: action.payload.name,
                     type: action.payload.type,
-                    actionTime: action.payload.actionTime ?? formatCurrentActionTime(),
+                    actionTime,
                 });
             }
-
             state.selectedConversation = {
                 name: action.payload.name,
                 type: action.payload.type,
