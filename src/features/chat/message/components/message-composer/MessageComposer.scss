@@ -28,6 +28,24 @@
         &:hover {
           cursor: pointer;
         }
+
+        .media-picker-button {
+          padding: 0;
+          border: 0;
+          color: inherit;
+          background: transparent;
+          font: inherit;
+          cursor: pointer;
+
+          &:disabled {
+            cursor: wait;
+            opacity: 0.55;
+          }
+        }
+
+        .media-file-input {
+          display: none;
+        }
       }
     }
 
@@ -55,4 +73,14 @@
     }
   }
 
+}
+
+.media-upload-status {
+  padding: 0 10px 6px;
+  color: var(--color-muted-text);
+  font-size: var(--font-size-extra-small);
+
+  &.media-upload-status--error {
+    color: #d14343;
+  }
 }
