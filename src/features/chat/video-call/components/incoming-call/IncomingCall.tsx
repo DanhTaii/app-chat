@@ -1,14 +1,14 @@
 import {useEffect, useState} from "react";
-import "./IncomingCallListener.scss";
+import "./IncomingCall.scss";
 import {
     listenIncomingCall,
     acceptCall,
-    rejectCall
+    rejectCall, listenCallStatus
 } from "@/features/chat/video-call/api/callService";
 import Button from "@/shared/components/button.tsx";
 
 // @ts-ignore
-export default function IncomingCallListener({onAccepted}) {
+export default function IncomingCall({onAccepted}) {
 
     const currentUserName = localStorage.getItem("username") || "userB";
 
@@ -30,6 +30,21 @@ export default function IncomingCallListener({onAccepted}) {
 
     }, []);
 
+    useEffect(() => {
+        if (!incomingCall?.callId) return;
+        const unsubscribe = listenCallStatus(incomingCall.callId, (status) => {
+                console.log("INCOMING CALL STATUS:", status);
+                // Nếu A hủy cuộc gọi
+                if (status === "cancelled") {
+                    setIncomingCall(null);
+                }
+            }
+        );
+
+        return () => unsubscribe();
+    }, [incomingCall?.callId]);
+
+
     const handleAccept = async () => {
         const callId = incomingCall.callId;
 
@@ -37,7 +52,13 @@ export default function IncomingCallListener({onAccepted}) {
 
         setIncomingCall(null);
 
+        // cập nhật callId bên MainLayout để hiển thị gioa diện
         onAccepted(callId)
+
+        window.open(
+            `/video-call/${callId}`,
+            "_blank"
+        );
 
         console.log("ĐÃ CHẤP NHẬN CUỘC GỌI");
     };

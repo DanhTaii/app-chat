@@ -1,33 +1,19 @@
 import "./MainLayout.scss";
 import {Outlet, useLocation} from "react-router-dom";
-// import {Link} from "react-router-dom";
 import {ROUTES} from "../router/routes";
-// import {useTranslation} from "react-i18next";
-// import {useState} from "react";
-// import {
-//     applyTheme,
-//     getInitialTheme,
-//     type Theme,
-// } from "../../shared/utils/theme";
 import Sidebar from "./Sidebar";
-// import chatSocket from "@/shared/services/socket/socketService.ts";
-// import chatSocket from "@/shared/api/socket/socketService.ts";
-import {createCall, listenCallStatus} from "@/features/chat/video-call/api/callService.ts";
-import IncomingCallListener from "@/features/chat/video-call/components/incoming-call-listener/IncomingCallListener.tsx";
+import {cancelCall, createCall, listenCallStatus} from "@/features/chat/video-call/api/callService.ts";
+import IncomingCall
+    from "@/features/chat/video-call/components/incoming-call/IncomingCall.tsx";
 import {useEffect, useRef, useState} from "react";
-import VideoCall from "@/features/chat/video-call/components/VideoCall.tsx";
-
-// import chatSocket from "@/shared/api/socket/socketService.ts";
+import WaitingCall from "@/features/chat/video-call/components/waiting-call/WaitingCall.tsx";
 
 function MainLayout() {
-    // const {i18n} = useTranslation();
-    // const [currentLanguage, setCurrentLanguage] = useState("vi");
-    // const [theme, setTheme] = useState<Theme>(getInitialTheme);
     const {pathname} = useLocation();
     const showSidebar = pathname.startsWith(ROUTES.CHAT);
 
     // Trạng thái khi 1 người dùng bấm call cho 1 người kahsc
-    // => ringing, accept, reject
+    // => ringing, accept, reject, cancel
     const [callStatus, setCallStatus] = useState("");
     // biến để lưu hàm hủy đăng ký lắng nghe
     const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -60,17 +46,21 @@ function MainLayout() {
         );
 
         console.log("Call ID:", callId);
+        setCurrentCallId(callId)
 
         // sau khi gọi hàm listenCallStatus nó sẽ trả về 1 hàm hủy đăng ký lắng nghe
-        unsubscribeRef.current = listenCallStatus(
-            callId,
-            (status) => {
+        unsubscribeRef.current = listenCallStatus(callId, (status) => {
                 console.log("CALL STATUS:", status);
                 setCallStatus(status || "");
 
                 if (status == "accepted") {
                     setCurrentCallId(callId)
                     setIsInCall(true)
+
+                    const newTab = window.open("", "_blank");
+                    if (newTab) {
+                        newTab.location.href = `/video-call/${callId}`;
+                    }
                 }
             }
         );
@@ -78,20 +68,38 @@ function MainLayout() {
 
     // Xử lý khi bên màn hình của receiver chấp nhận
     // để màn hình video hiển thị lên
-    const handleAccepted = (callId: string) => {
+    const handleAccept = (callId: string) => {
         setCurrentCallId(callId);
         setIsInCall(true);
+    };
+
+    const handleCancel = async () => {
+        if (currentCallId) {
+            await cancelCall(currentCallId);
+        }
+
+        unsubscribeRef.current?.();
+        unsubscribeRef.current = null;
+
+        setCallStatus("");
+        setCurrentCallId(null);
+        setIsInCall(false);
     };
 
     return (
         <div className="main-layout">
 
-            <IncomingCallListener onAccepted={handleAccepted}/>
+            <IncomingCall onAccepted={handleAccept}/>
 
-            {isInCall && currentCallId && (
-                <div>
-                    <VideoCall/>
-                </div>
+            {callStatus === "ringing" && (
+                <WaitingCall
+                    receiver={
+                        currentUserName === "userA"
+                            ? "User B"
+                            : "User A"
+                    }
+                    onCancel={handleCancel}
+                />
             )}
 
             <nav>

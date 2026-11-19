@@ -92,6 +92,15 @@ export const rejectCall = async (callId: string) => {
     )
 }
 
+export const cancelCall = async (callId: string | null) => {
+    await update(
+        ref(database, `calls/${callId}`), {
+            status: "cancelled",
+            cancelAt: Date.now()
+        }
+    )
+}
+
 export const listenCallStatus = (
     callId: string,
     callback: (status: string | null) => void
