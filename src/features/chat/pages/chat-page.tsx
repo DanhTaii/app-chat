@@ -4,6 +4,8 @@ import './chat-page.scss'
 import InfoPanel from "@/features/chat/info-panel/components/InfoPanel.tsx";
 import {useState} from "react";
 import {useAppSelector} from "@/app/store/hooks.ts";
+import {getCloudinaryMedia} from "@/features/chat/message/utils/getCloudinaryMedia.ts";
+import type {UploadedMedia} from "@/features/chat/message/types.ts";
 
 // chỉ ghép Conversation và Message
 function ChatPage() {
@@ -20,6 +22,12 @@ function ChatPage() {
     const selectedConversation = useAppSelector((state) => state.conversation.selectedConversation);
     const receiverName = selectedConversation?.name ?? "";
     const typeConversation = selectedConversation?.type ?? null;
+    const messages = useAppSelector(state => state.message.conversations[receiverName]?.messages ?? []);
+    const mediaMessages: UploadedMedia[] = [];
+    messages.forEach(message => {
+        const media = getCloudinaryMedia(message.mes);
+        if (media) mediaMessages.push(media);
+    });
 
     // console.log("+++++++++++TÊN RECEIVER TỪ CHAT PAGE GỬI QUA: ", receiverName);
 
@@ -35,7 +43,7 @@ function ChatPage() {
                            conversationType={typeConversation}/>
 
             {/* Cú pháp Conditional Rendering nếu isInforOpen là true thì sẽ render InfoPanel*/}
-            {isInfoOpen && <InfoPanel/>}
+            {isInfoOpen && <InfoPanel mediaMessages={mediaMessages}/>}
         </div>
     )
 }

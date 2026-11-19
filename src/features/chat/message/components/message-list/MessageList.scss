@@ -91,17 +91,29 @@
         );
       }
 
-      li.message-list__media-item {
-        max-width: 60%;
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        background-color: transparent;
-      }
-
       .msg-time {
         @include msg-time($color-text: var(--color-outgoing-message-text));
       }
     }
+  }
+
+  .receiver-msg__list-content li.message-media-message,
+  .sender-msg__list-content li.message-media-message {
+    width: min(420px, 60%);
+    max-width: 60%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .message-media-message .msg-time {
+    color: var(--color-muted-text);
+  }
+}
+
+@media (max-width: 600px) {
+  .message-list .receiver-msg__list-content li.message-media-message,
+  .message-list .sender-msg__list-content li.message-media-message {
+    width: min(280px, 60%);
   }
 }

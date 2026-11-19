@@ -7,7 +7,6 @@ import {useRef, useState} from "react";
 import type {ChangeEvent} from "react";
 import {useSendMessage} from "@/features/chat/message/hooks/useSendMessage.ts";
 import {useUploadMedia} from "@/features/chat/message/hooks/useUploadMedia.ts";
-import type {UploadedMedia} from "@/features/chat/message/types.ts";
 
 // @ts-ignore
 // 1 là room chat |
@@ -16,14 +15,14 @@ type MessageComposerProps = {
     receiverName: string;
     user: {username: string} | null;
     conversationType: number;
-    onMediaUploaded: (media: UploadedMedia) => void;
 };
 
-export default function MessageComposer({receiverName,user,conversationType,onMediaUploaded}: MessageComposerProps) {
+export default function MessageComposer({receiverName,user,conversationType}: MessageComposerProps) {
     const [mes, setMes] = useState("")
+    const [mediaSendError, setMediaSendError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const {t} = useTranslation("message");
-    const {uploadFile, isUploading, error} = useUploadMedia();
+    const {uploadFile, isUploading, error: uploadError} = useUploadMedia();
 
     const {sendMessage} = useSendMessage(receiverName, user?.username ?? "", conversationType);
 
@@ -43,8 +42,16 @@ export default function MessageComposer({receiverName,user,conversationType,onMe
         event.target.value = "";
         if (!file) return;
 
+        setMediaSendError(null);
         const uploadedMedia = await uploadFile(file);
-        if (uploadedMedia) onMediaUploaded(uploadedMedia);
+        if (!uploadedMedia) return;
+
+        try {
+            const sent = await sendMessage(uploadedMedia.url);
+            if (!sent) setMediaSendError("Upload đc r mà chưa lưu url đc.");
+        } catch {
+            setMediaSendError("Upload đc trên Cloudinary nhưng ko lưu được URL vào chat app này.");
+        }
     }
 
     return (
@@ -87,9 +94,9 @@ export default function MessageComposer({receiverName,user,conversationType,onMe
                     </div>
 
                 </div>
-                {(isUploading || error) && (
-                    <div className={error ? "media-upload-status media-upload-status--error" : "media-upload-status"} role={error ? "alert" : "status"}>
-                        {isUploading ? "Đang tải media lên…" : error}
+                {(isUploading || uploadError || mediaSendError) && (
+                    <div className={uploadError || mediaSendError ? "media-upload-status media-upload-status--error" : "media-upload-status"} role={uploadError || mediaSendError ? "alert" : "status"}>
+                        {isUploading ? "Đang tải ảnh hoặc video lên…" : uploadError || mediaSendError}
                     </div>
                 )}
                 <div className={"footer-composer"}>
