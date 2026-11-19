@@ -1,9 +1,8 @@
 import './InfoPanel.scss'
-import Button from "../../../../shared/components/Button";
 import {useTranslation} from "react-i18next";
+import type {UploadedMedia} from "@/features/chat/message/types.ts";
 
-
-export default function InfoPanel() {
+export default function InfoPanel({mediaMessages}: {mediaMessages: UploadedMedia[]}) {
     const {t} = useTranslation("infoPanel");
 
     return (
@@ -27,24 +26,23 @@ export default function InfoPanel() {
             <hr/>
 
             <div className={"resource__image"}>
-                <div className={"title"}>{t("info-panel.title.image-video")}</div>
-                <div className={"resource__image-list-vertical"}>
-                    <div className={"resource__image-list-horizontal"}>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                        <img src="/src/shared/assets/avatar.webp"/>
+                {mediaMessages.length > 0 ? (
+                    <div className="resource__media-list">
+                        {mediaMessages.map(media => (
+                            <div className="resource__media-item" key={media.url} title={media.name}>
+                                {media.kind === "image" ? (
+                                    <a href={media.url} target="_blank" rel="noreferrer" aria-label={`Mở ảnh ${media.name}`}>
+                                        <img src={media.url} alt={media.name} loading="lazy" />
+                                    </a>
+                                ) : (
+                                    <video src={media.url} controls preload="metadata" aria-label={media.name} />
+                                )}
+                            </div>
+                        ))}
                     </div>
-                    <div className={"resource__image-list-horizontal"}>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                        <img src="/src/shared/assets/avatar.webp"/>
-                    </div>
-                </div>
-                <Button type="button" className="btn">
-                    {t("info-panel.button.watch-all")}
-                </Button>
+                ) : (
+                    <p className="resource__media-empty">Không có ảnh hay video nào ở cuộc trò chuyện này</p>
+                )}
             </div>
 
             <hr/>

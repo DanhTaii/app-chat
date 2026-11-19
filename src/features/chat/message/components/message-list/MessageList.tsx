@@ -3,33 +3,13 @@ import {useTranslation} from "react-i18next";
 import type {Message} from "@/features/chat/message/types.ts";
 import {useEffect, useRef} from "react";
 import {useMessage} from "@/features/chat/message/hooks/useMessage.ts";
-import type {UploadedMedia} from "@/features/chat/message/types.ts";
 import MessageMedia from "@/features/chat/message/components/message-media/MessageMedia.tsx";
+import {getCloudinaryMedia} from "@/features/chat/message/utils/getCloudinaryMedia.ts";
 
 type MessageGroup = {
     isSender: boolean,
     senderName: string
     messages: Message[]
-}
-
-function getCloudinaryMedia(message: string): UploadedMedia | null {
-    try {
-        const mediaUrl = new URL(message);
-        const segments = mediaUrl.pathname.split("/").filter(Boolean);
-
-        if (mediaUrl.hostname !== "res.cloudinary.com" || segments[2] !== "upload") {
-            return null;
-        }
-
-        const kind = segments[1];
-        if (kind !== "image" && kind !== "video") return null;
-
-        const name = segments.at(-1) || `noname.pic`;
-        const format = name.includes(".") ? name.split(".").pop() || "" : "";
-        return {url: mediaUrl.toString(), kind, name, format};
-    } catch {
-        return null;
-    }
 }
 
 // @ts-ignore
