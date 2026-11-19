@@ -3,17 +3,28 @@ import './MessageComposer.scss'
 import Button from "../../../../../shared/components/Button";
 import Input from "../../../../../shared/components/Input";
 import {useTranslation} from "react-i18next";
-import {useState} from "react";
+import {useRef, useState} from "react";
+import type {ChangeEvent} from "react";
 import {useSendMessage} from "@/features/chat/message/hooks/useSendMessage.ts";
+import {useUploadMedia} from "@/features/chat/message/hooks/useUploadMedia.ts";
 
 // @ts-ignore
 // 1 là room chat |
 // 0 là people chat
-export default function MessageComposer({receiverName, user, conversationType}) {
-    const [mes, setMes] = useState("")
-    const {t} = useTranslation("message");
+type MessageComposerProps = {
+    receiverName: string;
+    user: {username: string} | null;
+    conversationType: number;
+};
 
-    const {sendMessage} = useSendMessage(receiverName, user.username, conversationType);
+export default function MessageComposer({receiverName,user,conversationType}: MessageComposerProps) {
+    const [mes, setMes] = useState("")
+    const [mediaSendError, setMediaSendError] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const {t} = useTranslation("message");
+    const {uploadFile, isUploading, error: uploadError} = useUploadMedia();
+
+    const {sendMessage} = useSendMessage(receiverName, user?.username ?? "", conversationType);
 
     const handleSendMessage = async () => {
         const content = mes.trim();
@@ -23,6 +34,23 @@ export default function MessageComposer({receiverName, user, conversationType}) 
         const success = await sendMessage(content);
         if (success) {
             setMes("")
+        }
+    }
+
+    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        event.target.value = "";
+        if (!file) return;
+
+        setMediaSendError(null);
+        const uploadedMedia = await uploadFile(file);
+        if (!uploadedMedia) return;
+
+        try {
+            const sent = await sendMessage(uploadedMedia.url);
+            if (!sent) setMediaSendError("Upload đc r mà chưa lưu url đc.");
+        } catch {
+            setMediaSendError("Upload đc trên Cloudinary nhưng ko lưu được URL vào chat app này.");
         }
     }
 
@@ -39,7 +67,24 @@ export default function MessageComposer({receiverName, user, conversationType}) 
                                 <i className="fa-regular fa-face-laugh"></i>
                             </li>
                             <li className={"footer-toolbar__item"}>
-                                <i className="fa-regular fa-image"></i>
+                                <button
+                                    type="button"
+                                    className="media-picker-button"
+                                    aria-label="Chọn ảnh hoặc video"
+                                    title="Chọn ảnh hoặc video"
+                                    disabled={isUploading}
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    <i className="fa-regular fa-image"></i>
+                                </button>
+                                <input
+                                    ref={fileInputRef}
+                                    className="media-file-input"
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,.jpg,.jpeg,.png,.webp,.mp4,.webm"
+                                    onChange={handleFileChange}
+                                    disabled={isUploading}
+                                />
                             </li>
                         </ul>
                     </div>
@@ -49,6 +94,11 @@ export default function MessageComposer({receiverName, user, conversationType}) 
                     </div>
 
                 </div>
+                {(isUploading || uploadError || mediaSendError) && (
+                    <div className={uploadError || mediaSendError ? "media-upload-status media-upload-status--error" : "media-upload-status"} role={uploadError || mediaSendError ? "alert" : "status"}>
+                        {isUploading ? "Đang tải ảnh hoặc video lên…" : uploadError || mediaSendError}
+                    </div>
+                )}
                 <div className={"footer-composer"}>
                     <form className={"footer-composer__container"}>
                         <Input

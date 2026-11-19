@@ -3,6 +3,8 @@ import {useTranslation} from "react-i18next";
 import type {Message} from "@/features/chat/message/types.ts";
 import {useEffect, useRef} from "react";
 import {useMessage} from "@/features/chat/message/hooks/useMessage.ts";
+import MessageMedia from "@/features/chat/message/components/message-media/MessageMedia.tsx";
+import {getCloudinaryMedia} from "@/features/chat/message/utils/getCloudinaryMedia.ts";
 
 type MessageGroup = {
     isSender: boolean,
@@ -11,7 +13,11 @@ type MessageGroup = {
 }
 
 // @ts-ignore
-export default function MessageList({receiverName, user, conversationType}) {
+export default function MessageList({receiverName, user, conversationType}: {
+    receiverName: string;
+    user: {username: string} | null;
+    conversationType: number;
+}) {
     // 1 là room chat |
     // 0 là people chat
 
@@ -82,22 +88,21 @@ export default function MessageList({receiverName, user, conversationType}) {
                                     )
                                 }
                                 {
-                                    group.messages.map((msg, index) => (
-                                        <li key={index}>
-                                            <div className={
-                                                     group.isSender ? "sender-msg__content" : "receiver-msg__content"
-                                                 }>
-                                                {msg.mes}
-                                            </div>
-                                            {
-                                                index === group.messages.length - 1 && (
-                                                    <div className="msg-time">
-                                                        12:00
+                                    group.messages.map((msg, index) => {
+                                        const media = getCloudinaryMedia(msg.mes);
+                                        return (
+                                            <li key={index} className={media ? "message-media-message" : undefined}>
+                                                {media ? (<MessageMedia media={media}/>) : (
+                                                    <div className={group.isSender ? "sender-msg__content" : "receiver-msg__content"}>
+                                                        {msg.mes}
                                                     </div>
-                                                )
-                                            }
-                                        </li>
-                                    ))
+                                                )}
+                                                {index === group.messages.length - 1 && (
+                                                    <div className="msg-time">12:00</div>
+                                                )}
+                                            </li>
+                                        );
+                                    })
                                 }
                             </ul>
                         </div>

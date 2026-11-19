@@ -9,11 +9,33 @@
     },
     "filter": {
       "all": "Tất cả",
-      "direct": "Chat đơn",
+      "direct": "Cá nhân",
       "groups": "Nhóm"
+    },
+    "itemType": {
+      "direct": "Cá nhân",
+      "group": "Nhóm"
     },
     "time": {
       "yesterday": "Hôm qua"
+    },
+    "roomModal": {
+      "title": "Tạo hoặc tham gia phòng",
+      "label": "Tên phòng",
+      "placeholder": "Nhập tên phòng...",
+      "cancel": "Hủy",
+      "createSubmit": "Tạo phòng",
+      "creating": "Đang tạo...",
+      "joinSubmit": "Tham gia",
+      "joining": "Đang tham gia...",
+      "errorEmpty": "Vui lòng nhập tên phòng.",
+      "errorExist": "Tên phòng đã tồn tại, vui lòng chọn tên khác.",
+      "errorNotFound": "Phòng chat không tồn tại, vui lòng kiểm tra lại.",
+      "errorCreateDefault": "Không thể tạo phòng, vui lòng thử lại.",
+      "errorJoinDefault": "Không thể tham gia phòng, vui lòng thử lại."
+    },
+    "actions": {
+      "openRoomModal": "Tạo hoặc tham gia phòng"
     }
   }
 }

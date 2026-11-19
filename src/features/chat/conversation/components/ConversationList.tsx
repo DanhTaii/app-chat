@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { getUserList } from "@/features/chat/conversation/services/conversationApi";
-import type { ApiConversationItem } from "@/features/chat/conversation/types/conversation";
-import {setConversations, selectConversation,} from "@/features/chat/conversation/slices/conversationSlice";
+import {getUserList, checkUserOnline, createRoom, joinRoom} from "@/features/chat/conversation/api/conversationApi";
+import type { ApiConversationItem, RoomModalMode } from "@/features/chat/conversation/types/conversation";
+import {setConversations, selectConversation, setUserOnlineStatus, addConversation} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
+import RoomModal from "@/features/chat/conversation/components/room-modal/RoomModal.tsx";
 
 interface ConversationItem {
     id: string;
@@ -62,14 +63,42 @@ function formatActionTime(actionTime: string): string {
     return actionTime;
 }
 
-function mapApiToConversationItem(item: ApiConversationItem): ConversationItem {
+async function syncDirectUsersOnline(
+    conversations: ApiConversationItem[],
+    onStatusUpdate: (name: string, online: boolean) => void,
+    isCancelled: () => boolean
+) {
+    const directUsers = conversations.filter((item) => item.type === 0);
+    for (const item of directUsers) {
+        if (isCancelled()) break;
+        try {
+            const online = await checkUserOnline(item.name);
+            if (isCancelled()) break;
+            onStatusUpdate(item.name, online);
+        } catch {
+            // bỏ qua user lỗi để tiep tục kiem tra
+        }
+    }
+}
+
+type ConversationFilter = "all" | "direct" | "groups";
+
+const CONVERSATION_FILTERS: readonly ConversationFilter[] = ["all", "direct", "groups"];
+
+function mapApiToConversationItem(
+    item: ApiConversationItem,
+    onlineUsers: Record<string, boolean>,
+    typeLabels: { direct: string; group: string }
+): ConversationItem {
+    const isDirect = item.type === 0;
     return {
         id: `${item.type}-${item.name}`,
         name: item.name,
         type: item.type,
         initials: getInitials(item.name),
-        lastMessage: item.type === 1 ? "Nhóm trò chuyện" : "Trò chuyện cá nhân",
+        lastMessage: item.type === 1 ? typeLabels.group : typeLabels.direct,
         time: formatActionTime(item.actionTime),
+        online: isDirect ? Boolean(onlineUsers[item.name]) : false,
         isGroup: item.type === 1,
         variant: "primary",
     };
@@ -77,7 +106,7 @@ function mapApiToConversationItem(item: ApiConversationItem): ConversationItem {
 
 function ConversationList() {
     const {t} = useTranslation("conversation");
-    const [activeFilter, setActiveFilter] = useState<"all" | "direct" | "groups">("all");
+    const [activeFilter, setActiveFilter] = useState<ConversationFilter>("all");
     const dispatch = useAppDispatch();
     const apiConversations = useAppSelector((state) => state.conversation.conversations);
     const selectedConversation = useAppSelector((state) => state.conversation.selectedConversation);
@@ -86,6 +115,8 @@ function ConversationList() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
+    const onlineUsers = useAppSelector((state) => state.conversation.onlineUsers);
+    const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -105,6 +136,12 @@ function ConversationList() {
                 if (data.length > 0) {
                     dispatch(selectConversation({name: data[0].name, type: data[0].type}));
                 }
+                setLoading(false);
+                await syncDirectUsersOnline(
+                    data,
+                    (name, online) => dispatch(setUserOnlineStatus({ name, online })),
+                    () => !isMounted
+                );
             } catch (err) {
                 if (!isMounted) return;
                 setError(err instanceof Error ? err.message : "Không thể tải danh sách hội thoại");
@@ -120,7 +157,39 @@ function ConversationList() {
         };
     }, [dispatch, isLoggedIn]);
 
-    const conversationItems = apiConversations.map(mapApiToConversationItem);
+    useEffect(() => {
+        if (!isLoggedIn || apiConversations.length === 0) {
+            return;
+        }
+        let isMounted = true;
+        let isChecking = false;
+        const intervalId = window.setInterval(async () => {
+            if (isChecking) return;
+            isChecking = true;
+            try {
+                await syncDirectUsersOnline(
+                    apiConversations,
+                    (name, online) => dispatch(setUserOnlineStatus({ name, online })),
+                    () => !isMounted
+                );
+            } finally {
+                isChecking = false;
+            }
+        }, 30000);
+        return () => {
+            isMounted = false;
+            window.clearInterval(intervalId);
+        };
+    }, [apiConversations, dispatch, isLoggedIn]);
+
+    const typeLabels = {
+        direct: t("conversation.itemType.direct"),
+        group: t("conversation.itemType.group"),
+    };
+
+    const conversationItems = apiConversations.map((item) =>
+        mapApiToConversationItem(item, onlineUsers, typeLabels)
+    );
 
     const normalizedKeyword = searchKeyword.trim().toLowerCase();
 
@@ -138,7 +207,7 @@ function ConversationList() {
     });
 
     // xử lý click
-    const handleSelectConversation = (conversation: ConversationItem) => {
+    const handleSelectConversation = async (conversation: ConversationItem) => {
         dispatch(
             selectConversation({
                 name: conversation.name,
@@ -146,7 +215,44 @@ function ConversationList() {
             })
         );
         setSearchKeyword("");
+        if (conversation.type === 0) {
+            try {
+                const online = await checkUserOnline(conversation.name);
+                dispatch(setUserOnlineStatus({ name: conversation.name, online }));
+            } catch {}
+        }
     };
+
+    const handleRoomSubmit = async (roomName: string, mode: RoomModalMode) => {
+        const roomData =
+            mode === "join" ? await joinRoom(roomName) : await createRoom(roomName);
+        const finalRoomName = roomData.name || roomName;
+        dispatch(
+            addConversation({
+                name: finalRoomName,
+                type: 1,
+            })
+        );
+
+        setSearchKeyword("");
+        if (activeFilter === "direct") {
+            setActiveFilter("all");
+        }
+    };
+
+    const formatRoomModalError = (rawMessage: string, mode: RoomModalMode) => {
+        const normalized = rawMessage.toLowerCase();
+        if (mode === "create" && normalized.includes("exist")) {
+            return t("conversation.roomModal.errorExist");
+        }
+        if (mode === "join" && (normalized.includes("not found") || normalized.includes("not exist"))) {
+            return t("conversation.roomModal.errorNotFound");
+        }
+        return (
+            rawMessage || t(mode === "join" ? "conversation.roomModal.errorJoinDefault" : "conversation.roomModal.errorCreateDefault")
+        );
+    };
+
 
     return (
         <aside className="conversation-list" aria-label="Danh sách hội thoại">
@@ -154,7 +260,10 @@ function ConversationList() {
                 <div className="conversation-list__header">
                     <h2>{username ? t("conversation.title.greeting", { username }) : t("conversation.title.messages")}</h2>
                     <button type="button" className="conversation-list__compose-btn"
-                            aria-label="Tạo cuộc trò chuyện mới">
+                            onClick={() => setIsRoomModalOpen(true)}
+                            disabled={!isLoggedIn}
+                            aria-label={t("conversation.actions.openRoomModal")}
+                            title={t("conversation.actions.openRoomModal")}>
                         <i className="fa-regular fa-pen-to-square"></i>
                     </button>
                 </div>
@@ -167,21 +276,12 @@ function ConversationList() {
                 </div>
 
                 <div className="conversation-list__filters" role="group" aria-label="Lọc hội thoại">
-                    <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "all" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("all")}>
-                        {t("conversation.filter.all")}
-                    </button>
-                    <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "direct" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("direct")}>
-                        {t("conversation.filter.direct")}
-                    </button>
-                    <button type="button"
-                            className={`conversation-list__chip ${activeFilter === "groups" ? "conversation-list__chip--active" : ""}`}
-                            onClick={() => setActiveFilter("groups")}>
-                        {t("conversation.filter.groups")}
-                    </button>
+                    {CONVERSATION_FILTERS.map((filterKey) => (
+                        <button key={filterKey} type="button" className={`conversation-list__chip ${activeFilter === filterKey ? "conversation-list__chip--active" : ""}`}
+                            onClick={() => setActiveFilter(filterKey)}>
+                            {t(`conversation.filter.${filterKey}`)}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -238,6 +338,21 @@ function ConversationList() {
                         );
                     })}
             </ul>
+            <RoomModal
+                isOpen={isRoomModalOpen}
+                title={t("conversation.roomModal.title")}
+                label={t("conversation.roomModal.label")}
+                placeholder={t("conversation.roomModal.placeholder")}
+                cancelText={t("conversation.roomModal.cancel")}
+                joinText={t("conversation.roomModal.joinSubmit")}
+                joiningText={t("conversation.roomModal.joining")}
+                createText={t("conversation.roomModal.createSubmit")}
+                creatingText={t("conversation.roomModal.creating")}
+                emptyErrorText={t("conversation.roomModal.errorEmpty")}
+                onClose={() => setIsRoomModalOpen(false)}
+                onSubmit={handleRoomSubmit}
+                formatError={formatRoomModalError}
+            />
         </aside>
     );
 }

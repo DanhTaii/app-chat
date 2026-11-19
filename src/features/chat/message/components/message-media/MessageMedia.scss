@@ -1,0 +1,27 @@
+.message-media {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+
+  img,
+  video {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
+  .message-media__name {
+    overflow: hidden;
+    max-width: 100%;
+    color: var(--color-muted-text);
+    font-size: var(--font-size-extra-small);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+

@@ -13,6 +13,7 @@ import Sidebar from "./Sidebar";
 import {createCall} from "@/features/chat/video-call/services/callService.ts";
 import IncomingCallListener from "@/features/chat/video-call/IncomingCallListener.tsx";
 // import chatSocket from "@/shared/services/socket/socketService.ts";
+// import chatSocket from "@/shared/api/socket/socketService.ts";
 
 function MainLayout() {
     // const {i18n} = useTranslation();

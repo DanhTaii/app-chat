@@ -10,6 +10,15 @@ export interface Message {
     type: 0 | 1;
 }
 
+export type MediaKind = "image" | "video";
+
+export interface UploadedMedia {
+    url: string;
+    kind: MediaKind;
+    name: string;
+    format: string;
+}
+
 export interface GetPeopleChatMessRequest {
     name: string;
     page: number;

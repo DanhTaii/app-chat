@@ -12,8 +12,30 @@
       "direct": "Direct",
       "groups": "Groups"
     },
+    "itemType": {
+      "direct": "Direct",
+      "group": "Group"
+    },
     "time": {
       "yesterday": "Yesterday"
+    },
+    "roomModal": {
+      "title": "Create or join room",
+      "label": "Room name",
+      "placeholder": "Enter room name...",
+      "cancel": "Cancel",
+      "createSubmit": "Create room",
+      "creating": "Creating...",
+      "joinSubmit": "Join",
+      "joining": "Joining...",
+      "errorEmpty": "Please enter a room name.",
+      "errorExist": "Room name already exists, please choose another.",
+      "errorNotFound": "Room not found, please check the room name.",
+      "errorCreateDefault": "Could not create room, please try again.",
+      "errorJoinDefault": "Could not join room, please try again."
+    },
+    "actions": {
+      "openRoomModal": "Create or join room"
     }
   }
 }
