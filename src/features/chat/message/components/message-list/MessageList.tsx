@@ -3,6 +3,8 @@ import {useTranslation} from "react-i18next";
 import type {Message} from "@/features/chat/message/types.ts";
 import {useEffect, useRef} from "react";
 import {useMessage} from "@/features/chat/message/hooks/useMessage.ts";
+import type {UploadedMedia} from "@/features/chat/message/types.ts";
+import MessageMedia from "@/features/chat/message/components/message-media/MessageMedia.tsx";
 
 type MessageGroup = {
     isSender: boolean,
@@ -11,7 +13,12 @@ type MessageGroup = {
 }
 
 // @ts-ignore
-export default function MessageList({receiverName, user, conversationType}) {
+export default function MessageList({receiverName, user, conversationType, mediaMessages = []}: {
+    receiverName: string;
+    user: {username: string} | null;
+    conversationType: number;
+    mediaMessages?: UploadedMedia[];
+}) {
     // 1 là room chat |
     // 0 là people chat
 
@@ -47,10 +54,10 @@ export default function MessageList({receiverName, user, conversationType}) {
     useEffect(() => {
         const list = listRef.current;
 
-        if (list && listMsg.length > 0) {
+        if (list && (listMsg.length > 0 || mediaMessages.length > 0)) {
             list.scrollTop = list.scrollHeight;
         }
-    }, [listMsg]);
+    }, [listMsg, mediaMessages]);
 
     return (
         <div ref={listRef} className={"message-list"}>
@@ -104,6 +111,15 @@ export default function MessageList({receiverName, user, conversationType}) {
                     )
                 )
             }
+            {mediaMessages.map((media, index) => (
+                <div key={`${media.url}-${index}`} className="sender-msg__block">
+                    <ul className="sender-msg__list-content">
+                        <li className="message-list__media-item">
+                            <MessageMedia media={media}/>
+                        </li>
+                    </ul>
+                </div>
+            ))}
         </div>
     )
 }
