@@ -12,12 +12,31 @@ type MessageGroup = {
     messages: Message[]
 }
 
+function getCloudinaryMedia(message: string): UploadedMedia | null {
+    try {
+        const mediaUrl = new URL(message);
+        const segments = mediaUrl.pathname.split("/").filter(Boolean);
+
+        if (mediaUrl.hostname !== "res.cloudinary.com" || segments[2] !== "upload") {
+            return null;
+        }
+
+        const kind = segments[1];
+        if (kind !== "image" && kind !== "video") return null;
+
+        const name = segments.at(-1) || `noname.pic`;
+        const format = name.includes(".") ? name.split(".").pop() || "" : "";
+        return {url: mediaUrl.toString(), kind, name, format};
+    } catch {
+        return null;
+    }
+}
+
 // @ts-ignore
-export default function MessageList({receiverName, user, conversationType, mediaMessages = []}: {
+export default function MessageList({receiverName, user, conversationType}: {
     receiverName: string;
     user: {username: string} | null;
     conversationType: number;
-    mediaMessages?: UploadedMedia[];
 }) {
     // 1 là room chat |
     // 0 là people chat
@@ -54,10 +73,10 @@ export default function MessageList({receiverName, user, conversationType, media
     useEffect(() => {
         const list = listRef.current;
 
-        if (list && (listMsg.length > 0 || mediaMessages.length > 0)) {
+        if (list && listMsg.length > 0) {
             list.scrollTop = list.scrollHeight;
         }
-    }, [listMsg, mediaMessages]);
+    }, [listMsg]);
 
     return (
         <div ref={listRef} className={"message-list"}>
@@ -89,37 +108,27 @@ export default function MessageList({receiverName, user, conversationType, media
                                     )
                                 }
                                 {
-                                    group.messages.map((msg, index) => (
-                                        <li key={index}>
-                                            <div className={
-                                                     group.isSender ? "sender-msg__content" : "receiver-msg__content"
-                                                 }>
-                                                {msg.mes}
-                                            </div>
-                                            {
-                                                index === group.messages.length - 1 && (
-                                                    <div className="msg-time">
-                                                        12:00
+                                    group.messages.map((msg, index) => {
+                                        const media = getCloudinaryMedia(msg.mes);
+                                        return (
+                                            <li key={index} className={media ? "message-media-message" : undefined}>
+                                                {media ? (<MessageMedia media={media}/>) : (
+                                                    <div className={group.isSender ? "sender-msg__content" : "receiver-msg__content"}>
+                                                        {msg.mes}
                                                     </div>
-                                                )
-                                            }
-                                        </li>
-                                    ))
+                                                )}
+                                                {index === group.messages.length - 1 && (
+                                                    <div className="msg-time">12:00</div>
+                                                )}
+                                            </li>
+                                        );
+                                    })
                                 }
                             </ul>
                         </div>
                     )
                 )
             }
-            {mediaMessages.map((media, index) => (
-                <div key={`${media.url}-${index}`} className="sender-msg__block">
-                    <ul className="sender-msg__list-content">
-                        <li className="message-list__media-item">
-                            <MessageMedia media={media}/>
-                        </li>
-                    </ul>
-                </div>
-            ))}
         </div>
     )
 }
