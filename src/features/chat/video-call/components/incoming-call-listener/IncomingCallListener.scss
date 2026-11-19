@@ -1,0 +1,56 @@
+@use "sass:map";
+@use "../../../../../shared/assets/styles/mixins" as mixins;
+
+.notify-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  // Màu nền
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+
+  // căn giữa nội dung
+  @include mixins.flex-layout(
+          $justify: center,
+          $align: center
+  );
+
+  z-index: 99998;
+
+  .notify-call {
+    background: white;
+    color: black;
+    padding: 24px;
+    border: 2px solid green;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 99999;
+
+
+    .notify-call_choice {
+      @include mixins.flex-layout(
+              $justify: space-between
+      );
+
+      .btn {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+      }
+
+      .accept-btn {
+        background-color: var(--color-success);
+      }
+
+      .reject-btn {
+        background-color: var(--color-danger);
+      }
+    }
+  }
+}
+
+
+

@@ -2,7 +2,6 @@ import {
     ref,
     set,
     onValue,
-    push,
     update
 } from "firebase/database";
 import {database} from "@/shared/services/firebase/firebase.ts";
@@ -49,15 +48,12 @@ export const listenIncomingCall = (
         const incomingCalls = Object.entries(calls)
             .filter(([callId, call]: [string, any]) => {
 
-                const isReceiver =
-                    call.receiver === currentUsername;
+                const isReceiver = call.receiver === currentUsername;
 
-                const isRinging =
-                    call.status === "ringing";
+                const isRinging = call.status === "ringing";
 
                 // Chỉ nhận cuộc gọi trong vòng 60 giây
-                const isRecent =
-                    now - call.createdAt < 60 * 1000;
+                const isRecent = now - call.createdAt < 60 * 1000;
 
                 return isReceiver && isRinging && isRecent;
             })
@@ -95,3 +91,20 @@ export const rejectCall = async (callId: string) => {
         }
     )
 }
+
+export const listenCallStatus = (
+    callId: string,
+    callback: (status: string | null) => void
+) => {
+    const callRef = ref(database, `calls/${callId}`);
+
+    const unsubscribe = onValue(callRef, (snapshot) => {
+        const callData = snapshot.val();
+
+        // console.log("DỮ LIỆU CALL TỪ FIREBASE:", callData);
+
+        callback(callData?.status ?? null);
+    });
+
+    return unsubscribe;
+};

@@ -13,7 +13,7 @@ applyTheme(getInitialTheme());
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    {/* Provider bọc các component bên trong */}
+    {/* Provider bọc các components bên trong */}
     <Provider store={store}>
       <App />
     </Provider>

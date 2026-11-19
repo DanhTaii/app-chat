@@ -22,6 +22,12 @@ export default function MessageHeader({receiverName, onToggleInfo}) {
                 <ul>
                     <li>
                         <div className={""}>
+                            <i className="fa-solid fa-phone"></i>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div className={""}>
                             <i className="fa-solid fa-magnifying-glass"></i>
                         </div>
                     </li>
