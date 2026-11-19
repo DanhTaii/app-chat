@@ -12,7 +12,7 @@ function AuthButton({ children, loadingText, loading, disabled }: AuthButtonProp
   return (
     <Button
       variant="primary"
-      className="auth-form__submit"
+      className="btn"
       type="submit"
       disabled={disabled || loading}
     >

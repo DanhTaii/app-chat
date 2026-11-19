@@ -43,12 +43,14 @@
     }
   }
 
+  
   @mixin title {
     font-weight: var(--font-weight-bold);
     font-size: var(--font-size-extra-large);
   }
 
   .resource__image {
+          
     .title {
       @include title;
     }
@@ -78,6 +80,11 @@
     .resource__media-empty {
       color: var(--color-muted-text);
       font-size: var(--font-size-small);
+    }
+
+    > .btn {
+      width: 100%;
+      margin-top: 10px;
     }
 
   }

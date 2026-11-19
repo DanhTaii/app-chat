@@ -1,4 +1,5 @@
 import './InfoPanel.scss'
+import Button from "@/shared/components/Button.tsx";
 import {useTranslation} from "react-i18next";
 import type {UploadedMedia} from "@/features/chat/message/types.ts";
 
@@ -21,6 +22,7 @@ export default function InfoPanel({mediaMessages}: {mediaMessages: UploadedMedia
                     </div>
                     <i className="fa-solid fa-pen"></i>
                 </div>
+    
             </div>
 
             <hr/>
@@ -43,6 +45,10 @@ export default function InfoPanel({mediaMessages}: {mediaMessages: UploadedMedia
                 ) : (
                     <p className="resource__media-empty">Không có ảnh hay video nào ở cuộc trò chuyện này</p>
                 )}
+                <Button variant = "primary" className="btn">
+                    {t("info-panel.button.watch-all")}
+                </Button>
+              
             </div>
 
             <hr/>
