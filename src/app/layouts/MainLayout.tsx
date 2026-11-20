@@ -1,78 +1,132 @@
 import "./MainLayout.scss";
 import {Outlet, useLocation} from "react-router-dom";
-// import {Link} from "react-router-dom";
 import {ROUTES} from "../router/routes";
-// import {useTranslation} from "react-i18next";
-// import {useState} from "react";
-// import {
-//     applyTheme,
-//     getInitialTheme,
-//     type Theme,
-// } from "../../shared/utils/theme";
 import Sidebar from "./Sidebar";
-// import chatSocket from "@/shared/api/socket/socketService.ts";
+import {cancelCall, createCall, listenCallStatus} from "@/features/chat/video-call/api/callService.ts";
+import IncomingCall
+    from "@/features/chat/video-call/components/incoming-call/IncomingCall.tsx";
+import {useEffect, useRef, useState} from "react";
+import WaitingCall from "@/features/chat/video-call/components/waiting-call/WaitingCall.tsx";
 
 function MainLayout() {
-    // const {i18n} = useTranslation();
-    // const [currentLanguage, setCurrentLanguage] = useState("vi");
-    // const [theme, setTheme] = useState<Theme>(getInitialTheme);
     const {pathname} = useLocation();
     const showSidebar = pathname.startsWith(ROUTES.CHAT);
 
-    // const toggleTheme = () => {
-    //     const nextTheme = theme === "dark" ? "light" : "dark";
-    //     setTheme(nextTheme);
-    //     applyTheme(nextTheme);
-    // };
+    // Trạng thái khi 1 người dùng bấm call cho 1 người kahsc
+    // => ringing, accept, reject, cancel
+    const [callStatus, setCallStatus] = useState("");
+    // biến để lưu hàm hủy đăng ký lắng nghe
+    const unsubscribeRef = useRef<(() => void) | null>(null);
+    // lưu lại mã ID mà 2 người call nhau
+    const [currentCallId, setCurrentCallId] = useState<string | null>(null);
+    // để xem coi 2 người này có đang trong 1 cuộc call khoiong ?
+    const [isInCall, setIsInCall] = useState(false)
 
-    // const toggleTranslateLanguage = () => {
-    //     setCurrentLanguage(currentLanguage === "en" ? "vi" : "en");
-    //     i18n.changeLanguage(currentLanguage === "en" ? "vi" : "en");
-    // };
+    const currentUserName = localStorage.getItem("username") || "userA";
 
-    // async function createSocket() {
-    //   try {
-    //         // 1. Import SocketService
-    //         await chatSocket.connect();
-    //         console.log("WebSocket connected!");
-    //
-    //         // comment lại
-    //         // // 3. Gửi LOGIN và chờ response
-    //         // const response = await chatSocket.request("LOGIN", {
-    //         //     user: "danhtai",
-    //         //     pass: "tai.HDT,011892"
-    //         // });
-    //         // // 4. Hiển thị kết quả
-    //         // console.log("LOGIN RESPONSE:", response);
-    //
-    //     } catch (error) {
-    //         console.error("Socket testing failed:", error);
-    //     }
-    // }
+    // hủy đăng ký lắng nghe firebase khi components MainLayout bị gỡ khởi giao diện
+    useEffect(() => {
+        return () => {
+            unsubscribeRef.current?.();
+        };
+    }, []);
+
+    const handleCall = async () => {
+        // hủy lắng nghe cuộc gọi trước nếu có
+        unsubscribeRef.current?.();
+
+        setCallStatus("ringing");
+
+        const receiver = currentUserName === "userA" ? "userB" : "userA";
+
+        // tạo ra cuộc gọi và lấy mã ID
+        const callId = await createCall(
+            currentUserName,
+            receiver
+        );
+
+        console.log("Call ID:", callId);
+        setCurrentCallId(callId)
+
+        // sau khi gọi hàm listenCallStatus nó sẽ trả về 1 hàm hủy đăng ký lắng nghe
+        unsubscribeRef.current = listenCallStatus(callId, (status) => {
+                console.log("CALL STATUS:", status);
+                setCallStatus(status || "");
+
+                if (status == "accepted") {
+                    setCurrentCallId(callId)
+                    setIsInCall(true)
+
+                    const newTab = window.open("", "_blank");
+                    if (newTab) {
+                        newTab.location.href = `/video-call/${callId}`;
+                    }
+                }
+            }
+        );
+    };
+
+    // Xử lý khi bên màn hình của receiver chấp nhận
+    // để màn hình video hiển thị lên
+    const handleAccept = (callId: string) => {
+        setCurrentCallId(callId);
+        setIsInCall(true);
+    };
+
+    const handleCancel = async () => {
+        if (currentCallId) {
+            await cancelCall(currentCallId);
+        }
+
+        unsubscribeRef.current?.();
+        unsubscribeRef.current = null;
+
+        setCallStatus("");
+        setCurrentCallId(null);
+        setIsInCall(false);
+    };
 
     return (
         <div className="main-layout">
-            {/* <nav>
-                <Link to={ROUTES.LOGIN}>Login</Link> |{" "}
-                <Link to={ROUTES.REGISTER}>Register</Link> |{" "}
-                <Link to={ROUTES.CHAT}>Chat</Link> |{" "}
-                <Link to={ROUTES.COMPONENTS}>Components</Link>
-                <button className="btn btn-primary " onClick={toggleTranslateLanguage}>
-                    Change language EN - VI
+
+            <IncomingCall onAccepted={handleAccept}/>
+
+            {callStatus === "ringing" && (
+                <WaitingCall
+                    receiver={
+                        currentUserName === "userA"
+                            ? "User B"
+                            : "User A"
+                    }
+                    onCancel={handleCancel}
+                />
+            )}
+
+            <nav>
+                <button onClick={handleCall}>
+                    Gọi điện
                 </button>
-                <button onClick={createSocket}>Socket Testing</button>
-                <button
-                    className="theme-toggle"
-                    type="button"
-                    onClick={toggleTheme}
-                    aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-                    title={`Chuyển ${theme === "dark" ? "light" : "dark"} theme`}
-                >
-                    <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
-                </button>
-            </nav> */}
+
+                {callStatus === "ringing" && (
+                    <p>Đang chờ người nhận...</p>
+                )}
+
+                {callStatus === "accepted" && (
+                    <p>Người nhận đã chấp nhận cuộc gọi!</p>
+                )}
+
+                {callStatus === "rejected" && (
+                    <p>Người nhận đã từ chối cuộc gọi!</p>
+                )}
+
+                {callStatus === "error" && (
+                    <p>Không thể thực hiện cuộc gọi!</p>
+                )}
+            </nav>
+
             <div className="main-layout__body">
                 {showSidebar ? <Sidebar/> : null}
+
                 <main className="main-layout__content">
                     <Outlet/>
                 </main>
