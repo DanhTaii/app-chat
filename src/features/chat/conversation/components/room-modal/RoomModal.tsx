@@ -2,12 +2,19 @@ import { useState, type FormEvent } from "react";
 import Input from "@/shared/components/Input";
 // @ts-ignore
 import Button from "@/shared/components/button";
-import type { RoomModalMode } from "@/features/chat/conversation/types/conversation";
+import type { RoomModalMode, RoomModalTab } from "@/features/chat/conversation/types/conversation";
 import "./RoomModal.scss";
 
 interface RoomModalProps {
     isOpen: boolean;
     title: string;
+    tabDirectText: string;
+    tabGroupText: string;
+    directLabel: string;
+    directPlaceholder: string;
+    directSubmitText: string;
+    checkingUserText: string;
+    directEmptyErrorText: string;
     label: string;
     placeholder: string;
     cancelText: string;
@@ -17,13 +24,15 @@ interface RoomModalProps {
     creatingText: string;
     emptyErrorText: string;
     onClose: () => void;
-    onSubmit: (roomName: string, mode: RoomModalMode) => Promise<void>;
+    onSubmit: (targetName: string, mode: RoomModalMode) => Promise<void>;
     formatError?: (rawMessage: string, mode: RoomModalMode) => string;
 }
 
-function RoomModal({isOpen, title, label, placeholder, cancelText, joinText, joiningText, createText, creatingText, emptyErrorText,
-                       onClose, onSubmit, formatError}: RoomModalProps) {
-    const [roomName, setRoomName] = useState("");
+function RoomModal({isOpen, title, tabDirectText, tabGroupText, directLabel, directPlaceholder, directSubmitText, checkingUserText,
+                       directEmptyErrorText, label, placeholder, cancelText, joinText, joiningText, createText, creatingText,
+                       emptyErrorText, onClose, onSubmit, formatError}: RoomModalProps) {
+    const [activeTab, setActiveTab] = useState<RoomModalTab>("direct");
+    const [inputValue, setInputValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [submittingMode, setSubmittingMode] = useState<RoomModalMode | null>(null);
 
@@ -32,26 +41,34 @@ function RoomModal({isOpen, title, label, placeholder, cancelText, joinText, joi
     }
 
     const isSubmitting = submittingMode !== null;
+    const isDirectTab = activeTab === "direct";
+
+    const handleTabChange = (tab: RoomModalTab) => {
+        if (isSubmitting || tab === activeTab) return;
+        setActiveTab(tab);
+        setInputValue("");
+        setError(null);
+    };
 
     const handleClose = () => {
         if (isSubmitting) return;
-        setRoomName("");
+        setInputValue("");
         setError(null);
         onClose();
     };
 
     const handleAction = async (mode: RoomModalMode) => {
         if (isSubmitting) return;
-        const trimmedName = roomName.trim();
+        const trimmedName = inputValue.trim();
         if (!trimmedName) {
-            setError(emptyErrorText);
+            setError(mode === "direct" ? directEmptyErrorText : emptyErrorText);
             return;
         }
         try {
             setSubmittingMode(mode);
             setError(null);
             await onSubmit(trimmedName, mode);
-            setRoomName("");
+            setInputValue("");
             setError(null);
             onClose();
         } catch (err) {
@@ -64,7 +81,7 @@ function RoomModal({isOpen, title, label, placeholder, cancelText, joinText, joi
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        void handleAction("create");
+        void handleAction(isDirectTab ? "direct" : "create");
     };
 
     return (
@@ -77,15 +94,27 @@ function RoomModal({isOpen, title, label, placeholder, cancelText, joinText, joi
                         <i className="fa-solid fa-xmark"></i>
                     </button>
                 </div>
+                <div className="room-modal__tabs" role="tablist">
+                    <button type="button" role="tab" aria-selected={isDirectTab}
+                            className={isDirectTab ? "room-modal__tab room-modal__tab--active" : "room-modal__tab"}
+                            onClick={() => handleTabChange("direct")} disabled={isSubmitting}>
+                        {tabDirectText}
+                    </button>
+                    <button type="button" role="tab" aria-selected={!isDirectTab}
+                            className={!isDirectTab ? "room-modal__tab room-modal__tab--active" : "room-modal__tab"}
+                            onClick={() => handleTabChange("group")} disabled={isSubmitting}>
+                        {tabGroupText}
+                    </button>
+                </div>
                 <form className="room-modal__form" onSubmit={handleSubmit}>
                     <div className="room-modal__field">
-                        <label htmlFor="room-modal-name-input">{label}</label>
-                        <Input id="room-modal-name-input" type="text" value={roomName}
+                        <label htmlFor="room-modal-name-input">{isDirectTab ? directLabel : label}</label>
+                        <Input id="room-modal-name-input" type="text" value={inputValue}
                                onChange={(event) => {
-                                   setRoomName(event.target.value);
+                                   setInputValue(event.target.value);
                                    if (error) setError(null);
                                }}
-                               placeholder={placeholder}
+                               placeholder={isDirectTab ? directPlaceholder : placeholder}
                                aria-invalid={Boolean(error)} disabled={isSubmitting} autoFocus />
                     </div>
                     {error && (
@@ -95,12 +124,20 @@ function RoomModal({isOpen, title, label, placeholder, cancelText, joinText, joi
                         <Button type="button" variant="secondary" className="btn" onClick={handleClose} disabled={isSubmitting}>
                             {cancelText}
                         </Button>
-                        <Button type="button" variant="outline" className="btn" onClick={() => void handleAction("join")} disabled={isSubmitting}>
-                            {submittingMode === "join" ? joiningText : joinText}
-                        </Button>
-                        <Button type="submit" variant="primary" className="btn" disabled={isSubmitting}>
-                            {submittingMode === "create" ? creatingText : createText}
-                        </Button>
+                        {isDirectTab ? (
+                            <Button type="submit" variant="primary" className="btn" disabled={isSubmitting}>
+                                {submittingMode === "direct" ? checkingUserText : directSubmitText}
+                            </Button>
+                        ) : (
+                            <>
+                                <Button type="button" variant="outline" className="btn" onClick={() => void handleAction("join")} disabled={isSubmitting}>
+                                    {submittingMode === "join" ? joiningText : joinText}
+                                </Button>
+                                <Button type="submit" variant="primary" className="btn" disabled={isSubmitting}>
+                                    {submittingMode === "create" ? creatingText : createText}
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </form>
             </div>

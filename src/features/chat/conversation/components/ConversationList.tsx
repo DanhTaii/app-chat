@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import {getUserList, checkUserOnline, createRoom, joinRoom} from "@/features/chat/conversation/api/conversationApi";
+import {getUserList, checkUserOnline, checkUserExist, createRoom, joinRoom} from "@/features/chat/conversation/api/conversationApi";
 import type { ApiConversationItem, RoomModalMode } from "@/features/chat/conversation/types/conversation";
 import {setConversations, selectConversation, setUserOnlineStatus, addConversation} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
@@ -223,10 +223,35 @@ function ConversationList() {
         }
     };
 
-    const handleRoomSubmit = async (roomName: string, mode: RoomModalMode) => {
+    const handleRoomSubmit = async (targetName: string, mode: RoomModalMode) => {
+        if (mode === "direct") {
+            if (username && targetName.toLowerCase() === username.toLowerCase()) {
+                throw new Error("SELF_CHAT");
+            }
+            const exists = await checkUserExist(targetName);
+            if (!exists) {
+                throw new Error("USER_NOT_FOUND");
+            }
+            dispatch(
+                addConversation({
+                    name: targetName,
+                    type: 0,
+                })
+            );
+            setSearchKeyword("");
+            if (activeFilter === "groups") {
+                setActiveFilter("all");
+            }
+            try {
+                const online = await checkUserOnline(targetName);
+                dispatch(setUserOnlineStatus({ name: targetName, online }));
+            } catch {}
+            return;
+        }
+
         const roomData =
-            mode === "join" ? await joinRoom(roomName) : await createRoom(roomName);
-        const finalRoomName = roomData.name || roomName;
+            mode === "join" ? await joinRoom(targetName) : await createRoom(targetName);
+        const finalRoomName = roomData.name || targetName;
         dispatch(
             addConversation({
                 name: finalRoomName,
@@ -241,6 +266,16 @@ function ConversationList() {
     };
 
     const formatRoomModalError = (rawMessage: string, mode: RoomModalMode) => {
+        if (mode === "direct") {
+            if (rawMessage === "SELF_CHAT") {
+                return t("conversation.roomModal.errorSelfChat");
+            }
+            if (rawMessage === "USER_NOT_FOUND") {
+                return t("conversation.roomModal.errorUserNotFound");
+            }
+            return rawMessage || t("conversation.roomModal.errorDirectDefault");
+        }
+
         const normalized = rawMessage.toLowerCase();
         if (mode === "create" && normalized.includes("exist")) {
             return t("conversation.roomModal.errorExist");
@@ -341,6 +376,13 @@ function ConversationList() {
             <RoomModal
                 isOpen={isRoomModalOpen}
                 title={t("conversation.roomModal.title")}
+                tabDirectText={t("conversation.roomModal.tabDirect")}
+                tabGroupText={t("conversation.roomModal.tabGroup")}
+                directLabel={t("conversation.roomModal.directLabel")}
+                directPlaceholder={t("conversation.roomModal.directPlaceholder")}
+                directSubmitText={t("conversation.roomModal.directSubmit")}
+                checkingUserText={t("conversation.roomModal.checkingUser")}
+                directEmptyErrorText={t("conversation.roomModal.errorDirectEmpty")}
                 label={t("conversation.roomModal.label")}
                 placeholder={t("conversation.roomModal.placeholder")}
                 cancelText={t("conversation.roomModal.cancel")}
