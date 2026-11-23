@@ -20,7 +20,17 @@
       "yesterday": "Yesterday"
     },
     "roomModal": {
-      "title": "Create or join room",
+      "title": "New conversation",
+      "tabDirect": "Direct",
+      "tabGroup": "Group",
+      "directLabel": "Username",
+      "directPlaceholder": "Enter username...",
+      "directSubmit": "Start chat",
+      "checkingUser": "Checking...",
+      "errorDirectEmpty": "Please enter a username.",
+      "errorUserNotFound": "User does not exist, please check the username.",
+      "errorSelfChat": "You cannot start a chat with yourself.",
+      "errorDirectDefault": "Could not check user, please try again.",
       "label": "Room name",
       "placeholder": "Enter room name...",
       "cancel": "Cancel",
@@ -35,7 +45,7 @@
       "errorJoinDefault": "Could not join room, please try again."
     },
     "actions": {
-      "openRoomModal": "Create or join room"
+      "openRoomModal": "Start new conversation"
     }
   }
 }
