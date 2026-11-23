@@ -1,7 +1,7 @@
 import chatSocket from "@/shared/services/socket/socketService.ts";
 import type {
     ApiConversationItem, CheckUserOnlineRequest, CheckUserOnlineResponse, CreateRoomRequest, CreateRoomResponse,
-    JoinRoomRequest, JoinRoomResponse
+    JoinRoomRequest, JoinRoomResponse, CheckUserExistRequest, CheckUserExistResponse
 } from "@/features/chat/conversation/types/conversation.ts";
 
 let onlineCheckQueue: Promise<unknown> = Promise.resolve();
@@ -42,4 +42,14 @@ export const createRoom = (name: string): Promise<CreateRoomResponse> => {
 
 export const joinRoom = (name: string): Promise<JoinRoomResponse> => {
     return sendRoomAction("JOIN_ROOM", name);
+};
+
+export const checkUserExist = async (user: string): Promise<boolean> => {
+    await chatSocket.connect();
+    const payload: CheckUserExistRequest = { user };
+    const response = await chatSocket.request<CheckUserExistResponse>(
+        "CHECK_USER_EXIST",
+        payload
+    );
+    return Boolean(response.data?.status);
 };

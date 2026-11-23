@@ -20,7 +20,17 @@
       "yesterday": "Hôm qua"
     },
     "roomModal": {
-      "title": "Tạo hoặc tham gia phòng",
+      "title": "Cuộc trò chuyện mới",
+      "tabDirect": "Cá nhân",
+      "tabGroup": "Nhóm",
+      "directLabel": "Tên người dùng",
+      "directPlaceholder": "Nhập tên người dùng...",
+      "directSubmit": "Nhắn tin",
+      "checkingUser": "Đang kiểm tra...",
+      "errorDirectEmpty": "Vui lòng nhập tên người dùng.",
+      "errorUserNotFound": "Người dùng không tồn tại, vui lòng kiểm tra lại.",
+      "errorSelfChat": "Bạn không thể tự nhắn tin cho chính mình.",
+      "errorDirectDefault": "Không thể kiểm tra người dùng, vui lòng thử lại.",
       "label": "Tên phòng",
       "placeholder": "Nhập tên phòng...",
       "cancel": "Hủy",
@@ -35,7 +45,7 @@
       "errorJoinDefault": "Không thể tham gia phòng, vui lòng thử lại."
     },
     "actions": {
-      "openRoomModal": "Tạo hoặc tham gia phòng"
+      "openRoomModal": "Tạo cuộc trò chuyện mới"
     }
   }
 }

@@ -26,6 +26,15 @@ export interface CreateRoomResponse {
     userList?: RoomMember[];
 }
 
-export type RoomModalMode = "create" | "join";
+export interface CheckUserExistRequest {
+    user: string;
+}
+
+export interface CheckUserExistResponse {
+    status: boolean;
+}
+
+export type RoomModalTab = "direct" | "group";
+export type RoomModalMode = "direct" | "create" | "join";
 export type JoinRoomRequest = CreateRoomRequest;
 export type JoinRoomResponse = CreateRoomResponse;
