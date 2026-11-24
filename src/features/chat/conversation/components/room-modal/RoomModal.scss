@@ -47,6 +47,38 @@
     }
   }
 
+  &__tabs {
+    @include mixins.flex-layout($align: center, $gap: 6px);
+    margin-bottom: 14px;
+    padding: 4px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-standard);
+    background: var(--color-subtle-surface-background);
+  }
+
+  &__tab {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--border-radius-standard);
+    background: transparent;
+    color: var(--color-secondary-text);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--color-hover);
+      color: var(--color-primary-text);
+    }
+
+    &--active {
+      background: var(--color-selection-background);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-semi-bold);
+    }
+  }
+
   &__form {
     @include mixins.flex-layout($align: stretch, $direction: column, $gap: 14px);
   }

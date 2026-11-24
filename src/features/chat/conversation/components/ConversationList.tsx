@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./ConversationList.scss";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import {getUserList, checkUserOnline, createRoom, joinRoom} from "@/features/chat/conversation/api/conversationApi";
+import chatSocket from "@/shared/services/socket/socketService";
+import {getUserList, checkUserOnline, checkUserExist, createRoom, joinRoom} from "@/features/chat/conversation/api/conversationApi";
 import type { ApiConversationItem, RoomModalMode } from "@/features/chat/conversation/types/conversation";
 import {setConversations, selectConversation, setUserOnlineStatus, addConversation} from "@/features/chat/conversation/store/conversationSlice";
 import groupIcon from "@/shared/assets/group.svg";
@@ -117,6 +118,9 @@ function ConversationList() {
     const [searchKeyword, setSearchKeyword] = useState<string>("");
     const onlineUsers = useAppSelector((state) => state.conversation.onlineUsers);
     const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
+    const [searchCheckStatus, setSearchCheckStatus] = useState<"idle" | "checking" | "user_found" | "room_found" | "not_found">("idle");
+    const [quickRoomLoading, setQuickRoomLoading] = useState<"join" | "create" | null>(null);
+    const [quickRoomError, setQuickRoomError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -192,6 +196,7 @@ function ConversationList() {
     );
 
     const normalizedKeyword = searchKeyword.trim().toLowerCase();
+    const trimmedKeyword = searchKeyword.trim();
 
     const filteredConversations = conversationItems.filter((item) => {
         const matchesFilter =
@@ -205,6 +210,82 @@ function ConversationList() {
 
         return matchesFilter && matchesSearch;
     });
+
+    useEffect(() => {
+        setQuickRoomError(null);
+        setQuickRoomLoading(null);
+
+        if (!isLoggedIn || !trimmedKeyword || filteredConversations.length > 0) {
+            setSearchCheckStatus("idle");
+            return;
+        }
+
+        let isCancelled = false;
+        setSearchCheckStatus("checking");
+
+        const timerId = window.setTimeout(async () => {
+            try {
+                const isSelf = Boolean(username && trimmedKeyword.toLowerCase() === username.toLowerCase());
+                const userExists = isSelf ? false : await checkUserExist(trimmedKeyword);
+                if (isCancelled) return;
+                if (userExists) {
+                    setSearchCheckStatus("user_found");
+                    return;
+                }
+
+                try {
+                    await joinRoom(trimmedKeyword);
+                    await chatSocket.request("OUT_ROOM", { name: trimmedKeyword }).catch(() => {});
+                    if (isCancelled) return;
+                    setSearchCheckStatus("room_found");
+                } catch {
+                    if (isCancelled) return;
+                    setSearchCheckStatus("not_found");
+                }
+            } catch {
+                if (isCancelled) return;
+                setSearchCheckStatus("not_found");
+            }
+        }, 350);
+
+        return () => {
+            isCancelled = true;
+            window.clearTimeout(timerId);
+        };
+    }, [isLoggedIn, trimmedKeyword, filteredConversations.length, username]);
+
+    const handleSelectSearchedUser = () => {
+        if (!trimmedKeyword) return;
+        dispatch(
+            addConversation({
+                name: trimmedKeyword,
+                type: 0,
+            })
+        );
+        setSearchKeyword("");
+        if (activeFilter === "groups") {
+            setActiveFilter("all");
+        }
+        void checkUserOnline(trimmedKeyword)
+            .then((online) => {
+                dispatch(setUserOnlineStatus({ name: trimmedKeyword, online }));
+            })
+            .catch(() => {});
+    };
+
+    const handleQuickRoomAction = async (mode: "join" | "create") => {
+        if (!trimmedKeyword || quickRoomLoading) return;
+        try {
+            setQuickRoomLoading(mode);
+            setQuickRoomError(null);
+            await handleRoomSubmit(trimmedKeyword, mode);
+        } catch (err) {
+            const rawMessage = err instanceof Error ? err.message : "";
+            setQuickRoomError(formatRoomModalError(rawMessage, mode));
+        } finally {
+            setQuickRoomLoading(null);
+        }
+    };
 
     // xử lý click
     const handleSelectConversation = async (conversation: ConversationItem) => {
@@ -223,10 +304,36 @@ function ConversationList() {
         }
     };
 
-    const handleRoomSubmit = async (roomName: string, mode: RoomModalMode) => {
+    const handleRoomSubmit = async (targetName: string, mode: RoomModalMode) => {
+        if (mode === "direct") {
+            if (username && targetName.toLowerCase() === username.toLowerCase()) {
+                throw new Error("SELF_CHAT");
+            }
+            const exists = await checkUserExist(targetName);
+            if (!exists) {
+                throw new Error("USER_NOT_FOUND");
+            }
+            dispatch(
+                addConversation({
+                    name: targetName,
+                    type: 0,
+                })
+            );
+            setSearchKeyword("");
+            if (activeFilter === "groups") {
+                setActiveFilter("all");
+            }
+            void checkUserOnline(targetName)
+                .then((online) => {
+                    dispatch(setUserOnlineStatus({ name: targetName, online }));
+                })
+                .catch(() => {});
+            return;
+        }
+
         const roomData =
-            mode === "join" ? await joinRoom(roomName) : await createRoom(roomName);
-        const finalRoomName = roomData.name || roomName;
+            mode === "join" ? await joinRoom(targetName) : await createRoom(targetName);
+        const finalRoomName = roomData.name || targetName;
         dispatch(
             addConversation({
                 name: finalRoomName,
@@ -241,6 +348,16 @@ function ConversationList() {
     };
 
     const formatRoomModalError = (rawMessage: string, mode: RoomModalMode) => {
+        if (mode === "direct") {
+            if (rawMessage === "SELF_CHAT") {
+                return t("conversation.roomModal.errorSelfChat");
+            }
+            if (rawMessage === "USER_NOT_FOUND") {
+                return t("conversation.roomModal.errorUserNotFound");
+            }
+            return rawMessage || t("conversation.roomModal.errorDirectDefault");
+        }
+
         const normalized = rawMessage.toLowerCase();
         if (mode === "create" && normalized.includes("exist")) {
             return t("conversation.roomModal.errorExist");
@@ -292,12 +409,60 @@ function ConversationList() {
 
                 {isLoggedIn && !loading && error && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-danger, red)"}}>Lỗi: {error}</li>)}
 
-                {isLoggedIn && !loading && !error && conversationItems.length === 0
+                {isLoggedIn && !loading && !error && conversationItems.length === 0 && !trimmedKeyword
                     && (<li style={{padding: "16px", textAlign: "center", color: "var(--color-secondary-text)"}}>Không có cuộc trò chuyện nào.</li>)}
 
-                {isLoggedIn && !loading && !error && conversationItems.length > 0 && filteredConversations.length === 0 && (
+                {isLoggedIn && !loading && !error && trimmedKeyword !== "" && filteredConversations.length === 0 && searchCheckStatus === "checking" && (
                     <li style={{ padding: "16px", textAlign: "center", color: "var(--color-secondary-text)" }}>
-                        Không tìm thấy cuộc trò chuyện phù hợp.
+                        {t("conversation.roomModal.checkingUser")}
+                    </li>
+                )}
+
+                {isLoggedIn && !loading && !error && trimmedKeyword !== "" && filteredConversations.length === 0 && searchCheckStatus === "user_found" && (
+                    <li>
+                        <div className="conversation-list__item conversation-list__item--quick-room">
+                            <div className="conversation-list__avatar conversation-list__avatar--primary">
+                                <span>{getInitials(trimmedKeyword)}</span>
+                            </div>
+                            <div className="conversation-list__text">
+                                <span className="conversation-list__name conversation-list__name--bold">{trimmedKeyword}</span>
+                                <span className="conversation-list__last">{typeLabels.direct}</span>
+                            </div>
+                            <div className="conversation-list__quick-actions">
+                                <button type="button" className="conversation-list__quick-btn conversation-list__quick-btn--primary" onClick={handleSelectSearchedUser}>
+                                    {t("conversation.roomModal.directSubmit")}
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                )}
+
+                {isLoggedIn && !loading && !error && trimmedKeyword !== "" && filteredConversations.length === 0 && (searchCheckStatus === "room_found" || searchCheckStatus === "not_found") && (
+                    <li>
+                        <div className="conversation-list__item conversation-list__item--quick-room">
+                            <div className="conversation-list__avatar conversation-list__avatar--group">
+                                <img className="conversation-list__avatar-icon" src={groupIcon} alt={trimmedKeyword} />
+                            </div>
+                            <div className="conversation-list__text">
+                                <span className="conversation-list__name conversation-list__name--bold">{trimmedKeyword}</span>
+                                <span className={quickRoomError ? "conversation-list__last conversation-list__last--error" : "conversation-list__last"}>
+                                    {quickRoomError || typeLabels.group}
+                                </span>
+                            </div>
+                            <div className="conversation-list__quick-actions">
+                                {searchCheckStatus === "room_found" ? (
+                                    <button type="button" className="conversation-list__quick-btn conversation-list__quick-btn--outline"
+                                            onClick={() => void handleQuickRoomAction("join")} disabled={quickRoomLoading !== null}>
+                                        {quickRoomLoading === "join" ? t("conversation.roomModal.joining") : t("conversation.roomModal.joinSubmit")}
+                                    </button>
+                                ) : (
+                                    <button type="button" className="conversation-list__quick-btn conversation-list__quick-btn--primary"
+                                            onClick={() => void handleQuickRoomAction("create")} disabled={quickRoomLoading !== null}>
+                                        {quickRoomLoading === "create" ? t("conversation.roomModal.creating") : t("conversation.roomModal.createSubmit")}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                     </li>
                 )}
 
@@ -341,6 +506,13 @@ function ConversationList() {
             <RoomModal
                 isOpen={isRoomModalOpen}
                 title={t("conversation.roomModal.title")}
+                tabDirectText={t("conversation.roomModal.tabDirect")}
+                tabGroupText={t("conversation.roomModal.tabGroup")}
+                directLabel={t("conversation.roomModal.directLabel")}
+                directPlaceholder={t("conversation.roomModal.directPlaceholder")}
+                directSubmitText={t("conversation.roomModal.directSubmit")}
+                checkingUserText={t("conversation.roomModal.checkingUser")}
+                directEmptyErrorText={t("conversation.roomModal.errorDirectEmpty")}
                 label={t("conversation.roomModal.label")}
                 placeholder={t("conversation.roomModal.placeholder")}
                 cancelText={t("conversation.roomModal.cancel")}

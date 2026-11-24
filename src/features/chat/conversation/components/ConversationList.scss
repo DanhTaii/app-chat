@@ -148,6 +148,10 @@
     &--active {
       background: var(--color-selection-background);
     }
+
+    &--quick-room {
+      cursor: default;
+    }
   }
 
   &__avatar {
@@ -228,6 +232,49 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &--error {
+      color: var(--color-danger);
+      white-space: normal;
+    }
+  }
+
+  &__quick-actions {
+    @include mixins.flex-layout($align: center, $gap: 6px);
+    flex-shrink: 0;
+  }
+
+  &__quick-btn {
+    padding: 5px 10px;
+    border-radius: var(--border-radius-standard);
+    font-size: var(--font-size-extra-small);
+    font-weight: var(--font-weight-semi-bold);
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--outline {
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-primary);
+
+      &:hover:not(:disabled) {
+        background: var(--color-hover);
+      }
+    }
+
+    &--primary {
+      border: 1px solid var(--color-primary);
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+
+      &:hover:not(:disabled) {
+        background: var(--color-primary-hover);
+      }
+    }
   }
 
   &__sender {
