@@ -25,6 +25,7 @@ export const createCall = async (
 // @ts-ignore
 // ref(database, "calls"): trỏ đến danh sách cuộc gọi trên Firebase.
 // onValue(...): lắng nghe dữ liệu. Khi dữ liệu thay đổi, callback được gọi.
+//  => nhưng nó cũng sẽ trả về 1 hàm để hủy lằng nghe
 // snapshot.val(): lấy dữ liệu từ Firebase.
 // Object.entries(calls): duyệt từng cuộc gọi, lấy cả callId và dữ liệu cuộc gọi.
 // unsubscribe: hàm dùng để ngừng lắng nghe khi không cần nữa.
@@ -117,3 +118,51 @@ export const listenCallStatus = (
 
     return unsubscribe;
 };
+
+// xử lyys lưu vaf lắng nghe offer cho webrtc
+export const createOfferForCallId = async (callId: string, offer: RTCSessionDescriptionInit) => {
+    await update(
+        ref(database, `calls/${callId}/offer`), {
+            type: offer.type,
+            sdp: offer.sdp,
+        }
+    )
+}
+
+export const listenOfferByCallId = (callId: string, callback: (offer: RTCSessionDescriptionInit) => void) => {
+    const offerRef = ref(database, `calls/${callId}/offer`);
+    const unsubscribe = onValue(offerRef, (snapshot) => {
+        const offer = snapshot.val();
+
+        if (offer) {
+            console.log("Nhận được Offer:", offer);
+
+            callback(offer);
+        }
+    })
+
+    return unsubscribe;
+}
+
+export const createAnswerForCallId = async (callId: string, answer: RTCSessionDescriptionInit) => {
+    await update(
+        ref(database, `calls/${callId}/answer`), {
+            type: answer.type,
+            sdp: answer.sdp
+        }
+    )
+}
+
+export const listenAnswerByCallId = (callId: string, callback: (answer: RTCSessionDescriptionInit) => void) => {
+    const answerRef = ref(database, `calls/${callId}/answer`);
+    const unsubscribe = onValue(answerRef, (snapshot) => {
+        const answer = snapshot.val();
+
+        if (answer) {
+            console.log("Nhận được answer: ", answer);
+            callback(answer)
+        }
+    })
+
+    return unsubscribe;
+}
