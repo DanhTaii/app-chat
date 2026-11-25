@@ -8,6 +8,7 @@ const supportedTypes: Record<string, {kind: MediaKind; format: string}> = {
     "image/jpeg": {kind: "image", format: "jpg"},
     "image/png": {kind: "image", format: "png"},
     "image/webp": {kind: "image", format: "webp"},
+    "image/jfif": {kind: "image", format: "jfif"},
     "video/mp4": {kind: "video", format: "mp4"},
     "video/webm": {kind: "video", format: "webm"},
 };
@@ -26,7 +27,7 @@ export async function uploadMedia(file: File): Promise<UploadedMedia> {
     }
 
     const allowedExtensions = mediaType.kind === "image"
-        ? ["jpg", "jpeg", "png", "webp"]
+        ? ["jpg", "jpeg", "png", "webp","jfif"]
         : ["mp4", "webm"];
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (!extension || !allowedExtensions.includes(extension)) {

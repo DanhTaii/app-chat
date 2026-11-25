@@ -6,7 +6,8 @@
       "file": "File"
     },
     "button": {
-      "watch-all": "Watch all"
+      "watch-all": "Watch all",
+      "back": "Back"
     }
   }
 }
