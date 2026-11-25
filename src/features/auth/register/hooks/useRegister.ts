@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+﻿import { useState, type FormEvent } from "react";
 import {
   isValidPassword,
   isValidUsername,
@@ -30,9 +30,9 @@ export function useRegister() {
     try {
       await chatSocket.connect();
       const response = await register({ user: username, pass: password });
-      setMessage(response.data || "Tạo tài khoản đc!");
+      setMessage(response.data ?? null);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Đăng ký fail rùi");
+      setError(requestError instanceof Error ? requestError.message : "Lỗi");
     } finally {
       setLoading(false);
     }

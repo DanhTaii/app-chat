@@ -186,3 +186,13 @@
 }
 
 
+
+.auth-success {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-success);
+  border-radius: var(--border-radius-standard);
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, transparent);
+}
+
