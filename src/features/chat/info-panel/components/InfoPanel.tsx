@@ -5,6 +5,7 @@ import type {UploadedMedia} from "@/features/chat/message/types.ts";
 
 export default function InfoPanel({mediaMessages}: {mediaMessages: UploadedMedia[]}) {
     const {t} = useTranslation("infoPanel");
+    const latestMediaMessages = mediaMessages.slice(0, 6);
 
     return (
         <aside className="info-panel">
@@ -28,9 +29,9 @@ export default function InfoPanel({mediaMessages}: {mediaMessages: UploadedMedia
             <hr/>
 
             <div className={"resource__image"}>
-                {mediaMessages.length > 0 ? (
+                {latestMediaMessages.length > 0 ? (
                     <div className="resource__media-list">
-                        {mediaMessages.map(media => (
+                        {latestMediaMessages.map(media => (
                             <div className="resource__media-item" key={media.url} title={media.name}>
                                 {media.kind === "image" ? (
                                     <a href={media.url} target="_blank" rel="noreferrer" aria-label={`Mở ảnh ${media.name}`}>
