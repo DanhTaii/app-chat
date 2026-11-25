@@ -2,8 +2,8 @@ import {useEffect, useRef} from "react";
 import {createPeerConnection} from "../hooks/useWebRTC.ts"
 import {useMediaStream} from "@/features/chat/video-call/hooks/useMediaStream.ts";
 import {
-    createAnswerForCallId,
-    createOfferForCallId, listenAnswerByCallId,
+    createAnswerForCallId, createIceCandidateByCallId,
+    createOfferForCallId, listenAnswerByCallId, listenIceCandidateByCallId,
     listenOfferByCallId
 } from "@/features/chat/video-call/api/callService.ts";
 import {useParams} from "react-router-dom";
@@ -51,6 +51,12 @@ export default function VideoCall({}) {
         // lấy ra tất cả track (video + voice) của MediaStream đưa vào WebRTC
         // duyệt từng strack rồi đưa cho bên B
         currentMediaStream.getTracks().forEach((track) => {
+            console.log("TRACK ĐANG GỬI:",
+                track.kind,
+                track.readyState,
+                track.enabled
+            );
+
             // thêm track vào kết noiiso WebRTC để chuẩn bị truền cho người B
             peerConnection.addTrack(track, currentMediaStream);
         })
@@ -58,8 +64,8 @@ export default function VideoCall({}) {
         // bên B nhận được video/voice wf người A
         // tức là trong peerConnection có track mới nó sẽ cập nhật
         peerConnection.ontrack = (event) => {
-            console.log("Đã nhận stream từ người bên kia");
-            if (remoteVideoRef.current) {
+            console.log("Đã nhận stream từ người bên kia", event.track.kind);
+            if (remoteVideoRef.current && event.streams[0]) {
                 remoteVideoRef.current.srcObject = event.streams[0];
             }
         }
@@ -71,10 +77,70 @@ export default function VideoCall({}) {
                 peerConnection.connectionState
             )
         }
+        // Danh sách các candidate đang chờ để được xử lý
+        const pendingCandidates: RTCIceCandidateInit[] = [];
 
-        let unsubscribe: (() => void) | undefined;
+        const handleIncomingCandidate = async (candidate: RTCIceCandidateInit) => {
+            try {
+                if (!peerConnection.remoteDescription) {
+                    pendingCandidates.push(candidate);
+                    console.log("ICE Candidate đang chờ:", candidate);
+                    return;
+                }
+
+                await peerConnection.addIceCandidate(
+                    new RTCIceCandidate(candidate)
+                );
+
+                console.log("NHẬN ICE CANDIDATE TỪ ĐỐI PHƯƠNG:", candidate.candidate);
+            } catch (e) {
+                console.log("LOOIX THÊM CANDIDATE: ", e)
+            }
+        }
+
+        peerConnection.onicecandidate = async (event) => {
+            if (event.candidate) {
+                console.log("ICE CANDIDATE CỦA MÌNH:", event.candidate.candidate);
+
+                try {
+                    await createIceCandidateByCallId(callId, currentUserName, event.candidate);
+
+                    console.log("ĐÃ GỬI ICE LÊN FIREBASE");
+                } catch (e) {
+                    console.error("LỖI GỬI ICE:", e);
+                }
+            } else {
+                console.log("ICE GATHERING ĐÃ HOÀN TẤT");
+            }
+        }
+
+        const unsubscribes: (() => void)[] = [];
         let answerHandled = false;
         let offerHandled = false;
+
+        // Hm xử lý danh sách các ice candidate đang chờ được xử lý
+        const flushPendingCandidates = async () => {
+            for (const candidate of pendingCandidates) {
+                await peerConnection.addIceCandidate(
+                    new RTCIceCandidate(candidate)
+                );
+            }
+
+            pendingCandidates.length = 0;
+        };
+
+
+        const remoteUser = currentUserName === "userA" ? "userB" : "userA";
+
+        unsubscribes.push(
+            listenIceCandidateByCallId(
+                callId,
+                remoteUser,
+                async (candidate) => {
+                    await handleIncomingCandidate(candidate);
+                }
+            )
+        );
 
         // console.log("KIỂM TRA TÊN HIỆN TẠI: ", currentUserName);
         // console.log("TÊN HIỆN TẠI: :", currentUserName);
@@ -101,29 +167,33 @@ export default function VideoCall({}) {
 
                     console.log("User A đã gửi Offer");
 
-                    unsubscribe = listenAnswerByCallId(callId, async (answer) => {
-                        try {
-                            if (answerHandled) return;
+                    unsubscribes.push(
+                        listenAnswerByCallId(callId, async (answer) => {
+                            try {
+                                if (answerHandled) return;
 
-                            if (peerConnection.signalingState !== "have-local-offer") {
-                                console.log("Không đúng trạng thái để nhận Answer");
-                                return;
+                                if (peerConnection.signalingState !== "have-local-offer") {
+                                    console.log("Không đúng trạng thái để nhận Answer");
+                                    return;
+                                }
+
+                                answerHandled = true;
+
+                                console.log("User A nhận được answer");
+
+                                await peerConnection.setRemoteDescription(
+                                    new RTCSessionDescription(answer)
+                                );
+
+                                await flushPendingCandidates();
+
+                                console.log("User A đã set Remote");
+
+                            } catch (e) {
+                                console.log("Lỗi nhận answer", e);
                             }
-
-                            answerHandled = true;
-
-                            console.log("User A nhận được answer");
-
-                            await peerConnection.setRemoteDescription(
-                                new RTCSessionDescription(answer)
-                            );
-
-                            console.log("User A đã set Remote");
-
-                        } catch (e) {
-                            console.log("Lỗi nhận answer", e);
-                        }
-                    })
+                        })
+                    )
                 } catch (e) {
                     console.error("Lỗi khi tạo Offer:", e);
                 }
@@ -132,45 +202,63 @@ export default function VideoCall({}) {
             createOffer();
         } else if (currentUserName === "userB") {
             console.log("BẮT ĐẦU XỬ LÝ VIDEO BÊN USER B: ")
-            unsubscribe = listenOfferByCallId(callId, async (offer) => {
-                try {
-                    console.log("B ĐANG LẮNG NGHE");
+            unsubscribes.push(
+                listenOfferByCallId(callId, async (offer) => {
+                    try {
+                        console.log("B ĐANG LẮNG NGHE");
 
-                    // -------------- kiểm tra xem đã xử lý offered chưa --------------
-                    if (offerHandled) return;
+                        // -------------- kiểm tra xem đã xử lý offered chưa --------------
+                        if (offerHandled) return;
 
-                    if (peerConnection.signalingState !== "stable") {
-                        console.log("Không đúng trạng thái để nhận Offer !");
-                        return;
+                        if (peerConnection.signalingState !== "stable") {
+                            console.log("Không đúng trạng thái để nhận Offer !");
+                            return;
+                        }
+
+                        offerHandled = true;
+
+                        // -------------- nhận offer twf A --------------
+                        await peerConnection.setRemoteDescription(
+                            new RTCSessionDescription(offer)
+                        );
+
+                        await flushPendingCandidates();
+
+                        // tạo ra answer
+                        const answer = await peerConnection.createAnswer();
+
+                        // lưu answer vào local của B
+                        await peerConnection.setLocalDescription(answer)
+
+                        // gửi answer lên firebase
+                        await createAnswerForCallId(callId, answer)
+
+                        console.log("User B đã gửi answer");
+
+                    } catch (e) {
+                        console.error("Lỗi nhận Offer:", e);
                     }
-
-                    offerHandled = true;
-
-                    // -------------- nhận offer twf A --------------
-                    await peerConnection.setRemoteDescription(
-                        new RTCSessionDescription(offer)
-                    );
-
-                    // tạo ra answer
-                    const answer = await peerConnection.createAnswer();
-
-                    // lưu answer vào local của B
-                    await peerConnection.setLocalDescription(answer)
-
-                    // gửi answer lên firebase
-                    await createAnswerForCallId(callId, answer)
-
-                    console.log("User B đã gửi answer");
-
-                } catch (e) {
-                    console.error("Lỗi nhận Offer:", e);
-                }
-            });
+                })
+            );
         }
 
-        return () => {
-            unsubscribe?.();
+        // KIỂM TRA KẾT NỐI
+        peerConnection.oniceconnectionstatechange = () => {
+            console.log("ICE STATE:", peerConnection.iceConnectionState);
+        };
 
+        peerConnection.onconnectionstatechange = () => {
+            console.log("PEER CONNECTION:", peerConnection.connectionState);
+        };
+
+        console.log("AUDIO TRACK:", currentMediaStream?.getAudioTracks());
+
+        console.log("VIDEO TRACK:", currentMediaStream?.getVideoTracks());
+
+        return () => {
+            unsubscribes.forEach((unsubscribe) => unsubscribe());
+            peerConnection.onicecandidate = null;
+            peerConnection.ontrack = null;
             peerConnection.close();
             peerConnectionRef.current = null;
         }
@@ -191,7 +279,6 @@ export default function VideoCall({}) {
             <video
                 ref={remoteVideoRef}
                 autoPlay
-                muted
                 playsInline
                 width={400}
             />

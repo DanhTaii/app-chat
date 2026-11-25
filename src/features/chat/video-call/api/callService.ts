@@ -1,15 +1,14 @@
 import {
     ref,
     set,
+    push,
+    onChildAdded,
     onValue,
     update
 } from "firebase/database";
 import {database} from "@/shared/services/firebase/firebase.ts";
 
-export const createCall = async (
-    caller: string,
-    receiver: string
-) => {
+export const createCall = async (caller: string, receiver: string) => {
     const callId = crypto.randomUUID();
 
     await set(ref(database, `calls/${callId}`), {
@@ -161,6 +160,27 @@ export const listenAnswerByCallId = (callId: string, callback: (answer: RTCSessi
         if (answer) {
             console.log("Nhận được answer: ", answer);
             callback(answer)
+        }
+    })
+
+    return unsubscribe;
+}
+
+export const createIceCandidateByCallId = async (callId: string, callerName: string, candidate: RTCIceCandidate) => {
+    const candidateRef = ref(database, `calls/${callId}/ice_candidates/${callerName}`);
+
+    await push(candidateRef, candidate.toJSON());
+}
+
+export const listenIceCandidateByCallId = (callId: string, receiverName: string, callback: (candidate: RTCIceCandidateInit) => void
+) => {
+    const candidateRef = ref(database, `calls/${callId}/ice_candidates/${receiverName}`);
+
+    const unsubscribe = onChildAdded(candidateRef, (snapshot) => {
+        const candidate = snapshot.val();
+
+        if (candidate) {
+            callback(candidate);
         }
     })
 
