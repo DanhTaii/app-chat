@@ -1,4 +1,4 @@
-import AuthButton from "../../../components/AuthButton";
+﻿import AuthButton from "../../../components/AuthButton";
 import AuthInput from "../../../components/AuthInput";
 import { ROUTES } from "../../../../../app/router/routes";
 import { useRegister } from "../../hooks/useRegister";
@@ -30,6 +30,7 @@ function RegisterForm() {
           onSubmit={handleSubmit}
         >
           {error && <p className="auth-error" role="alert">{error}</p>}
+          {message && <p className="auth-success" role="status">{message}</p>}
           <AuthInput
             id="register-username"
             name="username"
@@ -76,7 +77,6 @@ function RegisterForm() {
             Đăng ký tài khoản
           </AuthButton>
         </form>
-        {message && <p role="status">{message}</p>}
 
         <AuthFooter text="Đã có tài khoản?" linkText="Đăng nhập" to={ROUTES.LOGIN} />
     </>
