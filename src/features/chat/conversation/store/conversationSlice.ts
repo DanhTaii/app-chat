@@ -63,9 +63,27 @@ const conversationSlice = createSlice({
                 name: action.payload.name,
                 type: action.payload.type,
             };
+        },
+        removeConversation: (
+            state,
+            action: PayloadAction<{ name: string; type: 0 | 1 }>
+        ) => {
+            state.conversations = state.conversations.filter(
+                (item) =>
+                    !(item.name === action.payload.name && item.type === action.payload.type)
+            );
+            if (
+                state.selectedConversation?.name === action.payload.name &&
+                state.selectedConversation?.type === action.payload.type
+            ) {
+                const nextConversation = state.conversations[0];
+                state.selectedConversation = nextConversation
+                    ? { name: nextConversation.name, type: nextConversation.type }
+                    : null;
+            }
         }
     }
 });
 
-export const { setConversations, selectConversation, setUserOnlineStatus, addConversation } = conversationSlice.actions;
+export const { setConversations, selectConversation, setUserOnlineStatus, addConversation, removeConversation } = conversationSlice.actions;
 export default conversationSlice.reducer;

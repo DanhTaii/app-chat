@@ -38,3 +38,7 @@ export type RoomModalTab = "direct" | "group";
 export type RoomModalMode = "direct" | "create" | "join";
 export type JoinRoomRequest = CreateRoomRequest;
 export type JoinRoomResponse = CreateRoomResponse;
+export type OutRoomRequest = CreateRoomRequest;
+export interface OutRoomResponse {
+    mes?: string;
+}

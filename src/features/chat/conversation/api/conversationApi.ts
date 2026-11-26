@@ -1,7 +1,7 @@
 import chatSocket from "@/shared/services/socket/socketService.ts";
 import type {
     ApiConversationItem, CheckUserOnlineRequest, CheckUserOnlineResponse, CreateRoomRequest, CreateRoomResponse,
-    JoinRoomRequest, JoinRoomResponse, CheckUserExistRequest, CheckUserExistResponse
+    JoinRoomRequest, JoinRoomResponse, CheckUserExistRequest, CheckUserExistResponse, OutRoomRequest, OutRoomResponse
 } from "@/features/chat/conversation/types/conversation.ts";
 
 let onlineCheckQueue: Promise<unknown> = Promise.resolve();
@@ -52,4 +52,11 @@ export const checkUserExist = async (user: string): Promise<boolean> => {
         payload
     );
     return Boolean(response.data?.status);
+};
+
+export const outRoom = async (name: string): Promise<OutRoomResponse> => {
+    await chatSocket.connect();
+    const payload: OutRoomRequest = { name };
+    const response = await chatSocket.request<OutRoomResponse>("OUT_ROOM", payload);
+    return response.data ?? {};
 };
