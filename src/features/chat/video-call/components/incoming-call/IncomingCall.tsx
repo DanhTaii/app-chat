@@ -19,7 +19,7 @@ export default function IncomingCall({onAccepted}) {
         const unsubscribe = listenIncomingCall(
             currentUserName,
             (call) => {
-                console.log("CÓ CUỘC GỌI ĐẾN:", call);
+                // console.log("CÓ CUỘC GỌI ĐẾN:", call);
 
                 // Cập nhật state để React render lại giao diện
                 setIncomingCall(call);

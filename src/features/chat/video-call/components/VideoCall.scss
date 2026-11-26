@@ -1,0 +1,38 @@
+@use "sass:map";
+@use "../../../../shared/assets/styles/mixins" as mixins;
+
+.video-call-container {
+  padding: 20px;
+  text-align: center;
+
+  // khu vực hiển thị video
+  .video-wrapper {
+    @include mixins.flex-layout(
+            $justify: center,
+            $gap: 20px
+    );
+
+    // các item video
+    .video-item {
+      width: 400px;
+
+      video {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        background: black;
+        border-radius: 12px;
+      }
+    }
+  }
+
+  // khu vực điều khiển mic và camera
+  .video-controls {
+    @include mixins.flex-layout(
+            $justify: center,
+            $gap: 15px
+    );
+    margin-top: 20px;
+  }
+}
+
