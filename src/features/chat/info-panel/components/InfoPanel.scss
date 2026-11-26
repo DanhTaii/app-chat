@@ -2,6 +2,8 @@
 @use "../../../../shared/assets/styles/mixins" as mixins;
 
 .info-panel {
+  @include mixins.flex-layout($align: stretch, $direction: column);
+  height: 100%;
   min-height: 0;
   overflow: hidden;
   background-color: var(--color-conversation-panel-background);
@@ -87,6 +89,49 @@
       margin-top: 10px;
     }
 
+  }
+
+  &__bottom {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  &__leave-error {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    border-radius: var(--border-radius-standard);
+    background-color: var(--color-danger-background);
+    color: var(--color-danger);
+    font-size: var(--font-size-extra-small);
+  }
+
+  &__leave-btn {
+    @include mixins.flex-layout($align: center, $gap: 12px);
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: var(--border-radius-standard);
+    background: transparent;
+    color: var(--color-danger);
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-danger-background);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__leave-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
   }
 }
 
