@@ -1,7 +1,11 @@
-@use "sass:map";
+﻿@use "sass:map";
 @use "../../../../shared/assets/styles/mixins" as mixins;
 
 .info-panel {
+  @include mixins.flex-layout($align: stretch, $direction: column);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   background-color: var(--color-conversation-panel-background);
   border-left: 1px solid var(--color-border);
   padding: 10px;
@@ -59,8 +63,6 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      max-height: 240px;
-      overflow-y: auto;
       margin-top: 10px;
     }
 
@@ -71,7 +73,7 @@
       video {
         display: block;
         width: 100%;
-        height: 80px;
+        height: 100px;
         border-radius: 8px;
         object-fit: cover;
       }
@@ -87,5 +89,107 @@
       margin-top: 10px;
     }
 
+  }
+
+  &__bottom {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  &__leave-error {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    border-radius: var(--border-radius-standard);
+    background-color: var(--color-danger-background);
+    color: var(--color-danger);
+    font-size: var(--font-size-extra-small);
+  }
+
+  &__leave-btn {
+    @include mixins.flex-layout($align: center, $gap: 12px);
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: var(--border-radius-standard);
+    background: transparent;
+    color: var(--color-danger);
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-danger-background);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__leave-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+}
+
+.info-panel--media {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-panel__media-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0 14px;
+  border-bottom: 1px solid var(--color-border);
+
+  h3 {
+    margin: 0;
+    font-size: var(--font-size-large);
+  }
+}
+
+.info-panel__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--border-radius-standard);
+  background: transparent;
+  color: var(--color-primary);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-hover);
+  }
+}
+
+.media-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+  margin-top: 12px;
+  overflow-y: auto;
+
+  .resource__media-item {
+    min-width: 0;
+  }
+
+  img,
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    object-fit: cover;
   }
 }

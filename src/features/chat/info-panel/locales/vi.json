@@ -6,7 +6,14 @@
       "file": "Tài liệu đính kèm"
     },
     "button": {
-      "watch-all": "Xem tất cả"
+      "watch-all": "Xem tất cả",
+      "back": "Trở lại",
+      "leave-room": "Rời nhóm",
+      "leaving-room": "Đang rời nhóm..."
+    },
+    "error": {
+      "leave-owner": "Chủ nhóm không thể tự rời khỏi nhóm.",
+      "leave-default": "Không thể rời nhóm, vui lòng thử lại."
     }
   }
 }

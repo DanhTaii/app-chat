@@ -12,7 +12,6 @@ function LoginForm() {
     password,
     setPassword,
     loading,
-    response,
     error,
     usernameValid,
     passwordValid,
@@ -61,13 +60,6 @@ function LoginForm() {
         </AuthButton>
       </form>
 
-      {response?.status === "success" && (
-        <section aria-live="polite">
-          <h2>{response.status === "success" ? "Đăng nhập thành công" : "Kết quả đăng nhập"}</h2>
-          {response.mes && <p>{response.mes}</p>}
-          <pre>{JSON.stringify(response.data)}</pre>
-        </section>
-      )}
       <AuthFooter text="Chưa có tài khoản?" linkText="Tạo tài khoản" to={ROUTES.REGISTER} />
     </>
   );

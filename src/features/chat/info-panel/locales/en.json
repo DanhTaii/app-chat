@@ -6,7 +6,14 @@
       "file": "File"
     },
     "button": {
-      "watch-all": "Watch all"
+      "watch-all": "Watch all",
+      "back": "Back",
+      "leave-room": "Leave group",
+      "leaving-room": "Leaving group..."
+    },
+    "error": {
+      "leave-owner": "Group owner cannot leave the group.",
+      "leave-default": "Could not leave group, please try again."
     }
   }
 }
