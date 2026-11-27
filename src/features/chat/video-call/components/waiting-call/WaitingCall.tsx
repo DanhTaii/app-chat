@@ -1,7 +1,12 @@
 import "./WaitingCall.scss";
 
-// @ts-ignore
-export default function WaitingCall({receiver, onCancel}) {
+interface WaitingCallProps {
+    receiver: string;
+    onCancel: () => void;
+    isCancelDisabled: boolean;
+}
+
+export default function WaitingCall({receiver, onCancel, isCancelDisabled}: WaitingCallProps) {
     return (
         <div className="call-waiting-overlay">
             <div className="call-waiting-content">
@@ -22,6 +27,7 @@ export default function WaitingCall({receiver, onCancel}) {
                 <button
                     className="cancel-call-btn"
                     onClick={onCancel}
+                    disabled={isCancelDisabled}
                 >
                     <i className="bi bi-telephone-x"></i>
                     Hủy

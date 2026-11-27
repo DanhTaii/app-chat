@@ -1,5 +1,5 @@
-﻿import './InfoPanel.scss'
-import Button from "@/shared/components/Button.tsx";
+import './InfoPanel.scss'
+import Button from "@/shared/components/button.tsx";
 import {useTranslation} from "react-i18next";
 import {useState, useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "@/app/store/hooks.ts";

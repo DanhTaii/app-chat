@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import Input from "@/shared/components/Input";
 // @ts-ignore
-import Button from "@/shared/components/button";
+import Button from "@/shared/components/button.tsx";
 import type { RoomModalMode, RoomModalTab } from "@/features/chat/conversation/types/conversation";
 import "./RoomModal.scss";
 

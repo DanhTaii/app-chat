@@ -1,15 +1,15 @@
 import {
+    get,
     ref,
     set,
+    push,
+    onChildAdded,
     onValue,
     update
 } from "firebase/database";
 import {database} from "@/shared/services/firebase/firebase.ts";
 
-export const createCall = async (
-    caller: string,
-    receiver: string
-) => {
+export const createCall = async (caller: string, receiver: string) => {
     const callId = crypto.randomUUID();
 
     await set(ref(database, `calls/${callId}`), {
@@ -25,6 +25,7 @@ export const createCall = async (
 // @ts-ignore
 // ref(database, "calls"): trỏ đến danh sách cuộc gọi trên Firebase.
 // onValue(...): lắng nghe dữ liệu. Khi dữ liệu thay đổi, callback được gọi.
+//  => nhưng nó cũng sẽ trả về 1 hàm để hủy lằng nghe
 // snapshot.val(): lấy dữ liệu từ Firebase.
 // Object.entries(calls): duyệt từng cuộc gọi, lấy cả callId và dữ liệu cuộc gọi.
 // unsubscribe: hàm dùng để ngừng lắng nghe khi không cần nữa.
@@ -46,7 +47,7 @@ export const listenIncomingCall = (
         const now = Date.now();
 
         const incomingCalls = Object.entries(calls)
-            .filter(([callId, call]: [string, any]) => {
+            .filter(([, call]: [string, any]) => {
 
                 const isReceiver = call.receiver === currentUsername;
 
@@ -116,4 +117,93 @@ export const listenCallStatus = (
     });
 
     return unsubscribe;
+};
+
+// xử lyys lưu vaf lắng nghe offer cho webrtc
+export const createOfferForCallId = async (callId: string, offer: RTCSessionDescriptionInit) => {
+    await update(
+        ref(database, `calls/${callId}/offer`), {
+            type: offer.type,
+            sdp: offer.sdp,
+        }
+    )
+}
+
+export const listenOfferByCallId = (callId: string, callback: (offer: RTCSessionDescriptionInit) => void) => {
+    const offerRef = ref(database, `calls/${callId}/offer`);
+    const unsubscribe = onValue(offerRef, (snapshot) => {
+        const offer = snapshot.val();
+
+        if (offer) {
+            console.log("Nhận được Offer:", offer);
+
+            callback(offer);
+        }
+    })
+
+    return unsubscribe;
+}
+
+export const createAnswerForCallId = async (callId: string, answer: RTCSessionDescriptionInit) => {
+    await update(
+        ref(database, `calls/${callId}/answer`), {
+            type: answer.type,
+            sdp: answer.sdp
+        }
+    )
+}
+
+export const listenAnswerByCallId = (callId: string, callback: (answer: RTCSessionDescriptionInit) => void) => {
+    const answerRef = ref(database, `calls/${callId}/answer`);
+    const unsubscribe = onValue(answerRef, (snapshot) => {
+        const answer = snapshot.val();
+
+        if (answer) {
+            console.log("Nhận được answer: ", answer);
+            callback(answer)
+        }
+    })
+
+    return unsubscribe;
+}
+
+export const createIceCandidateByCallId = async (callId: string, callerName: string, candidate: RTCIceCandidate) => {
+    const candidateRef = ref(database, `calls/${callId}/ice_candidates/${callerName}`);
+
+    await push(candidateRef, candidate.toJSON());
+}
+
+export const listenIceCandidateByCallId = (callId: string, receiverName: string, callback: (candidate: RTCIceCandidateInit) => void
+) => {
+    const candidateRef = ref(database, `calls/${callId}/ice_candidates/${receiverName}`);
+
+    const unsubscribe = onChildAdded(candidateRef, (snapshot) => {
+        const candidate = snapshot.val();
+
+        if (candidate) {
+            callback(candidate);
+        }
+    })
+
+    return unsubscribe;
+}
+
+export interface CallParticipants {
+    caller: string;
+    receiver: string;
+}
+
+// Lyaas ra htoong tên của người gọi và người nhận
+export const getCallParticipants = async (callId: string): Promise<CallParticipants | null> => {
+    const snapshot = await get(ref(database, `calls/${callId}`));
+    const callData = snapshot.val();
+
+    if (typeof callData?.caller !== "string" || typeof callData?.receiver !== "string") {
+        return null;
+    }
+
+    return {
+        caller: callData.caller,
+        receiver: callData.receiver,
+    };
 };
