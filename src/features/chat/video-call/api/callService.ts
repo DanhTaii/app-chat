@@ -106,14 +106,11 @@ export const listenCallStatus = (
     callId: string,
     callback: (status: string | null) => void
 ) => {
-    const callRef = ref(database, `calls/${callId}`);
+    const statusRef = ref(database, `calls/${callId}/status`);
 
-    const unsubscribe = onValue(callRef, (snapshot) => {
-        const callData = snapshot.val();
-
-        // console.log("DỮ LIỆU CALL TỪ FIREBASE:", callData);
-
-        callback(callData?.status ?? null);
+    const unsubscribe = onValue(statusRef, (snapshot) => {
+        const status = snapshot.val();
+        callback(typeof status === "string" ? status : null);
     });
 
     return unsubscribe;
