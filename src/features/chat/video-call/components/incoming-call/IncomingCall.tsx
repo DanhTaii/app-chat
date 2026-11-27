@@ -7,10 +7,12 @@ import {
 } from "@/features/chat/video-call/api/callService";
 import Button from "@/shared/components/button.tsx";
 
-// @ts-ignore
-export default function IncomingCall({onAccepted}) {
+interface IncomingCallProps {
+    currentUserName: string;
+    onAccepted: (callId: string) => void;
+}
 
-    const currentUserName = localStorage.getItem("username") || "userB";
+export default function IncomingCall({currentUserName, onAccepted}: IncomingCallProps) {
 
     const [incomingCall, setIncomingCall] = useState<any>(null);
 
@@ -27,8 +29,7 @@ export default function IncomingCall({onAccepted}) {
         );
 
         return () => unsubscribe();
-
-    }, []);
+    }, [currentUserName]);
 
     useEffect(() => {
         if (!incomingCall?.callId) return;
@@ -47,20 +48,22 @@ export default function IncomingCall({onAccepted}) {
 
     const handleAccept = async () => {
         const callId = incomingCall.callId;
+        const callWindow = window.open("about:blank", "_blank");
 
-        await acceptCall(callId);
+        try {
+            await acceptCall(callId);
+            setIncomingCall(null);
+            onAccepted(callId);
 
-        setIncomingCall(null);
-
-        // cập nhật callId bên MainLayout để hiển thị gioa diện
-        onAccepted(callId)
-
-        window.open(
-            `/video-call/${callId}`,
-            "_blank"
-        );
-
-        console.log("ĐÃ CHẤP NHẬN CUỘC GỌI");
+            if (callWindow) {
+                callWindow.location.href = `/video-call/${callId}`;
+            } else {
+                window.open(`/video-call/${callId}`, "_blank");
+            }
+        } catch (error) {
+            callWindow?.close();
+            console.error("Không thể chấp nhận cuộc gọi:", error);
+        }
     };
 
     const handleReject = async () => {

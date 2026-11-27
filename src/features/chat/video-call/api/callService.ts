@@ -1,4 +1,5 @@
 import {
+    get,
     ref,
     set,
     push,
@@ -46,7 +47,7 @@ export const listenIncomingCall = (
         const now = Date.now();
 
         const incomingCalls = Object.entries(calls)
-            .filter(([callId, call]: [string, any]) => {
+            .filter(([, call]: [string, any]) => {
 
                 const isReceiver = call.receiver === currentUsername;
 
@@ -186,3 +187,23 @@ export const listenIceCandidateByCallId = (callId: string, receiverName: string,
 
     return unsubscribe;
 }
+
+export interface CallParticipants {
+    caller: string;
+    receiver: string;
+}
+
+// Lyaas ra htoong tên của người gọi và người nhận
+export const getCallParticipants = async (callId: string): Promise<CallParticipants | null> => {
+    const snapshot = await get(ref(database, `calls/${callId}`));
+    const callData = snapshot.val();
+
+    if (typeof callData?.caller !== "string" || typeof callData?.receiver !== "string") {
+        return null;
+    }
+
+    return {
+        caller: callData.caller,
+        receiver: callData.receiver,
+    };
+};

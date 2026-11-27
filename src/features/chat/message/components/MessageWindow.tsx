@@ -6,8 +6,21 @@ import {useAppSelector} from "@/app/store/hooks.ts";
 import {useMessageRealtime} from "@/features/chat/message/hooks/useMessageRealtime.ts";
 // import {useMessage} from "@/features/chat/message/hooks/useMessage.ts";
 
-// @ts-ignore
-function MessageWindow({receiverName, conversationType, onToggleInfo}) {
+interface MessageWindowProps {
+    receiverName: string;
+    conversationType: number | null;
+    onToggleInfo: () => void;
+    onCall: () => void;
+    isCallDisabled: boolean;
+}
+
+function MessageWindow({
+    receiverName,
+    conversationType,
+    onToggleInfo,
+    onCall,
+    isCallDisabled,
+}: MessageWindowProps) {
     // let page = 1;
 
     const user = useAppSelector((state) => state.auth.user)
@@ -19,11 +32,19 @@ function MessageWindow({receiverName, conversationType, onToggleInfo}) {
 
     return (
         <section className="message-window">
-            <MessageHeader receiverName={receiverName} onToggleInfo={onToggleInfo}/>
+            <MessageHeader
+                receiverName={receiverName}
+                onToggleInfo={onToggleInfo}
+                onCall={onCall}
+                isCallDisabled={isCallDisabled}
+            />
 
-            <MessageList receiverName={receiverName} user={user} conversationType={conversationType}/>
-
-            <MessageComposer receiverName={receiverName} user={user} conversationType={conversationType}/>
+            {conversationType !== null && (
+                <>
+                    <MessageList receiverName={receiverName} user={user} conversationType={conversationType}/>
+                    <MessageComposer receiverName={receiverName} user={user} conversationType={conversationType}/>
+                </>
+            )}
         </section>
     )
 }

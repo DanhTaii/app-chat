@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Button from "../../../shared/components/Button";
+import Button from "../../../shared/components/button.tsx";
 
 interface AuthButtonProps {
   children: ReactNode;

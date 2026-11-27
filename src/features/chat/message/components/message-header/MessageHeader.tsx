@@ -1,8 +1,19 @@
 import './MessageHeader.scss'
 import {useTranslation} from "react-i18next";
 
-// @ts-ignore
-export default function MessageHeader({receiverName, onToggleInfo}) {
+interface MessageHeaderProps {
+    receiverName: string;
+    onToggleInfo: () => void;
+    onCall: () => void;
+    isCallDisabled: boolean;
+}
+
+export default function MessageHeader({
+    receiverName,
+    onToggleInfo,
+    onCall,
+    isCallDisabled,
+}: MessageHeaderProps) {
     const {t} = useTranslation("message");
 
     return (
@@ -21,9 +32,16 @@ export default function MessageHeader({receiverName, onToggleInfo}) {
             <div className={"action-icon"}>
                 <ul>
                     <li>
-                        <div className={""}>
+                        <button
+                            type="button"
+                            className="call-icon__box"
+                            onClick={onCall}
+                            disabled={isCallDisabled}
+                            aria-label="Bắt đầu cuộc gọi"
+                            title={isCallDisabled ? "Chọn cuộc trò chuyện cá nhân để gọi" : "Gọi điện"}
+                        >
                             <i className="fa-solid fa-phone"></i>
-                        </div>
+                        </button>
                     </li>
 
                     <li>

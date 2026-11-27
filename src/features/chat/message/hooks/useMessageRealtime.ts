@@ -3,10 +3,12 @@ import {useEffect} from "react";
 import chatSocket from "@/shared/services/socket/socketService.ts";
 import {addPeopleMessages, addRoomMessages} from "@/features/chat/message/store/messageSlice.ts";
 
-export function useMessageRealtime(receiverName: string, conversationType: number) {
+export function useMessageRealtime(receiverName: string, conversationType: number | null) {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+        if (!receiverName || conversationType === null) return;
+
         // ---------------------- XỬ LÝ TIN NHẮN ĐẾN
         function handleIncomingMessage(serverResponse: any) {
             // BƯỚC 1: KIỂM TRA RESPONSE

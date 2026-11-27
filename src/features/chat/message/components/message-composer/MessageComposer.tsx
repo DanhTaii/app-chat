@@ -1,6 +1,6 @@
 import './MessageComposer.scss'
 // @ts-ignore
-import Button from "../../../../../shared/components/Button";
+import Button from "../../../../../shared/components/button.tsx";
 import Input from "../../../../../shared/components/Input";
 import {useTranslation} from "react-i18next";
 import {useRef, useState} from "react";

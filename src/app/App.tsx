@@ -27,6 +27,16 @@ function restoreSession() {
                 return null;
             }
 
+            // Kiểm tra xem là có trong đường dẫn VideoCall không?
+            // Nếu như đang ở trong đó thì sẽ dừng hàm và trả veef lun thông tin trong session
+            // do lúc mở tab mới nó thực hiện chạy toàn bộ code ở dưới như vậy thì web socket sẽ renew lại
+            if (window.location.pathname.startsWith("/video-call/")) {
+                return {
+                    username: session.username,
+                    reLoginCode: session.reLoginCode,
+                };
+            }
+
             // co thi connect websocket
             try {
                 await chatSocket.connect();

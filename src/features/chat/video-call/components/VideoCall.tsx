@@ -3,16 +3,22 @@ import {createPeerConnection} from "../hooks/useWebRTC.ts"
 import {useMediaStream} from "@/features/chat/video-call/hooks/useMediaStream.ts";
 import {
     createAnswerForCallId, createIceCandidateByCallId,
-    createOfferForCallId, listenAnswerByCallId, listenIceCandidateByCallId,
+    createOfferForCallId, getCallParticipants, listenAnswerByCallId, listenIceCandidateByCallId,
     listenOfferByCallId
 } from "@/features/chat/video-call/api/callService.ts";
+import type {CallParticipants} from "@/features/chat/video-call/api/callService.ts";
+import {useAppSelector} from "@/app/store/hooks.ts";
 import {useParams} from "react-router-dom";
 import "./VideoCall.scss"
 // import {useParams} from "react-router-dom";
 
-export default function VideoCall({}) {
+export default function VideoCall() {
     const {callId} = useParams();
-    const currentUserName = localStorage.getItem("username") || "userA";
+    const currentUserName = useAppSelector(
+        (state) => state.auth.user?.username
+    );
+    const [callParticipants, setCallParticipants] = useState<CallParticipants | null>(null);
+    const [callError, setCallError] = useState<string | null>(null);
 
     // ------- quản lý kết nối webrtc
 
@@ -30,6 +36,38 @@ export default function VideoCall({}) {
 
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMicOn, setIsMicOn] = useState(true);
+
+    useEffect(() => {
+        let active = true;
+        setCallParticipants(null);
+        setCallError(null);
+
+        if (!callId) {
+            setCallError("Không tìm thấy mã cuộc gọi.");
+            return () => {
+                active = false;
+            };
+        }
+
+        getCallParticipants(callId)
+            .then((participants) => {
+                if (!active) return;
+                if (!participants) {
+                    setCallError("Không tìm thấy thông tin người tham gia cuộc gọi.");
+                    return;
+                }
+                setCallParticipants(participants);
+            })
+            .catch((error) => {
+                if (!active) return;
+                console.error("Không thể tải thông tin cuộc gọi:", error);
+                setCallError("Không thể tải thông tin cuộc gọi.");
+            });
+
+        return () => {
+            active = false;
+        };
+    }, [callId]);
 
     const toggleCamera = () => {
         if (!currentMediaStream) {
@@ -69,7 +107,17 @@ export default function VideoCall({}) {
 
 
     useEffect(() => {
-        if (!currentMediaStream || !callId) return;
+        if (!currentMediaStream || !callId || !currentUserName || !callParticipants) return;
+
+        const isCaller = currentUserName === callParticipants.caller;
+        const isReceiver = currentUserName === callParticipants.receiver;
+        if (!isCaller && !isReceiver) {
+            setCallError("Tài khoản hiện tại không thuộc cuộc gọi này.");
+            return;
+        }
+
+        setCallError(null);
+        const remoteUser = isCaller ? callParticipants.receiver : callParticipants.caller;
 
         let cancelled = false;
 
@@ -182,8 +230,6 @@ export default function VideoCall({}) {
             pendingCandidates.length = 0;
         };
 
-        const remoteUser = currentUserName === "userA" ? "userB" : "userA";
-
         addUnsubscribe(
             listenIceCandidateByCallId(callId, remoteUser,
                 async (candidate) => {
@@ -197,7 +243,7 @@ export default function VideoCall({}) {
         // console.log("KIỂM TRA TÊN HIỆN TẠI: ", currentUserName);
         // console.log("TÊN HIỆN TẠI: :", currentUserName);
         // console.log("TÊN NGƯỜI NHẬN:", receiver);
-        if (currentUserName === "userA") {
+        if (isCaller) {
             console.log("BẮT ĐẦU XỬ LÝ VIDEO BÊN USER A: ")
             const createOffer = async () => {
                 try {
@@ -255,8 +301,8 @@ export default function VideoCall({}) {
             };
 
             createOffer();
-        } else if (currentUserName === "userB") {
-            console.log("BẮT ĐẦU XỬ LÝ VIDEO BÊN USER B: ")
+        } else {
+            console.log("BẮT ĐẦU CHỜ OFFER:")
             addUnsubscribe(
                 listenOfferByCallId(callId, async (offer) => {
                     try {
@@ -324,11 +370,13 @@ export default function VideoCall({}) {
                 peerConnectionRef.current = null;
             }
         };
-    }, [currentMediaStream, callId])
+    }, [currentMediaStream, callId, currentUserName, callParticipants])
 
     return (
         <div className="video-call-container">
             <h2>VIDEO CALL</h2>
+            {callError && <p role="alert">{callError}</p>}
+            {!currentUserName && <p role="status">Đang xác thực người dùng…</p>}
 
             <div className="video-wrapper">
                 {/* Video của bản thân */}
